@@ -2067,9 +2067,9 @@ not_input_a_in_the_air:
 	;holding A, 
 	LDY #$01
 	;holding A, check if we're in the air
-	LDA <Orange_In_Air
-	CMP #0
-	BEQ add_to_y_speed
+	;LDA <Orange_In_Air
+	;CMP #0
+	;BEQ add_to_y_speed
 	
 	;we're in the air, and holding A, slower down-acc speed!
 	;LDY #1
@@ -2164,6 +2164,7 @@ checkzero:
 	LDA <Orange_XVel
 	CMP #$fe
 	BEQ after
+	;BPL after
 	JMP trueend
 after:
 	LDY #0
@@ -2183,6 +2184,11 @@ afters:
 
 ;is moving left, but not holding left, i.e. decelerate to zero please
 is_moving_left:
+
+
+	LDA <Orange_In_Air
+	CMP #0
+	BEQ checkzero
 	;STY <Orange_XVel
 	INC <Orange_XVel
 	INC <Orange_XVel
@@ -2190,6 +2196,9 @@ is_moving_left:
 	JMP checkzero
 ;is moving right, but not holding right, i.e. decelerate to zero speed please
 is_moving_right:
+	LDA <Orange_In_Air
+	CMP #0
+	BEQ checkzero
 	;STY <Orange_XVel
 	DEC <Orange_XVel
 	DEC <Orange_XVel
