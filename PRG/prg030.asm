@@ -2029,8 +2029,8 @@ PRG030_8CDE:
 
 	
 	
-	
-	
+	NOP
+	NOP
 	NOP
 	NOP
 	NOP
@@ -2061,6 +2061,7 @@ not_input_a:	;not inputting A, but maybe we're holding A?
 	LDA <Pad_Holding_2
 	AND #PAD_A
 	BEQ add_to_y_speed	;not holding A, jump away
+	
 
 not_input_a_in_the_air:		
 	;holding A, 
@@ -2079,6 +2080,15 @@ add_to_y_speed:
 	ADD <Orange_YVel
 	STA <Orange_YVel ; Player_YVel += Y
 	
+	;check if y speed is more than max
+	LDA <Orange_YVel
+	CMP #$40
+	BMI check_if_holding_right
+	
+	;sätt högsta farten
+	LDA #$40
+	STA <Orange_YVel
+		
 	;BMI check_if_holding_right	 	; If Y velocity is negative, jump
 	
 	
