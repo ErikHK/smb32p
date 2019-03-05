@@ -1,4 +1,5 @@
 	.byte $00	; Unknown purpose
+	;.byte $01	; Unknown purpose
 
 	.byte OBJ_AUTOSCROLL, $01, $30
 	.byte OBJ_AUTOSCROLL, $1C, $30

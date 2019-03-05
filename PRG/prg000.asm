@@ -3609,6 +3609,13 @@ PRG000_D16B:	.byte -$08, $08
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $D16D
 Object_HandleBumpUnderneath:
+	LDA Level_ObjectID,X
+	CMP #OBJ_ORANGECHEEP
+	BNE conttt
+	;otherwise return
+	RTS
+	
+conttt:
 	JSR Object_AnySprOffscreen
 	BNE PRG000_D1C4	 ; If any sprite is off-screen, jump to PRG000_D1C4 (RTS)
  

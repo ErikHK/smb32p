@@ -1,5 +1,6 @@
 	.byte $01	; Unknown purpose
 
+	;.byte OBJ_ENEMYSUN, $03, $11
 	.byte OBJ_CFIRE_GOOMBAPIPE_R, $19, $13
 	.byte OBJ_GOOMBA, $20, $18
 	.byte OBJ_CFIRE_GOOMBAPIPE_R, $2B, $13

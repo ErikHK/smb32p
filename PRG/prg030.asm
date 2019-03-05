@@ -2051,28 +2051,34 @@ OrangeCheep_DoGameplay:
 	;is inputting A, and is not in the air
 	LDA Player_RootJumpVel	 	; Get initial jump velocity
 	;SUB Player_SpeedJumpInc,X	; Subtract a tiny bit of boost at certain X Velocity speed levels
+	ADD #4
 	STA <Orange_YVel
 	;JMP check_if_holding_right
 	JMP realend
+
 	
-;8d00
-not_input_a:	;not inputting A, but maybe we're holding A?
+;8d02
+not_input_a:	;not inputting A, but maybe we're holding A? may be both in air and not
 	LDY #$05
 	LDA <Pad_Holding_2
 	AND #PAD_A
-	BEQ add_to_y_speed	;not holding A, jump away
+	BEQ add_to_y_speed	;not holding A and not inputting A, jump away
 	
 
-not_input_a_in_the_air:		
+	;8d0a
+not_input_a_in_the_air:		;here we're holding A
 	;holding A, 
 	LDY #$01
 	;holding A, check if we're in the air
-	;LDA <Orange_In_Air
-	;CMP #0
-	;BEQ add_to_y_speed
+	LDA <Orange_In_Air
+	CMP #0
+	BNE add_to_y_speed
 	
-	;we're in the air, and holding A, slower down-acc speed!
-	;LDY #1
+	;we're in the air, and holding A, check if yvel is greater than zero, in that case, increase down acc
+	LDA <Orange_YVel
+	CMP #0
+	BMI add_to_y_speed
+	LDY #$05
 	
 add_to_y_speed:
 	;LDY #1

@@ -4076,6 +4076,9 @@ PRG004_B3D7:
 
 	CPY #OBJ_BIGGREENHOPPER
 	BEQ PRG004_B3E7	 ; If this is a GIANT hopping green shell paratroopa, jump to PRG004_B3E7
+	
+	;CPY #OBJ_ORANGECHEEP
+	;BEQ PRG004_B3E7	 ; If this is a GIANT hopping green shell paratroopa, jump to PRG004_B3E7
 
 	; Not a green shell hopper...
 

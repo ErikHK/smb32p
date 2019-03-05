@@ -1,6 +1,8 @@
 	.byte $01	; Unknown purpose
 
-	.byte OBJ_GOOMBA, $0E, $19
+	;.byte OBJ_AUTOSCROLL, $00, $00
+	;.byte OBJ_ENEMYSUN, $03, $11
+	;.byte OBJ_GOOMBA, $0E, $19
 	.byte OBJ_VENUSFIRETRAP, $16, $17
 	.byte OBJ_GOOMBA, $21, $19
 	.byte OBJ_REDTROOPA, $24, $16
