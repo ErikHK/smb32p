@@ -13,16 +13,7 @@
 ;---------------------------------------------------------------------------
 	; STANDARD HORIZONTAL SCREEN
 
-Orange_X		= $95
-Orange_Y		= $a7
-Orange_XHi		= $7a
-Orange_YHi		= $8c
-Orange_XVel		= $c2
-Orange_YVel		= $d4
-Orange_In_Air	= $dd
 	
-Pad_Input_2		= $f6
-Pad_Holding_2	= $f8	
 Tile_Mem_Addr:	
 	; This breaks up the overall "tile" layout memory into screen-based chunks
 	; With a screen width of 256 pixels, that makes 16 blocks across every "screen",

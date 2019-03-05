@@ -4121,9 +4121,43 @@ PRG004_B405:
 	LDA <Objects_DetStat,X
 	AND #$03
 	BEQ PRG004_B40E	 ; If enemy hasn't hit a wall, jump to PRG004_B40E
+	
+	;enemy has hit wall, if it's an orange cheep, then move it out of the wall by checking x speed etc
+	
+	
 
+	LDA Level_ObjectID,X
+	CMP #OBJ_ORANGECHEEP
+	BNE flipface
+	
+	
+	
+	;here we are an orange cheep, check x speed
+	LDA <Orange_XVel
+	CMP #0
+	BMI movingleft
+	
+	;moving right here:
+	;set speed to 0
+	LDA #0
+	STA <Orange_XVel
+	DEC <Orange_X
+	JMP noflip
+	
+	
+movingleft:
+	;moving left here:
+	;set speed to 0
+	LDA #0
+	STA <Orange_XVel
+	INC <Orange_X
+	JMP noflip
+	
+	
+flipface:
 	JSR Object_FlipFace	 ; Turn around
 
+noflip:
 PRG004_B40E:
 	JMP PRG004_AF1A	 ; (Indirectly) Handle getting bumped underneath
 

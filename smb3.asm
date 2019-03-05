@@ -1,3 +1,15 @@
+Orange_X		= $95
+Orange_Y		= $a7
+Orange_XHi		= $7a
+Orange_YHi		= $8c
+Orange_XVel		= $c2
+Orange_YVel		= $d4
+Orange_In_Air	= $dd
+	
+Pad_Input_2		= $f6
+Pad_Holding_2	= $f8
+
+
 	.inesprg 16  ; 16x 16KB PRG code (32 banks of 8KB)
 	.ineschr 16  ; 16x  8KB CHR data (128 banks of 1KB)
 	.inesmap 4   ; mapper 4 = MMC3, 8KB PRG, 1/2KB CHR bank swapping
