@@ -3713,45 +3713,45 @@ LevelLoad_CopyObjectList:
 	STA Level_Objects,Y	 	; Copy to beginning of Level_Objects array
 	
 	;Try to add another object first..
-	INY
-	LDA #$88 ;OBJECT!!!!!!!!!!!!
-	STA Level_Objects,Y
+	;;;INY
+	;;;LDA #$88 ;OBJECT!!!!!!!!!!!!
+	;;;STA Level_Objects,Y
 
 	; Copy in start column of object (X!)
-	INY
-	LDA <Player_XStart
+	;;;INY
+	;;;LDA <Player_XStart
 	;LDA Level_XStarts
 	
-	LSR A
-	LSR A
-	;LSR A
-	;LSR A
-	ADD #3
+	;;;LSR A
+	;;;LSR A
+	
+	;;;ADD #3
 	;ADD #$01
 	;AND #$f0
 	;LDA #$03
 	;AND #$f0
-	STA Level_Objects,Y
+	;;;STA Level_Objects,Y
 
 	; Copy in start row of object (Y!)
-	INY
+	;;;INY
 	;LDA #$15
-	LDX #0
-	LDA GamePlay_YStart,X
+	;;;LDX #0
+	;;;LDA GamePlay_YStart,X
 	;LDA <Player_Y
 	;ADD #32
 	;SUB #32
-	LSR A
-	LSR A
+	;;;LSR A
+	;;;LSR A
 	;LSR A
 	;LSR A
-	SUB #$04
+	;;;SUB #$04
 	;ADD #1
 	;AND #$f0
-	STA Level_Objects,Y
+	;;;STA Level_Objects,Y
 	
 	LDY #$00
-	LDX #$03
+	;;;LDX #$03
+	LDX #00
 	
 	
 

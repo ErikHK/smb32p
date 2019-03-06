@@ -1,5 +1,6 @@
 	.byte $01	; Unknown purpose
 
+	.byte OBJ_ORANGECHEEP, $04, $14
 	.byte OBJ_AUTOSCROLL, $00, $00
 	.byte OBJ_BONUSCONTROLLER, $01, $2C
 	.byte OBJ_WOODENPLATFORM, $17, $14
