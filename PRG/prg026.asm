@@ -1790,11 +1790,14 @@ PRG026_AA9A:
 	PHA		 ; Save read byte
 	AND #$0f	 ; Get the "X Hi" part of it
 	STA <Player_XHi	 ; Store it!
+	STA <Orange_XHi	 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
 
 	PLA		 ; Restore read byte
 	AND #$f0	 ; Get the X low part
 	ORA #$08	 ; Center it
 	STA <Player_X	 ; Store it!
+	STA <Orange_X	 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	LDA Level_JctYLHStart,X	
 
@@ -1817,6 +1820,7 @@ PRG026_AA9A:
 	LDA <Player_X
 	AND #$f0
 	STA <Player_X
+	STA <Orange_X	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 PRG026_AABD:
 	PLA		 ; Restore Level_JctYLHStart
@@ -1843,10 +1847,12 @@ PRG026_AABD:
 
 	AND #$0f	
 	STA <Player_YHi	 ; Lower 4 bits are the "High" byte
+	STA <Orange_YHi	 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	PLA		 ; Restore 'A'
 	AND #$f0	
 	STA <Player_Y	 ; Upper 4 bits are the "low" byte
+	STA <Orange_Y	 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	LDA LevelJct_VertStarts,Y	 ; Get appropriate vertical start position
 	STA <Vert_Scroll		 ; Store into Vert_Scroll

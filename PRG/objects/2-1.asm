@@ -1,5 +1,6 @@
 	.byte $00	; Unknown purpose
 
+	.byte OBJ_ORANGECHEEP, $04, $19
 	.byte OBJ_PILEDRIVER, $12, $17
 	.byte OBJ_PILEDRIVER, $19, $15
 	.byte OBJ_PILEDRIVER, $1F, $16

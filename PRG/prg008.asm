@@ -350,7 +350,7 @@ PRG008_A17F:
 	ORA Player_SuitLost	; ... just lost his suit ...
 	ORA Player_StarOff	; ... starman is wearing off ...
 	ORA Player_Grow		; ... is growing/shrinking ...
-	;STA Player_HaltGame	; ... means he's halting the gameplay for now
+	STA Player_HaltGame	; ... means he's halting the gameplay for now
 
 	;BNE PRG008_A1C1	 	; And if that's the case, jump to PRG008_A1C1
 
@@ -6788,6 +6788,7 @@ PRG008_BF49:
 
 PRG008_BF65:
 	STA <Pipe_PlayerX	; Update Player_X
+	STA <Orange_X		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	LDA <Player_Y
 	CPX #$06	
@@ -6809,6 +6810,7 @@ PRG008_BF75:
 
 PRG008_BF7E:
 	STA <Pipe_PlayerY ; Set Pipe_PlayerY
+	STA <Orange_Y	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	RTS		 ; Return
 

@@ -2029,6 +2029,41 @@ PRG030_8CDE:
 
 ;8CEC
 OrangeCheep_DoGameplay:
+	;first check if Player_XHi and Orange_XHi is the same:
+	LDA <Player_XHi
+	SUB <Orange_XHi
+	CMP #2
+	BMI continue
+	
+	LDA #5
+	STA <Player_Suit
+	
+	;LDA #1
+	;STA Player_HaltGame
+	;;;JSR Player_Die
+	;LDA #0
+	;STA Event_Countdown
+	;JMP Player_GetHurt
+	
+	
+	;;LDA #$01
+	;;STA <Player_IsDying	 ; Player_IsDying = 1 (superfluous, Player_Die sets it to 1)
+	
+	;LDA #$c0
+	;STA Event_Countdown ; Event_Countdown = $C0
+	;;;LDA #$01
+	;;;STA <Player_IsDying	; Player_IsDying = 1
+	
+	;JSR Player_Die_Dying
+
+	;INC <Level_ExitToMap	; Level_ExitToMap = 1
+
+	;LDA #$01
+	;STA Map_ReturnStatus	 ; Map_ReturnStatus = 1 (Player died, level is not clear)
+
+	
+
+continue:
 	;check if jumping
 	LDA <Pad_Input_2
 	AND #PAD_A

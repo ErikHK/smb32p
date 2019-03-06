@@ -1653,6 +1653,7 @@ Pipe_Move_Down:
 
 	LDA #$30
 	STA <Player_YVel 	; Player_YVel = $30 
+	;STA <Orange_YVel
 
 	JSR Player_ApplyYVelocity ; Apply Player's Y velocity
 	JSR PipeMove_UpDown	 ; Move through pipe vertically
@@ -1664,9 +1665,11 @@ Pipe_Move_Down:
 	STA Player_IsDucking	; Clear ducking flag (since Player pressed down on a pipe, it's incorrectly set)
 	STA Level_PipeMove	; Not moving through a pipe anymore
 	STA <Player_XVel	; Not horizontally moving, period
+	STA <Orange_XVel
 
 	LDA #$38
 	STA <Player_YVel	; Player_IsDucking = $38 (fall out the bottom)
+	;STA <Orange_YVel
 
 PRG029_D50E:
 	RTS		 ; Return
@@ -2239,12 +2242,25 @@ PipeMove_LeftRight:
 
 	; Move Player up/down within pipe
 PipeMove_UpDown:
+	LDA <Player_X
+	STA <Orange_X
+	LDA <Player_Y
+	STA <Orange_Y
+	LDA <Player_YHi
+	STA <Orange_YHi
+	LDA <Player_XHi
+	STA <Orange_XHi
+
 	LDA Level_PipeMove
 	AND #$01	 ; Just determining up or down (see def for Level_PipeMove)
 	TAY		 ; Y = 0 (down) or 1 (up)
 
 	LDA PipeMove_YVel,Y	 	; Get appropriate Y velocity
 	STA <Player_YVel	 	; Set it!
+	
+	;STA <Orange_YVel		; Set Orange_YVel too!!!!!!!!!!!!!!!!!!;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	
+	
 
 	JSR Player_ApplyYVelocity	; Apply Player's Y velocity
 
@@ -2256,6 +2272,7 @@ Player_StopMovement:
 	STA Level_PipeMove	; Not moving through a pipe
 	STA <Player_XVel	; Player stopped horizontall
 	STA <Player_YVel	; Player stopped vertically
+	STA <Orange_YVel
 	STA <Player_InAir	; Not mid-air
 	RTS		 ; Return
 
