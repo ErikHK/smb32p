@@ -2723,10 +2723,13 @@ PRG030_8EE7:
 
 	JSR Player_DoGameplay	 ; Does just about everything that makes the Player in gameplay mode!
 	
-	;LDX #0
-	;LDA Level_ObjectID,X
-	;CMP #OBJ_ORANGECHEEP
-	;BEQ notcheep
+	;make sure first object is an orange cheep!
+	LDX #4
+	LDA Level_ObjectID,X
+	CMP #OBJ_ORANGECHEEP
+	BNE notcheep
+	
+	
 	JSR OrangeCheep_DoGameplay
 notcheep:
 	LDA <Player_IsDying

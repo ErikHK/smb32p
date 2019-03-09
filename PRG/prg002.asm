@@ -3423,7 +3423,7 @@ PRG002_B0B4:
 
 
 Shoe_EjectGoomba:
-	LDX #$04	 
+	LDX #$03	 
 PRG002_B0B7:
 	LDA Objects_State,X
 	BEQ PRG002_B0C1	 ; If this object slot is dead/empty, jump to PRG002_B0C1
@@ -6217,6 +6217,11 @@ PRG002_BF46:
 	LDA #$00	 ; A = 0 (just delete object)
 
 PRG002_BF48:
+
+	;LDA Level_ObjectID,X
+	;CMP #OBJ_ORANGECHEEP
+	;BNE PRG002_BF4B
+	;LDA #$00
 	STA Objects_State,X	 ; Set object state
 
 PRG002_BF4B:

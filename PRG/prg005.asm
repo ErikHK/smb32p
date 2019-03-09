@@ -6315,8 +6315,15 @@ PRG005_BEF8:
 PRG005_BEFC:
 	LDX #$07	 ; X = 7
 PRG005_BEFE:
+	
+	LDA Level_ObjectID,X
+	CMP #OBJ_ORANGECHEEP
+	BEQ dexxx
+	
 	LDA #OBJSTATE_DEADEMPTY
 	STA Objects_State,X	 ; Clear object state
+	
+dexxx:
 	DEX		 ; X--
 	BPL PRG005_BEFE	 ; While X >= 0, loop!
 
