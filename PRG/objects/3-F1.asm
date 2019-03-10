@@ -1,5 +1,6 @@
 	.byte $00	; Unknown purpose
 
+	.byte OBJ_ORANGECHEEP, $04, $17
 	.byte OBJ_ROTODISCCLOCKWISE, $10, $14
 	.byte OBJ_ROTODISCCCLOCKWISE, $19, $15
 	.byte OBJ_DRYBONES, $14, $18

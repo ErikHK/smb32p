@@ -1665,7 +1665,7 @@ Pipe_Move_Down:
 	STA Player_IsDucking	; Clear ducking flag (since Player pressed down on a pipe, it's incorrectly set)
 	STA Level_PipeMove	; Not moving through a pipe anymore
 	STA <Player_XVel	; Not horizontally moving, period
-	STA <Orange_XVel
+	;STA <Orange_XVel
 
 	LDA #$38
 	STA <Player_YVel	; Player_IsDucking = $38 (fall out the bottom)
@@ -2242,6 +2242,11 @@ PipeMove_LeftRight:
 
 	; Move Player up/down within pipe
 PipeMove_UpDown:
+	LDX #4
+	LDA Level_ObjectID, X
+	CMP #OBJ_ORANGECHEEP
+	BNE pipemoove
+	
 	LDA <Player_X
 	STA <Orange_X
 	LDA <Player_Y
@@ -2251,6 +2256,7 @@ PipeMove_UpDown:
 	LDA <Player_XHi
 	STA <Orange_XHi
 
+pipemoove:
 	LDA Level_PipeMove
 	AND #$01	 ; Just determining up or down (see def for Level_PipeMove)
 	TAY		 ; Y = 0 (down) or 1 (up)
@@ -2339,10 +2345,10 @@ PRG029_D7FC:
 
 	;; BEGIN HUGE UNUSED SPACE
 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D80A - $D819
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D81A - $D829
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D82A - $D839
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D83A - $D849
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D80A - $D819
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D81A - $D829
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D82A - $D839
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D83A - $D849
 	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D84A - $D859
 	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D85A - $D869
 	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D86A - $D879

@@ -6788,7 +6788,7 @@ PRG008_BF49:
 
 PRG008_BF65:
 	STA <Pipe_PlayerX	; Update Player_X
-	STA <Orange_X		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;STA <Orange_X		;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	LDA <Player_Y
 	CPX #$06	
@@ -6810,7 +6810,7 @@ PRG008_BF75:
 
 PRG008_BF7E:
 	STA <Pipe_PlayerY ; Set Pipe_PlayerY
-	STA <Orange_Y	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;STA <Orange_Y	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 	RTS		 ; Return
 

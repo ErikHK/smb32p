@@ -1,5 +1,6 @@
 	.byte $01	; Unknown purpose
 
+	.byte OBJ_ORANGECHEEP, $04, $19
 	.byte OBJ_BUSTERBEATLE, $0B, $18
 	.byte OBJ_CHAINCHOMP, $14, $19
 	.byte OBJ_CHAINCHOMP, $1A, $15
