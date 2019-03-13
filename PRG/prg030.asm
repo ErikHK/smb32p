@@ -2018,8 +2018,6 @@ PRG030_8CDE:
 	LDA #MUS2A_BONUSGAME
 	STA Level_MusicQueue
 
-	
-	
 	NOP
 	NOP
 	NOP
@@ -2035,6 +2033,7 @@ OrangeCheep_DoGameplay:
 	CMP #2
 	BMI continue
 	
+	;otherwise kill both!!
 	LDA #5
 	STA <Player_Suit
 	
@@ -2056,10 +2055,10 @@ OrangeCheep_DoGameplay:
 	
 	;JSR Player_Die_Dying
 
-	;INC <Level_ExitToMap	; Level_ExitToMap = 1
+	;;;;;;INC <Level_ExitToMap	; Level_ExitToMap = 1
 
-	;LDA #$01
-	;STA Map_ReturnStatus	 ; Map_ReturnStatus = 1 (Player died, level is not clear)
+	;;;;;;LDA #$01
+	;;;;;;STA Map_ReturnStatus	 ; Map_ReturnStatus = 1 (Player died, level is not clear)
 
 	
 
@@ -2139,6 +2138,10 @@ check_if_holding_right:
 	BMI realend
 	INC <Orange_XVel
 	
+	;set orientation to right:
+	LDA #$40
+	STA $67d
+	
 	JMP realend
 	;LDA <Player_X
 	;STA <Orange_X
@@ -2161,6 +2164,10 @@ not_holding_right:
 	CMP <Orange_XVel ;compare 25 to xvel
 	BPL realend
 	DEC <Orange_XVel
+	
+	;set orientation to right:
+	LDA #$00
+	STA $67d
 	
 	JMP realend
 	
@@ -2240,7 +2247,6 @@ is_moving_right:
 is_moving_left_but_holding_right:
 
 is_moving_right_but_holding_left:
-
 	NOP
 	NOP
 	NOP
@@ -2294,21 +2300,6 @@ is_moving_right_but_holding_left:
 	NOP
 	NOP
 	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	
-	
-	
-	
-	
 	
 	
 	
