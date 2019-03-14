@@ -3952,6 +3952,14 @@ GroundTroop_XVel:
 
 ObjNorm_GroundTroop:
 
+	LDA $58c
+	CMP #0
+	BEQ contttt
+	
+	;if mario is frozen, just return
+	RTS
+
+contttt:
 	LDA Level_ObjectID,X
 	CMP #OBJ_ORANGECHEEP
 	BEQ nodeleteoffscreen

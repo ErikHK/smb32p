@@ -2027,6 +2027,13 @@ PRG030_8CDE:
 
 ;8CEC
 OrangeCheep_DoGameplay:
+	LDA $58c
+	CMP #0
+	BEQ contaa
+
+	RTS
+	
+contaa:
 	;first check if Player_XHi and Orange_XHi is the same:
 	LDA <Player_XHi
 	SUB <Orange_XHi
