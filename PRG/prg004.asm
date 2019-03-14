@@ -3952,12 +3952,12 @@ GroundTroop_XVel:
 
 ObjNorm_GroundTroop:
 
-	LDA $58c
-	CMP #0
-	BEQ contttt
+	;LDA $58c
+	;CMP #0
+	;BEQ contttt
 	
 	;if mario is frozen, just return
-	RTS
+	;RTS
 
 contttt:
 	LDA Level_ObjectID,X
