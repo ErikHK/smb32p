@@ -2137,7 +2137,7 @@ PRG011_2_AB5B:
 	JMP PRG011_2_AB83	 ; Jump to PRG011_2_AB83
 
 PRG011_2_AB62:
-	LDY #Pad_Input_2
+	LDY #Pad_Input
 
 	BIT <Pad_Holding_2
 	BVC PRG011_2_AB83	; If Player is NOT holding 'B', jump to PRG011_2_AB83
@@ -2229,7 +2229,7 @@ PRG011_2_ABB8:
 
 	DEY		 ; Y-- (back one offset, the "normal" rate)
 
-	LDA <Temp_Var3	 
+	LDA <Temp_Var3
 	CMP <Temp_Var14	 
 	BEQ PRG011_2_AC01	 ; If Player's current X velocity magnitude is the same as the selected top speed, jump to PRG011_2_AC01 (RTS)
 	BMI PRG011_2_ABCD	 ; If it's less, then jump to PRG011_2_AC01
@@ -2256,7 +2256,7 @@ PRG011_2_ABD3:
 
 	; Player moving leftward
 
-	LDA #$00	 
+	LDA #$00
 	SUB Player_XAccelPseudoFrac,Y ; Negate value from Player_XAccelPseudoFrac[Y]
 	STA <Temp_Var1	  ; -> Temp_Var1
 
@@ -2322,17 +2322,20 @@ slut:
 OrangeCheep_DoGameplay:
 	JSR Orange_PowerUpdate
 	JSR Orange_SetMoveLR
-	JSR Orange_GroundHControl
 	
+	
+	;BUGGFIX!!
+	LDA $58c
+	CMP #0
+	BEQ contaa
+
 	RTS
 	
-	;;;LDA $58c
-	;;;CMP #0
-	;;;BEQ contaa
-
-	;;;RTS
-	
 contaa:
+	
+	JSR Orange_GroundHControl
+
+
 	;first check if Player_XHi and Orange_XHi is the same:
 	;;;LDA <Player_XHi
 	;;;SUB <Orange_XHi
@@ -2430,11 +2433,11 @@ add_to_y_speed:
 	
 	
 check_if_holding_right:
-	LDA <Pad_Holding_2
-	AND #(PAD_LEFT | PAD_RIGHT)
-	BEQ not_holding_left_nor_right
-	AND #PAD_RIGHT
-	BEQ not_holding_right
+	;;;LDA <Pad_Holding_2
+	;;;AND #(PAD_LEFT | PAD_RIGHT)
+	;;;BEQ not_holding_left_nor_right
+	;;;AND #PAD_RIGHT
+	;;;BEQ not_holding_right
 	
 
 	;holding right, then move right
