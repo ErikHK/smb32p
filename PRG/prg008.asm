@@ -506,6 +506,8 @@ PRG008_A242:
 	; Max "Power"
 	LDA #$7f	
 	STA Player_Power ; Player_Power = $7F
+	
+	STA Orange_Power
 
 	; Infinite flight time
 	LDA #$ff

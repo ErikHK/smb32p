@@ -2049,7 +2049,6 @@ PRG011_2_A4D5:
 	STY Orange_Power ; Otherwise, clear Orange_Power
 
 
-
 PRG011_2_A4E4:
 	LDA Orange_Power
 	CMP #$7f
@@ -2104,7 +2103,7 @@ PRG011_2_A523:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Orange_GroundHControl
 ;
-; Routine to control based on Player's left/right pad input (not
+; Routine to control based on Orange's left/right pad input (not
 ; underwater); configures walking/running
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; Table of values that have to do with Orange_UphillSpeedIdx override
@@ -2210,7 +2209,8 @@ PRG011_2_ABA6:
 	; Player not pressing LEFT/RIGHT...
 
 	LDA <Orange_In_Air
-	BNE PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01 (RTS)
+	;BNE PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01 (RTS)
+	BEQ PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01 (RTS)
 
 	LDA <Orange_XVel
 	BEQ PRG011_2_AC01	 ; If Player is not moving horizontally, jump to PRG011_2_AC01 (RTS)
@@ -2235,7 +2235,8 @@ PRG011_2_ABB8:
 	BMI PRG011_2_ABCD	 ; If it's less, then jump to PRG011_2_AC01
 
 	LDA <Orange_In_Air
-	BNE PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01
+	;BNE PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01
+	BEQ PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01
 
 	DEY		 ; Y-- (back one offset, the "friction" stopping rate)
 
