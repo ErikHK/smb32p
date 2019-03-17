@@ -1703,7 +1703,7 @@ CHNGTILE_GIANTBRICKFIX	= $18	; Giant World brick restore (small Mario hit giant 
 	Level_CoinHeav:		.ds 1	; Enter coin heaven when set $80; Increments; at $D0, "soft jump" arrival; terminates at wrap to $00
 
 	Player_MoveLR:		.ds 1	; 0 - Not moving left/right, 1 - Moving left, 2 - Moving right (reversed from the pad input)
-	;Orange_MoveLR:		.ds 1
+	
 
 	Player_WalkAnimTicks:	.ds 1	; Ticks between animation frames of walking; max value varies by Player's X velocity
 
@@ -1816,6 +1816,8 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 	; cope with this behavior utilize AScrlURDiag_WrapState_Copy to stay in sync.
 	AScrlURDiag_WrapState_Copy:	.ds 1	; Copy of AScrlURDiag_WrapState
 	AScrlURDiag_WrapState:		.ds 1
+	
+	Orange_MoveLR:		.ds 1
 
 	; ASSEMBLER BOUNDARY CHECK, END OF $0600
 .BoundGame_0600:	BoundCheck .BoundGame_0600, $0604, $05xx Gameplay context

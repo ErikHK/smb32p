@@ -2146,8 +2146,9 @@ PRG011_2_AB62:
 	; Player is holding B...
 
 	LDA <Orange_In_Air
-	ORA Player_Slide
-	BNE PRG011_2_AB78	 ; If Player is mid air or sliding, jump to PRG011_2_AB78
+	;;;ORA Player_Slide
+	;;;BNE PRG011_2_AB78	 ; If Player is mid air or sliding, jump to PRG011_2_AB78
+	BEQ PRG011_2_AB78	 ; If Player is mid air or sliding, jump to PRG011_2_AB78
 
 	LDA <Temp_Var3
 	CMP #PLAYER_TOPRUNSPEED
@@ -2223,7 +2224,7 @@ PRG011_2_ABB8:
 	INY
 	INY		 ; Y += 2 (offset 2 within Player_XAccel* tables, the "skid" rate)
 
-	AND Player_MoveLR
+	AND Orange_MoveLR
 	BNE PRG011_2_ABCD	  ; If Player suddenly reversed direction, jump to PRG011_2_ABCD
 
 	DEY		 ; Y-- (back one offset, the "normal" rate)
@@ -2290,33 +2291,56 @@ PRG011_2_ABF5:
 PRG011_2_AC01:
 	RTS		 ; Return
 
+
+
+
+Orange_SetMoveLR:
+	LDA <Orange_XVel
+	CMP #0
+	BEQ set_zero
+	BMI set_one
+	BPL set_two
 	
+set_zero:
+	LDA #0
+	JMP slut
+set_one:
+	LDA #1
+	JMP slut
+
+set_two:
+	LDA #2
+
+slut:
+	STA Orange_MoveLR
+	RTS
 	
 	
 
 ;8CEC
 OrangeCheep_DoGameplay:
 	JSR Orange_PowerUpdate
+	JSR Orange_SetMoveLR
 	JSR Orange_GroundHControl
 	
 	RTS
 	
-	LDA $58c
-	CMP #0
-	BEQ contaa
+	;;;LDA $58c
+	;;;CMP #0
+	;;;BEQ contaa
 
-	RTS
+	;;;RTS
 	
 contaa:
 	;first check if Player_XHi and Orange_XHi is the same:
-	LDA <Player_XHi
-	SUB <Orange_XHi
-	CMP #2
-	BMI continue
+	;;;LDA <Player_XHi
+	;;;SUB <Orange_XHi
+	;;;CMP #2
+	;;;BMI continue
 	
 	;otherwise kill both!!
-	LDA #5
-	STA <Player_Suit
+	;;;LDA #5
+	;;;STA <Player_Suit
 	
 	;LDA #1
 	;STA Player_HaltGame
