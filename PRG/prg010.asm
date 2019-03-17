@@ -911,7 +911,8 @@ Map_DoOperation:
 	.word MO_Wait14Ticks	; 6 - Loads 14 ticks and wait for it
 	.word MO_DoLevelClear	; 7 - Do level completion effect
 	.word MO_DoFortressFX	; 8 - If any Poof-then-Fortress effect (e.g. busting a lock) to do, do it!
-	.word MO_CheckForBonus	; 9 - Check for any map bonuses to appear (White Toad House, Coin Ship)
+	;.word MO_CheckForBonus	; 9 - Check for any map bonuses to appear (White Toad House, Coin Ship)
+	.word MO_DoFortressFX
 	.word MO_Wait14Ticks	; A - Loads 14 ticks and wait for it
 	.word MO_HammerBroMarch	; B - Map Hammer brother march around (mostly handled elsewhere instead of this state routine)
 	.word MO_Wait8Proceed	; C - After 8 ticks, resume normal operations (if 1P game or didn't end turn), or else go to state $0F

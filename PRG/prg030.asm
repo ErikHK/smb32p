@@ -1990,7 +1990,7 @@ PRG030_8CDE:
 
 	LDA #$04
 	STA BonusText_CharPause	; BonusText_CharPause = $04
-	STA Bonus_UnusedFlag	; Bonus_UnusedFlag = $04
+	;STA Bonus_UnusedFlag	; Bonus_UnusedFlag = $04
 
 	; Set text VRAM pointer to $28C5
 	LDA #$28
@@ -2018,15 +2018,289 @@ PRG030_8CDE:
 	LDA #MUS2A_BONUSGAME
 	STA Level_MusicQueue
 
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
+
+	
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Orange_PowerUpdate
+;
+; Handles updating the "Power Meter" as appropriate,
+; and plays the annoying "ringing" noise :)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Orange_PowerUpdate:
+	LDY Orange_FlyTime	 
+	BEQ PRG011_2_A4E4	 ; If Player is not flying (or at least high-speed jumping), jump to PRG011_2_A4E4
+
+	LDA <Counter_1
+	AND #$01
+	BEQ PRG011_2_A4D5	 ; Every other tick, jump to PRG011_2_A4D5
+
+	DEY			 
+	STY Orange_FlyTime ; Orange_FlyTime--
+
+PRG011_2_A4D5:
+	TYA		 ; Y (Orange_FlyTime) -> A 
+
+	STY Orange_Power ; Otherwise, clear Orange_Power
+
+
+
+PRG011_2_A4E4:
+	LDA Orange_Power
+	CMP #$7f
+	BNE PRG011_2_A4F8	 ; If Orange_Power <> $7F (max power), jump to PRG011_2_A4F8
+
+	LDA Orange_RunFlag
+	BEQ PRG011_2_A4F8	 ; If Player is not running, jump to PRG011_2_A4F8
+
+	LDY #$10	 ; Y = $10
+	JMP PRG011_2_A51A	 ; Jump to PRG011_2_A51A
+
+PRG011_2_A4F8:
+	LDA Orange_PMeterCnt
+	BNE PRG011_2_A523	 ; If Orange_PMeterCnt <> 0, jump to PRG011_2_A523
+
+	SEC		 ; Set carry
+	ROL Orange_Power ; Orange_Power is shifted left 1, its old bit 7 in the carry, and '1' introduced at bit 0
+
+	LDA Orange_RunFlag
+	BNE PRG011_2_A50C	 ; If Player is running, jump to PRG011_2_A50C
+
+	ROR Orange_Power ; Restore Orange_Power
+	LSR Orange_Power ; Shift it 1 to the right
+
+PRG011_2_A50C:
+	LDY #$18	 ; Y = $18
+
+	LDA Orange_Power
+	BEQ PRG011_2_A520	 ; If Orange_Power = 0, jump to PRG011_2_A520
+
+	LDA Orange_RunFlag
+	BEQ PRG011_2_A51A	 ; If Player is not running, jump to PRG011_2_A51A
+
+	LDY #$08	 ; Otherwise, Y = $8
+
+PRG011_2_A51A:
+	STY Orange_PMeterCnt	 ; Set Orange_PMeterCnt
+
+	JMP PRG011_2_A523	 ; Jump to PRG011_2_A523
+
+PRG011_2_A520:
+	STA Orange_FlyTime ; Clear Orange_FlyTime
+
+PRG011_2_A523:
+
+	LDA #$00
+	STA Orange_RunFlag ; Orange_RunFlag = 0
+
+	RTS		 ; Return
+	
+	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Orange_GroundHControl
+;
+; Routine to control based on Player's left/right pad input (not
+; underwater); configures walking/running
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	; Table of values that have to do with Orange_UphillSpeedIdx override
+Orange_UphillSpeedVals:
+	.byte $00, $16, $15, $14, $13, $12, $11, $10, $0F, $0E, $0D
+
+Orange_GroundHControl:
+	LDA Player_UphillFlag
+	BEQ PRG011_2_AB56	 ; If Player is not going up hill, jump to PRG011_2_AB56
+
+	;INC Player_WalkAnimTicks	; Player_WalkAnimTicks++
+
+	LDY #10	 ; Y = 10 (Player NOT holding B)
+
+	BIT <Pad_Holding_2
+	BVC PRG011_2_AB5B	 ; If Player is NOT holding 'B', jump to PRG011_2_AB5B
+
+	LDY #1	 ; Y = 1 (Player holding B)
+	BNE PRG011_2_AB5B	 ; Jump (technically always) to PRG011_2_AB5B
+
+PRG011_2_AB56:
+
+	; Use override value
+	
+	LDY Player_UphillSpeedIdx	 ; Y = Player_UphillSpeedIdx
+	BEQ PRG011_2_AB62	 ; If Player_UphillSpeedIdx = 0 (not walking uphill), jump to PRG011_2_AB62
+
+PRG011_2_AB5B:
+	LDA Player_UphillSpeedVals,Y	 ; Get uphill speed value
+	TAY		 	; -> Y
+	JMP PRG011_2_AB83	 ; Jump to PRG011_2_AB83
+
+PRG011_2_AB62:
+	LDY #Pad_Input_2
+
+	BIT <Pad_Holding_2
+	BVC PRG011_2_AB83	; If Player is NOT holding 'B', jump to PRG011_2_AB83
+
+	; Player is holding B...
+
+	LDA <Orange_In_Air
+	ORA Player_Slide
+	BNE PRG011_2_AB78	 ; If Player is mid air or sliding, jump to PRG011_2_AB78
+
+	LDA <Temp_Var3
+	CMP #PLAYER_TOPRUNSPEED
+	BMI PRG011_2_AB78	 ; If Player's X Velocity magnitude is less than PLAYER_TOPRUNSPEED, jump to PRG011_2_AB78
+
+	; Player is going fast enough while holding B on the ground; flag running!
+	INC Orange_RunFlag ; Orange_RunFlag = 1
+
+PRG011_2_AB78:
+	; Start with top run speed
+	LDY #PLAYER_TOPRUNSPEED ; Y = PLAYER_TOPRUNSPEED
+
+	LDA Orange_Power
+	CMP #$7f
+	BNE PRG011_2_AB83	 ; If Player has not hit full power, jump to PRG011_2_AB83
+
+	; Otherwise, top power speed
+	LDY #PLAYER_TOPPOWERSPEED	 ; Y = PLAYER_TOPPOWERSPEED
+
+PRG011_2_AB83:
+	STY <Temp_Var14	 ; Store top speed -> Temp_Var14
+
+	LDY Player_Slippery
+	BEQ PRG011_2_AB98	 ; If ground is not slippery at all, jump to PRG011_2_AB98
+
+	;INC Player_WalkAnimTicks ; Player_WalkAnimTicks++
+
+	DEY
+	TYA
+	ASL A
+	ASL A
+	ASL A
+	ADD #$40
+	TAY		 ; Y = ((selected top speed - 1) << 3) + $40 ??
+	BNE PRG011_2_AB9E	 ; And as long as that's not zero, jump to PRG011_2_AB9E
+
+PRG011_2_AB98:
+	LDA <Player_Suit
+	ASL A
+	ASL A
+	ASL A
+	TAY		 ; Y = Player_Suit << 3
+
+PRG011_2_AB9E:
+	BIT <Pad_Holding_2
+	BVC PRG011_2_ABA6	 ; If Player is NOT pressing 'B', jump to PRG011_2_ABA6
+
+	; Otherwise...
+	INY
+	INY
+	INY
+	INY	; Y += 4 (offset 4 inside Player_XAccel* tables)
+
+PRG011_2_ABA6:
+	LDA <Pad_Holding_2
+	AND #(PAD_LEFT | PAD_RIGHT)
+	BNE PRG011_2_ABB8	 ; If Player is pressing LEFT or RIGHT, jump to PRG011_2_ABB8
+
+	; Player not pressing LEFT/RIGHT...
+
+	LDA <Orange_In_Air
+	BNE PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01 (RTS)
+
+	LDA <Orange_XVel
+	BEQ PRG011_2_AC01	 ; If Player is not moving horizontally, jump to PRG011_2_AC01 (RTS)
+	BMI PRG011_2_ABD3	 ; If Player is moving leftward, jump to PRG011_2_ABD3
+	BPL PRG011_2_ABEB	 ; If Player is moving rightward, jump to PRG011_2_ABEB
+
+PRG011_2_ABB8:
+
+	; Player is pressing left/right...
+
+	INY
+	INY		 ; Y += 2 (offset 2 within Player_XAccel* tables, the "skid" rate)
+
+	AND Player_MoveLR
+	BNE PRG011_2_ABCD	  ; If Player suddenly reversed direction, jump to PRG011_2_ABCD
+
+	DEY		 ; Y-- (back one offset, the "normal" rate)
+
+	LDA <Temp_Var3	 
+	CMP <Temp_Var14	 
+	BEQ PRG011_2_AC01	 ; If Player's current X velocity magnitude is the same as the selected top speed, jump to PRG011_2_AC01 (RTS)
+	BMI PRG011_2_ABCD	 ; If it's less, then jump to PRG011_2_AC01
+
+	LDA <Orange_In_Air
+	BNE PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01
+
+	DEY		 ; Y-- (back one offset, the "friction" stopping rate)
+
+PRG011_2_ABCD:
+
+	; At this point, 'Y' contains the current power-up in bits 7-3, 
+	; bit 2 is set if Player pressed B, bit 1 is set if the above
+	; block was jumped, otherwise bit 0 is set if the X velocity is
+	; less than the specified maximum, clear if over the max
+
+
+	LDA <Pad_Holding_2
+	AND #PAD_RIGHT
+	BNE PRG011_2_ABEB	 ; If Player is holding RIGHT, jump to PRG011_2_ABEB (moving rightward code)
+
+PRG011_2_ABD3:
+
+	; Player moving leftward
+
+	LDA #$00	 
+	SUB Player_XAccelPseudoFrac,Y ; Negate value from Player_XAccelPseudoFrac[Y]
+	STA <Temp_Var1	  ; -> Temp_Var1
+
+	LDA Player_XAccelMain,Y ; Get Player_XAccelMain[Y]
+	EOR #$ff	 ; Negate it (sort of)
+	STA <Temp_Var2	 ; -> Temp_Var2
+
+	LDA <Temp_Var1
+	BNE PRG011_2_ABF5	 ; If Temp_Var1 <> 0, jump to PRG011_2_ABF5
+
+	INC <Temp_Var2	 ; Otherwise, Temp_Var2++
+	JMP PRG011_2_ABF5	 ; Jump to PRG011_2_ABF5
+
+PRG011_2_ABEB:
+
+	; Player moving rightward
+
+	LDA Player_XAccelPseudoFrac,Y ; Get value from Player_XAccelPseudoFrac[Y]
+	STA <Temp_Var1	  ; -> Temp_Var1
+
+	LDA Player_XAccelMain,Y ; Get value from Player_XAccelMain[Y]
+	STA <Temp_Var2	  ; -> Temp_Var2
+
+PRG011_2_ABF5: 
+	LDA <Temp_Var1
+	ADD Counter_Wiggly	; actual value not used, looking for a semi-random carry
+
+	LDA <Orange_XVel
+	ADC <Temp_Var2
+	STA <Orange_XVel	; Orange_XVel += Temp_Var2 (and sometimes carry)
+	;STA $95
+
+PRG011_2_AC01:
+	RTS		 ; Return
+
+	
+	
+	
 
 ;8CEC
 OrangeCheep_DoGameplay:
+	JSR Orange_PowerUpdate
+	JSR Orange_GroundHControl
+	
+	RTS
+	
 	LDA $58c
 	CMP #0
 	BEQ contaa
@@ -2143,7 +2417,7 @@ check_if_holding_right:
 	;STY <Orange_XVel
 	CMP <Orange_XVel ;compare 25 to xvel
 	BMI realend
-	INC <Orange_XVel
+	;;;INC <Orange_XVel
 	
 	;set orientation to right:
 	LDA #$40
@@ -2170,7 +2444,7 @@ not_holding_right:
 	;STY <Orange_XVel
 	CMP <Orange_XVel ;compare 25 to xvel
 	BPL realend
-	DEC <Orange_XVel
+	;;;DEC <Orange_XVel
 	
 	;set orientation to right:
 	LDA #$00
@@ -2214,7 +2488,7 @@ checkzero:
 	JMP trueend
 after:
 	LDY #0
-	STY <Orange_XVel
+	;STY <Orange_XVel
 	JMP trueend
 	
 not_holding_left_nor_right:
@@ -2225,7 +2499,7 @@ not_holding_left_nor_right:
 	BMI is_moving_left
 afters:
 	LDY #0
-	STY <Orange_XVel
+	;STY <Orange_XVel
 	JMP realend
 
 ;is moving left, but not holding left, i.e. decelerate to zero please
@@ -2236,8 +2510,8 @@ is_moving_left:
 	CMP #0
 	BEQ checkzero
 	;STY <Orange_XVel
-	INC <Orange_XVel
-	INC <Orange_XVel
+	;;;INC <Orange_XVel
+	;;;INC <Orange_XVel
 	;INC <Orange_XVel
 	JMP checkzero
 ;is moving right, but not holding right, i.e. decelerate to zero speed please
@@ -2246,233 +2520,179 @@ is_moving_right:
 	CMP #0
 	BEQ checkzero
 	;STY <Orange_XVel
-	DEC <Orange_XVel
-	DEC <Orange_XVel
+	;;;DEC <Orange_XVel
+	;;;DEC <Orange_XVel
 	;DEC <Orange_XVel	
 	JMP checkzero
 
 is_moving_left_but_holding_right:
 
 is_moving_right_but_holding_left:
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	NOP
-	
 	
 	
 	; The Bonus Game Loop begins here...
 
-BonusGame_Loop:
-	JSR GraphicsBuf_Prep_And_WaitVSync	 ; Wait for VSync
+; BonusGame_Loop:
+	; JSR GraphicsBuf_Prep_And_WaitVSync	 ; Wait for VSync
 
-	LDA SndCur_Map
-	AND #SND_MAPENTERLEVEL
-	BNE PRG030_8D23	 ; If the "entering" sound is still playing, jump to PRG030_8D23
+	; LDA SndCur_Map
+	; AND #SND_MAPENTERLEVEL
+	; BNE PRG030_8D23	 ; If the "entering" sound is still playing, jump to PRG030_8D23
 
-	LDA Level_MusicQueue
-	BEQ PRG030_8D23	 ; If nothing is in the music queue, jump to PRG030_8D23
+	; LDA Level_MusicQueue
+	; BEQ PRG030_8D23	 ; If nothing is in the music queue, jump to PRG030_8D23
 
-	; Start the queued music
-	STA Sound_QMusic2
+	; ; Start the queued music
+	; STA Sound_QMusic2
 
-	; Clear the music queue
-	LDA #$00
-	STA Level_MusicQueue
+	; ; Clear the music queue
+	; LDA #$00
+	; STA Level_MusicQueue
 
-PRG030_8D23:
-	JSR BonusGame_Do	 ; Run the Bonus Game
-	JSR StatusBar_Fill_Score ; Update score
+; PRG030_8D23:
+	; JSR BonusGame_Do	 ; Run the Bonus Game
+	; JSR StatusBar_Fill_Score ; Update score
 
-	LDA <Level_ExitToMap
-	BEQ BonusGame_Loop	 ; If Level_ExitToMap = 0, loop!!
+	; LDA <Level_ExitToMap
+	; ;;BEQ BonusGame_Loop	 ; If Level_ExitToMap = 0, loop!!
 
-	; Exiting the Bonus Game loop...
+	; ; Exiting the Bonus Game loop...
 
-	LDA #%00101000	 	; use 8x16 sprites, sprites use PT2 (NOTE: No VBlank trigger!)
-	STA PPU_CTL1	 	
-	STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync!
+	; LDA #%00101000	 	; use 8x16 sprites, sprites use PT2 (NOTE: No VBlank trigger!)
+	; STA PPU_CTL1	 	
+	; STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync!
 
-	LDA Bonus_GameType
-	CMP #BONUS_UNUSED_DDDD
-	BNE PRG030_8D43	 ; If Bonus_GameType <> BONUS_UNUSED_DDDD (??!), jump to PRG030_8D43
+	; LDA Bonus_GameType
+	; CMP #BONUS_UNUSED_DDDD
+	; BNE PRG030_8D43	 ; If Bonus_GameType <> BONUS_UNUSED_DDDD (??!), jump to PRG030_8D43
 
-	; BONUS_UNUSED_DDDD (??!) only...
+	; ; BONUS_UNUSED_DDDD (??!) only...
 
-	; Set Bonus_DDDD = 1 (??)
-	LDA #$01
-	STA Bonus_DDDD
+	; ; Set Bonus_DDDD = 1 (??)
+	; LDA #$01
+	; STA Bonus_DDDD
 
-	JMP PRG030_8D4A	 ; Jump to PRG030_8D4A
+	; JMP PRG030_8D4A	 ; Jump to PRG030_8D4A
 
-PRG030_8D43:
-	CMP #BONUS_UNUSED_2RETURN
-	BNE PRG030_8D4A	 ; If Bonus_GameType <> BONUS_UNUSED_2RETURN (??!), jump to PRG030_8D4A
+; PRG030_8D43:
+	; CMP #BONUS_UNUSED_2RETURN
+	; BNE PRG030_8D4A	 ; If Bonus_GameType <> BONUS_UNUSED_2RETURN (??!), jump to PRG030_8D4A
 
-	; BONUS_UNUSED_2RETURN (??!) only...
+	; ; BONUS_UNUSED_2RETURN (??!) only...
 
-	JSR Bonus_Return2_SetMapPos	; Change Player's map position and mark them as having died??
+	; JSR Bonus_Return2_SetMapPos	; Change Player's map position and mark them as having died??
 
-PRG030_8D4A:
-	; BonusText_CPos = 0
-	LDA #$00
-	STA BonusText_CPos
-	STA Bonus_UnusedFlag	 ; Bonus_UnusedFlag = 0
+; PRG030_8D4A:
+	; ; BonusText_CPos = 0
+	; LDA #$00
+	; STA BonusText_CPos
+	; STA Bonus_UnusedFlag	 ; Bonus_UnusedFlag = 0
 
-	; Set page @ A000 to 26
-	LDA #26
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
+	; ; Set page @ A000 to 26
+	; LDA #26
+	; STA PAGE_A000
+	; JSR PRGROM_Change_A000
 
-	JSR Palette_FadeOut	 		; Fade out
+	; JSR Palette_FadeOut	 		; Fade out
 
-	LDA #%00011000
-	STA <PPU_CTL2_Copy	; Show BG+Sprites
+	; LDA #%00011000
+	; STA <PPU_CTL2_Copy	; Show BG+Sprites
 
-	JSR GraphicsBuf_Prep_And_WaitVSync	 ; Wait for vertical sync
+	; JSR GraphicsBuf_Prep_And_WaitVSync	 ; Wait for vertical sync
 
-	LDA #$00
-	STA PPU_CTL2	 ; Most importantly, hide sprites/bg
+	; LDA #$00
+	; STA PPU_CTL2	 ; Most importantly, hide sprites/bg
 
-	; NOTE: This jumps to PRG030_8DC3, which returns to World Map, if the die is face value 1.
-	; Seems like the die face logic for jumping to "Roulette" / "Card" is not implemented.
-	LDA Bonus_DieCnt
-	BEQ PRG030_8DC3	 ; If Bonus_DieCnt = 0 (Face value 1), jump to PRG030_8DC3
+	; ; NOTE: This jumps to PRG030_8DC3, which returns to World Map, if the die is face value 1.
+	; ; Seems like the die face logic for jumping to "Roulette" / "Card" is not implemented.
+	; LDA Bonus_DieCnt
+	; BEQ PRG030_8DC3	 ; If Bonus_DieCnt = 0 (Face value 1), jump to PRG030_8DC3
 
-	LDY #$00	 ; Level tileset 0 (World Map)
+	; LDY #$00	 ; Level tileset 0 (World Map)
 
-	LDA Bonus_GameType
-	CMP #BONUS_SPADE
-	BNE PRG030_8D85	 ; If Bonus_GameType <> BONUS_SPADE, jump to PRG030_8D85
+	; LDA Bonus_GameType
+	; CMP #BONUS_SPADE
+	; BNE PRG030_8D85	 ; If Bonus_GameType <> BONUS_SPADE, jump to PRG030_8D85
 
-	; Select palettes
-	LDA #$01
-	STA PalSel_Tile_Colors
-	LDA #$09
-	STA PalSel_Obj_Colors
+	; ; Select palettes
+	; LDA #$01
+	; STA PalSel_Tile_Colors
+	; LDA #$09
+	; STA PalSel_Obj_Colors
 
-	LDY #16		; Level tileset 16 (Spade)
+	; LDY #16		; Level tileset 16 (Spade)
 
-	BNE PRG030_8D95	 ; Jump (technically always) to PRG030_8D95
+	; BNE PRG030_8D95	 ; Jump (technically always) to PRG030_8D95
 
-PRG030_8D85:
-	CMP #BONUS_NSPADE
-	BNE PRG030_8D95	 ; If Bonus_GameType <> BONUS_NSPADE, jump to PRG030_8D95
+; PRG030_8D85:
+	; CMP #BONUS_NSPADE
+	; BNE PRG030_8D95	 ; If Bonus_GameType <> BONUS_NSPADE, jump to PRG030_8D95
 
-	; Select palettes
-	LDA #$02
-	STA PalSel_Tile_Colors
-	LDA #$0a
-	STA PalSel_Obj_Colors
+	; ; Select palettes
+	; LDA #$02
+	; STA PalSel_Tile_Colors
+	; LDA #$0a
+	; STA PalSel_Obj_Colors
 
-	LDY #17		; Level tileset 17 (N-Spade)
+	; LDY #17		; Level tileset 17 (N-Spade)
 
-PRG030_8D95:
-	STY Level_Tileset	; Update Level_Tileset
-	STY Level_BG_Page1_2	; Use proper BG patterns
+; PRG030_8D95:
+	; STY Level_Tileset	; Update Level_Tileset
+	; STY Level_BG_Page1_2	; Use proper BG patterns
 
-	CPY #$00
-	BEQ PRG030_8DC3	 ; If tileset = 0 (exit back to world map :(), jump to PRG030_8DC3
-
-
-	; About to enter Spade / N-Spade game!
-
-	; Stop Update_Select activity temporarily
-	INC UpdSel_Disable
-
-	; A little cleanup loop...
-
-	; Clears page 0 addresses $00-$FD, excluding $69-$74 (?)
-
-	LDY #$fd	 ; Y = $FD
-	LDA #$00	 ; A = 0
-PRG030_BDA6:
-	STA Temp_Var1,Y	 ; Clear this byte
-
-PRG030_BDA9:
-	DEY		 ; Y--
-
-	CPY #World_Map_Y
-	BGE PRG030_8DB2	 ; If Y >= World_Map_Y, jump to PRG030_8DB2
-
-	; Range between $69-$74 is not cleared ... mainly protecting sound engine I think
-
-	CPY #Video_Upd_AddrL
-	BGE PRG030_BDA9	 ; If Y >= Video_Upd_AddrL, jump to PRG030_BDA9
-PRG030_8DB2: 
-	CPY #$ff
-	BNE PRG030_BDA6	 ; If Y <> $FF (underflow), loop!
+	; CPY #$00
+	; BEQ PRG030_8DC3	 ; If tileset = 0 (exit back to world map :(), jump to PRG030_8DC3
 
 
-	; Clears memory $0400-$04CF (mainly Bonus game cleanup)
-	LDY #$cf	 ; Y = $CF
-PRG030_8DB8:
-	STA Roulette_Pos,Y	; Clear this byte
+	; ; About to enter Spade / N-Spade game!
 
-	DEY		 ; Y--
-	CPY #$ff
-	BNE PRG030_8DB8	 ; If Y <> $FF (underflow), loop!
+	; ; Stop Update_Select activity temporarily
+	; INC UpdSel_Disable
 
-	JMP PRG030_897B	 ; Jump to PRG030_897B
+	; ; A little cleanup loop...
 
-PRG030_8DC3:
+	; ; Clears page 0 addresses $00-$FD, excluding $69-$74 (?)
 
-	; Exiting to world map...
+	; LDY #$fd	 ; Y = $FD
+	; LDA #$00	 ; A = 0
+; PRG030_BDA6:
+	; STA Temp_Var1,Y	 ; Clear this byte
 
-	; Bonus_DieCnt = 0
-	LDA #$00
-	STA Bonus_DieCnt
+; PRG030_BDA9:
+	; DEY		 ; Y--
 
-	JMP PRG030_8FA8	; Jump to PRG030_8FA8 (proceed back to World Map)
+	; CPY #World_Map_Y
+	; BGE PRG030_8DB2	 ; If Y >= World_Map_Y, jump to PRG030_8DB2
+
+	; ; Range between $69-$74 is not cleared ... mainly protecting sound engine I think
+
+	; CPY #Video_Upd_AddrL
+	; BGE PRG030_BDA9	 ; If Y >= Video_Upd_AddrL, jump to PRG030_BDA9
+; PRG030_8DB2: 
+	; CPY #$ff
+	; BNE PRG030_BDA6	 ; If Y <> $FF (underflow), loop!
+
+
+	; ; Clears memory $0400-$04CF (mainly Bonus game cleanup)
+	; LDY #$cf	 ; Y = $CF
+; PRG030_8DB8:
+	; STA Roulette_Pos,Y	; Clear this byte
+
+	; DEY		 ; Y--
+	; CPY #$ff
+	; BNE PRG030_8DB8	 ; If Y <> $FF (underflow), loop!
+
+	; JMP PRG030_897B	 ; Jump to PRG030_897B
+
+; PRG030_8DC3:
+
+	; ; Exiting to world map...
+
+	; ; Bonus_DieCnt = 0
+	; LDA #$00
+	; STA Bonus_DieCnt
+
+	; JMP PRG030_8FA8	; Jump to PRG030_8FA8 (proceed back to World Map)
 
 PRG030_8DCB:
 	LDY Level_Tileset
@@ -2630,10 +2850,7 @@ PRG030_8E79:
 	; When game is paused...
 
 	; Wow, what the heck did they remove here??
-	NOP
-	NOP
-	NOP
-	NOP
+	
 
 	LDA #$32
 	STA PatTable_BankSel+5	; Set patterns needed for P A U S E sprites
@@ -2841,8 +3058,8 @@ PRG030_8F85:
 	LDX Player_Current	 ; X = Player_Current
 
 	; Map_Unused749 = 1 (just set here, never read back)
-	LDA #$01
-	STA Map_Unused749,X
+	;LDA #$01
+	;STA Map_Unused749,X
 
 	; Switch bank A000 to page 26
 	LDA #26
@@ -3214,8 +3431,8 @@ PRG030_9185:
 	STA <World_Map_XHi,X
 	LDA Map_Entered_X,X
 	STA <World_Map_X,X
-	LDA Map_Previous_UnusedPVal2,X
-	STA <Map_UnusedPlayerVal2,X
+	;LDA Map_Previous_UnusedPVal2,X
+	;STA <Map_UnusedPlayerVal2,X
 
 	; Set Player's previous travel direction
 	LDA Map_Previous_Dir,X
@@ -3438,8 +3655,8 @@ PRG030_92B6:
 	STA Map_Entered_XHi,X
 	LDA <World_Map_X,X
 	STA Map_Entered_X,X
-	LDA <Map_UnusedPlayerVal2,X
-	STA Map_Previous_UnusedPVal2,X
+	;LDA <Map_UnusedPlayerVal2,X
+	;STA Map_Previous_UnusedPVal2,X
 
 	; Reset map variables
 	LDA #$00
@@ -4942,6 +5159,16 @@ Level_RecordBlockHit:
 	; Temp_Var13 / Temp_Var14 -- Y Hi and Lo
 	; Temp_Var15 / Temp_Var16 -- X Hi and Lo
 	; ... of Player detection coordinates
+	
+	; LDA <Player_YHi
+	; STA <Temp_Var13
+	; LDA <Player_Y
+	; STA <Temp_Var14
+	; LDA <Player_XHi
+	; STA <Temp_Var15
+	; LDA <Player_X
+	; STA <Temp_Var16
+	
 
 	TYA
 	PHA		 ; Save 'Y'
@@ -5007,6 +5234,11 @@ PRG030_99DC:
 	TAY
 
 	RTS		 ; Return
+	
+	
+	
+	
+
 
 TileLayout_ByTileset:
 	; Defines the 8x8 blocks to build a particular 16x16 "tile"
@@ -6158,14 +6390,14 @@ PRG030_SUB_9F40:
 	JMP PRG031_F499
 
 	; Filler space
-	.byte $ff, $ff, $ff, $ff, $ff
+	;.byte $ff, $ff, $ff, $ff, $ff
 
 	; Sub part of A0 mode of IRQ
 PRG030_SUB_9F50:
 	; Some kind of delay loop?
 	LDX #$17	 ; X = $17
 PRG030_9F52:
-	NOP		 ; ?
+	
 	DEX		 ; X--
 	BPL PRG030_9F52 ; While X > 0, loop
 
@@ -6188,10 +6420,6 @@ PRG030_9F80:
 	DEX		 ; X--
 	BPL PRG030_9F80 ; While X > 0, loop
 
-	; More NOPs
-	NOP
-	NOP
-	NOP
 
 	STA MMC3_IRQLATCH ; Latch A (last set to 27!)
 	STA MMC3_IRQENABLE ; Enable IRQ again

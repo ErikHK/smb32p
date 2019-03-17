@@ -987,6 +987,8 @@ SPR_VFLIP	= %10000000
 	Map_Stars_PRelX:	.ds 1	; During world intro, screen relative position of Player X
 	Map_Stars_PRelY:	.ds 1	; During world intro, screen relative position of Player Y
 	Player_Power:		.ds 1	; >>>>>>[P] charge level ($7F max)
+	Orange_Power:		.ds 1	; same
+	Orange_RunFlag:		.ds 1
 
 	; Level_JctCtl is configured when you enter a door or a pipe
 	; * When $80, use current values for Level_AltLayout and Level_AltObjects
@@ -1565,6 +1567,7 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 				.ds 1	; $0514 unused
 
 	Player_PMeterCnt:	.ds 1	; Tick counter used to count when to increase/decrease Power Meter
+	Orange_PMeterCnt:	.ds 1
 	B10Coin_Timer:		.ds 1	; Decrements until zero, which is how much time you have to get the max coins from a 10 coin block
 	Player_TailAttack:	.ds 1	; Initiailized to $12; counts down to zero, performs tail attack!
 
@@ -1672,6 +1675,7 @@ CHNGTILE_GIANTBRICKFIX	= $18	; Giant World brick restore (small Mario hit giant 
 	Player_FlipBits_OLD:	.ds 1	; Holds backup of Player_FlipBits
 	Player_HitCeiling:	.ds 1	; Flag set when Player has just hit head off ceiling
 	Player_FlyTime:		.ds 1	; When > 0, Player can fly (for power ups that do so); decrements (unless $FF) to 0
+	Orange_FlyTime:		.ds 1
 	Player_IsDucking:	.ds 1	; Set when Player is ducking down
 	Player_WhiteBlkCnt:	.ds 1	; White block counter; counts up while Player is standing on white block and holding down
 
@@ -1699,6 +1703,7 @@ CHNGTILE_GIANTBRICKFIX	= $18	; Giant World brick restore (small Mario hit giant 
 	Level_CoinHeav:		.ds 1	; Enter coin heaven when set $80; Increments; at $D0, "soft jump" arrival; terminates at wrap to $00
 
 	Player_MoveLR:		.ds 1	; 0 - Not moving left/right, 1 - Moving left, 2 - Moving right (reversed from the pad input)
+	;Orange_MoveLR:		.ds 1
 
 	Player_WalkAnimTicks:	.ds 1	; Ticks between animation frames of walking; max value varies by Player's X velocity
 
@@ -1709,6 +1714,7 @@ CHNGTILE_GIANTBRICKFIX	= $18	; Giant World brick restore (small Mario hit giant 
 	Player_mGoomba:		.ds 1	; Player is caught by a micro Goomba (jump short)
 	Player_Statue:		.ds 1	; Player is in Tanooki Statue mode; counts down to zero
 	Player_RunFlag:		.ds 1	; Set while Player is actually considered "running" (holding down B and at enough speed; doesn't persist)
+	;Orange_RunFlag:		.ds 1
 	Player_Bounce:		.ds 1	; Set to cause block bounce (upper 4 bits specifies what kind of block will be bounced)
 	Player_BounceDir:	.ds 1	; Direction of Player bounce -- 0 = Down, 1 = Up, 2 = Left, 3 = Right
 	Player_BounceObj:	.ds 1	; Set if it was a kicked shelled object that hit the bounce block (i.e. don't bounce the Player if the object is the one that hit) 
@@ -1812,7 +1818,7 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 	AScrlURDiag_WrapState:		.ds 1
 
 	; ASSEMBLER BOUNDARY CHECK, END OF $0600
-.BoundGame_0600:	BoundCheck .BoundGame_0600, $0600, $05xx Gameplay context
+.BoundGame_0600:	BoundCheck .BoundGame_0600, $0604, $05xx Gameplay context
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
