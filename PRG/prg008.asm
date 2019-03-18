@@ -2350,7 +2350,7 @@ PRG008_AB5B:
 	JMP PRG008_AB83	 ; Jump to PRG008_AB83
 
 PRG008_AB62:
-	LDY #Pad_Input
+	LDY #$18
 
 	BIT <Pad_Holding
 	BVC PRG008_AB83	; If Player is NOT holding 'B', jump to PRG008_AB83
@@ -2443,7 +2443,7 @@ PRG008_ABB8:
 	LDA <Temp_Var3	 
 	CMP <Temp_Var14	 
 	BEQ PRG008_AC01	 ; If Player's current X velocity magnitude is the same as the selected top speed, jump to PRG008_AC01 (RTS)
-	BMI PRG008_ABCD	 ; If it's less, then jump to PRG008_AC01
+	BMI PRG008_ABCD	 ; If it's less, then jump to PRG008_ABCD
 
 	LDA <Player_InAir
 	BNE PRG008_AC01	 ; If Player is mid air, jump to PRG008_AC01

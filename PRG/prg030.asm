@@ -2111,6 +2111,18 @@ Orange_UphillSpeedVals:
 	.byte $00, $16, $15, $14, $13, $12, $11, $10, $0F, $0E, $0D
 
 Orange_GroundHControl:
+	LDA <Orange_XVel
+	CMP #0
+	BMI negatefirst
+	JMP continuestoring3
+
+negatefirst:
+	JSR Negate
+	
+continuestoring3:
+	STA <Temp_Var3
+	
+
 	LDA Player_UphillFlag
 	BEQ PRG011_2_AB56	 ; If Player is not going up hill, jump to PRG011_2_AB56
 
@@ -2137,7 +2149,7 @@ PRG011_2_AB5B:
 	JMP PRG011_2_AB83	 ; Jump to PRG011_2_AB83
 
 PRG011_2_AB62:
-	LDY #Pad_Input
+	LDY #$18
 
 	BIT <Pad_Holding_2
 	BVC PRG011_2_AB83	; If Player is NOT holding 'B', jump to PRG011_2_AB83
@@ -2441,10 +2453,10 @@ check_if_holding_right:
 	
 
 	;holding right, then move right
-	LDA #$25
+	;;;;LDA #$25
 	;STY <Orange_XVel
-	CMP <Orange_XVel ;compare 25 to xvel
-	BMI realend
+	;;;;CMP <Orange_XVel ;compare 25 to xvel
+	;;;;BMI realend
 	;;;INC <Orange_XVel
 	
 	;set orientation to right:
