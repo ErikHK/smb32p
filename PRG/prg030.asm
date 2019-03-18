@@ -2337,7 +2337,8 @@ OrangeCheep_DoGameplay:
 	
 	
 	;BUGGFIX!!
-	LDA $58c
+	;LDA $58c
+	LDA Player_InPipe
 	CMP #0
 	BEQ contaa
 
