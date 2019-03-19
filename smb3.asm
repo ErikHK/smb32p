@@ -987,8 +987,6 @@ SPR_VFLIP	= %10000000
 	Map_Stars_PRelX:	.ds 1	; During world intro, screen relative position of Player X
 	Map_Stars_PRelY:	.ds 1	; During world intro, screen relative position of Player Y
 	Player_Power:		.ds 1	; >>>>>>[P] charge level ($7F max)
-	Orange_Power:		.ds 1	; same
-	Orange_RunFlag:		.ds 1
 
 	; Level_JctCtl is configured when you enter a door or a pipe
 	; * When $80, use current values for Level_AltLayout and Level_AltObjects
@@ -1567,7 +1565,6 @@ PAUSE_RESUMEMUSIC	= $02	; Resume sound (resumes music)
 				.ds 1	; $0514 unused
 
 	Player_PMeterCnt:	.ds 1	; Tick counter used to count when to increase/decrease Power Meter
-	Orange_PMeterCnt:	.ds 1
 	B10Coin_Timer:		.ds 1	; Decrements until zero, which is how much time you have to get the max coins from a 10 coin block
 	Player_TailAttack:	.ds 1	; Initiailized to $12; counts down to zero, performs tail attack!
 
@@ -1675,7 +1672,6 @@ CHNGTILE_GIANTBRICKFIX	= $18	; Giant World brick restore (small Mario hit giant 
 	Player_FlipBits_OLD:	.ds 1	; Holds backup of Player_FlipBits
 	Player_HitCeiling:	.ds 1	; Flag set when Player has just hit head off ceiling
 	Player_FlyTime:		.ds 1	; When > 0, Player can fly (for power ups that do so); decrements (unless $FF) to 0
-	Orange_FlyTime:		.ds 1
 	Player_IsDucking:	.ds 1	; Set when Player is ducking down
 	Player_WhiteBlkCnt:	.ds 1	; White block counter; counts up while Player is standing on white block and holding down
 
@@ -1703,7 +1699,6 @@ CHNGTILE_GIANTBRICKFIX	= $18	; Giant World brick restore (small Mario hit giant 
 	Level_CoinHeav:		.ds 1	; Enter coin heaven when set $80; Increments; at $D0, "soft jump" arrival; terminates at wrap to $00
 
 	Player_MoveLR:		.ds 1	; 0 - Not moving left/right, 1 - Moving left, 2 - Moving right (reversed from the pad input)
-	
 
 	Player_WalkAnimTicks:	.ds 1	; Ticks between animation frames of walking; max value varies by Player's X velocity
 
@@ -1815,11 +1810,15 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 	; cope with this behavior utilize AScrlURDiag_WrapState_Copy to stay in sync.
 	AScrlURDiag_WrapState_Copy:	.ds 1	; Copy of AScrlURDiag_WrapState
 	AScrlURDiag_WrapState:		.ds 1
-	
-	Orange_MoveLR:		.ds 1
 
+	
+	Orange_FlyTime:			.ds		1
+	Orange_Power:			.ds		1
+	Orange_RunFlag:			.ds		1
+	Orange_PMeterCnt:		.ds		1
+	Orange_MoveLR:			.ds		1
 	; ASSEMBLER BOUNDARY CHECK, END OF $0600
-.BoundGame_0600:	BoundCheck .BoundGame_0600, $0604, $05xx Gameplay context
+.BoundGame_0600:	BoundCheck .BoundGame_0600, $0606, $05xx Gameplay context
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

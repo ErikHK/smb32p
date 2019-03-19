@@ -2344,195 +2344,37 @@ PRG029_D7FC:
 	RTS		 ; Return
 
 	;; BEGIN HUGE UNUSED SPACE
-	
-	
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Level_QueueChangeBlock_Orange
-;
-; Changes a block, used for tiles which appear/disappear
-;
-; Temp_Var13 / Temp_Var14 -- Y Hi and Lo
-; Temp_Var15 / Temp_Var16 -- X Hi and Lo
-;
-; Register 'A' as input sets Level_ChgTileEvent
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-Level_QueueChangeBlock_Orange:
-	STA Level_ChgTileEvent	 ; Store type of block change!
-	
-	;LDA <Player_YHi
-	;STA <Temp_Var13
-	;LDA <Player_Y
-	;STA <Temp_Var14
-	;LDA <Player_XHi
-	;STA <Temp_Var15
-	;LDA <Player_X
-	;STA <Temp_Var16
-	
-
-	; Store change Y Hi and Lo
-	LDA <Temp_Var13
-	STA Level_BlockChgYHi
-	LDA <Temp_Var14
-	AND #$F0		; Align to nearest grid coordinate
-	STA Level_BlockChgYLo
-
-	; Store change X Hi and Lo
-	LDA <Temp_Var15
-	STA Level_BlockChgXHi
-	LDA <Temp_Var16	
-	AND #$F0	 	; Align to nearest grid coordinate
-	STA Level_BlockChgXLo
-
-	RTS		 ; Return
-	
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Level_RecordBlockHit
-;
-; Called after a coin is collected or a hidden 1-Up is found.
-; This records those events so if the level is swapped with its
-; alternate, these things do not retun.  Next best thing to
-; actually having enough memory to hold both levels together...
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-RecordBlockHitBits_Orange:
-	.byte $80, $40, $20, $10, $08, $04, $02, $01
-
-Level_RecordBlockHit_Orange:
-
-	LDA <Orange_YHi
-	STA <Temp_Var13
-	LDA <Orange_Y
-	STA <Temp_Var14
-	LDA <Orange_XHi
-	STA <Temp_Var15
-	LDA <Orange_X
-	STA <Temp_Var16
-	; Currently Temp_Var13-16 are defined as follows:
-	; Temp_Var13 / Temp_Var14 -- Y Hi and Lo
-	; Temp_Var15 / Temp_Var16 -- X Hi and Lo
-	; ... of Player detection coordinates
-
-	TYA
-	PHA		 ; Save 'Y'
-
-	TXA
-	PHA		 ; Save 'X'
-
-	LDA <Temp_Var16
-	PHA		 ; Save Temp_Var16
-
-	LDA <Temp_Var13
-	PHA		 ; Save Temp_Var13
-
-	; This converts Temp_Var15/Temp_Var16 into a tile row stored in Temp_Var16
-	; Essentially a 16-bit right shift 4 bits
-	LDA <Temp_Var16
-	LSR A
-	LSR A
-	LSR A
-	LSR A
-	STA <Temp_Var16
-	LDA <Temp_Var15
-	ASL A
-	ASL A
-	ASL A
-	ASL A
-	ORA <Temp_Var16
-	STA <Temp_Var16
-
-	; This turns Temp_Var13 into an index into Level_BlockGrabHitMem
-	LDA <Temp_Var16
-	AND #%11111000
-	LSR A
-	LSR A
-	ORA <Temp_Var13
-	STA <Temp_Var13
-
-	LDA Level_JctFlag
-	BEQ PRG030_99DC_2	 ; If we're not junctioning, jump to PRG030_99DC
-
-	; If junctioning, Temp_Var13 += $40
-	LDA <Temp_Var13
-	ADD #$40
-	STA <Temp_Var13
-
-PRG030_99DC_2:
-	LDA <Temp_Var16
-	AND #$07
-	TAX
-	LDY <Temp_Var13
-	LDA Level_BlockGrabHitMem,Y
-	ORA RecordBlockHitBits_Orange,X
-	STA Level_BlockGrabHitMem,Y
-
-	; Restore everything we saved
-	PLA
-	STA <Temp_Var13
-	PLA
-	STA <Temp_Var16
-	PLA
-	TAX
-	PLA
-	TAY
-
-	RTS		 ; Return
-	
-
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
 
 	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D80A - $D819
 	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D81A - $D829
 	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D82A - $D839
 	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D83A - $D849
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D84A - $D859
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D85A - $D869
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D86A - $D879
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D87A - $D889
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D88A - $D899
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D89A - $D8A9
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8AA - $D8B9
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8BA - $D8C9
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8CA - $D8D9
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8DA - $D8E9
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8EA - $D8F9
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8FA - $D909
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D90A - $D919
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D91A - $D929
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D92A - $D939
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D93A - $D949
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D94A - $D959
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D95A - $D969
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D96A - $D979
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D97A - $D989
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D98A - $D999
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D99A - $D9A9
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9AA - $D9B9
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9BA - $D9C9
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9CA - $D9D9
-	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9DA - $D9E9
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D84A - $D859
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D85A - $D869
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D86A - $D879
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D87A - $D889
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D88A - $D899
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D89A - $D8A9
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8AA - $D8B9
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8BA - $D8C9
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8CA - $D8D9
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8DA - $D8E9
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8EA - $D8F9
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D8FA - $D909
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D90A - $D919
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D91A - $D929
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D92A - $D939
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D93A - $D949
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D94A - $D959
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D95A - $D969
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D96A - $D979
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D97A - $D989
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D98A - $D999
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D99A - $D9A9
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9AA - $D9B9
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9BA - $D9C9
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9CA - $D9D9
+	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9DA - $D9E9
 	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9EA - $D9F9
 	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D9FA - $DA09
 	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $DA0A - $DA19

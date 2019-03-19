@@ -2142,258 +2142,254 @@ Map_WhiteObjects:
 	.byte MAPOBJ_NSPADE, MAPOBJ_WHITETOADHOUSE, MAPOBJ_COINSHIP, MAPOBJ_UNK0C 
 Map_WhiteObjects_End
 
-	
+MO_CheckForBonus:
 
+	; Temp_Var16 is our loop counter
+	LDA #(Map_WhiteObjects_End - Map_WhiteObjects - 1)
+	STA <Temp_Var16
 
+PRG011_AC57:
+	LDY <Temp_Var16	 	; Y = Temp_Var16
+	LDX #(MAPOBJ_TOTAL-1)	; X = (MAPOBJ_TOTAL-1)
 
-; MO_CheckForBonus:
+	LDA Map_WhiteObjects,Y
+PRG011_AC5E:
+	CMP Map_Objects_IDs,X
+	BEQ PRG011_AC69	 ; If this is the "white" bonus object we're looking for, jump to PRG011_AC69 (we already have one, can't have more)
 
-	; ; Temp_Var16 is our loop counter
-	; LDA #(Map_WhiteObjects_End - Map_WhiteObjects - 1)
-	; STA <Temp_Var16
+	DEX		 ; X-- (previous "white" bonus object to consider)
+	BPL PRG011_AC5E	 ; While X >= 0, loop!
 
-; PRG011_AC57:
-	; LDY <Temp_Var16	 	; Y = Temp_Var16
-	; LDX #(MAPOBJ_TOTAL-1)	; X = (MAPOBJ_TOTAL-1)
+	JSR MO_CheckForBonusRules	; Since we don't have one of these, check the rules to see if we've earned one!
 
-	; LDA Map_WhiteObjects,Y
-; PRG011_AC5E:
-	; CMP Map_Objects_IDs,X
-	; BEQ PRG011_AC69	 ; If this is the "white" bonus object we're looking for, jump to PRG011_AC69 (we already have one, can't have more)
+PRG011_AC69:
+	DEC <Temp_Var16	 ; Temp_Var16--
+	BPL PRG011_AC57	 ; While Temp_Var16 >= 0, loop!
 
-	; DEX		 ; X-- (previous "white" bonus object to consider)
-	; BPL PRG011_AC5E	 ; While X >= 0, loop!
+	INC Map_Operation	 ; Map_Operation++
+	JMP WorldMap_UpdateAndDraw	 ; Update and draw map, and don't come back!
 
-	; JSR MO_CheckForBonusRules	; Since we don't have one of these, check the rules to see if we've earned one!
+MO_CheckForBonusRules:
+	LDA <Temp_Var16
+	JSR DynJump
 
-; PRG011_AC69:
-	; DEC <Temp_Var16	 ; Temp_Var16--
-	; BPL PRG011_AC57	 ; While Temp_Var16 >= 0, loop!
+	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
+	.word MapBonusChk_NSpade		; Check if an N-Spade should appear
+	.word MapBonusChk_WhiteToadHouse	; Check if a White Toad House should appear
+	.word MapBonusChk_CoinShip		; Check if a Coin Ship should appear
+	.word MapBonusChk_MAPOBJ_UNK0C		; Check if the UNKNOWN MAPOBJ_UNK0C should appear
 
-	; INC Map_Operation	 ; Map_Operation++
-	; JMP WorldMap_UpdateAndDraw	 ; Update and draw map, and don't come back!
 
-; MO_CheckForBonusRules:
-	; LDA <Temp_Var16
-	; JSR DynJump
+; N-Spade will appear on the map every 80,000 points you earn
+MapBonusChk_NSpade:
+	LDA World_Num
+	CMP #$07
+	BEQ PRG011_ACF0	 ; If World_Num = 7 (World 8), jump to PRG011_ACF0 (RTS)
 
-	; ; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	; .word MapBonusChk_NSpade		; Check if an N-Spade should appear
-	; .word MapBonusChk_WhiteToadHouse	; Check if a White Toad House should appear
-	; .word MapBonusChk_CoinShip		; Check if a Coin Ship should appear
-	; .word MapBonusChk_MAPOBJ_UNK0C		; Check if the UNKNOWN MAPOBJ_UNK0C should appear
+	LDX Player_Current	 ; X = Player_Current
 
+	LDA Player_Score
+	CMP Map_NSpade_NextScore
+	BLT PRG011_ACF0	 ; If Score high digit < Map_NSpade_NextScore, jump to PRG011_ACF0 (RTS)
+	BEQ PRG011_AC97	 ; If Score high digit = Map_NSpade_NextScore, jump to PRG011_AC97
 
-; ; N-Spade will appear on the map every 80,000 points you earn
-; MapBonusChk_NSpade:
-	; LDA World_Num
-	; CMP #$07
-	; BEQ PRG011_ACF0	 ; If World_Num = 7 (World 8), jump to PRG011_ACF0 (RTS)
+	JMP PRG011_ACAC	 ; Jump to PRG011_ACAC
 
-	; LDX Player_Current	 ; X = Player_Current
+PRG011_AC97:
+	LDA Player_Score+1
+	CMP Map_NSpade_NextScore+1
+	BLT PRG011_ACF0	 ; If Score middle digit < Map_NSpade_NextScore+1, jump to PRG011_ACF0 (RTS)
+	BEQ PRG011_ACA4	 ; If Score middle digit = Map_NSpade_NextScore+1, jump to PRG011_ACA4
 
-	; LDA Player_Score
-	; CMP Map_NSpade_NextScore
-	; BLT PRG011_ACF0	 ; If Score high digit < Map_NSpade_NextScore, jump to PRG011_ACF0 (RTS)
-	; BEQ PRG011_AC97	 ; If Score high digit = Map_NSpade_NextScore, jump to PRG011_AC97
+	JMP PRG011_ACAC	 ; Jump to PRG011_ACAC
 
-	; JMP PRG011_ACAC	 ; Jump to PRG011_ACAC
+PRG011_ACA4:
+	LDA Player_Score+2
+	CMP Map_NSpade_NextScore+2
+	BLT PRG011_ACF0	 ; If Score low digit < Map_NSpade_NextScore+2, jump to PRG011_ACF0 (RTS)
 
-; PRG011_AC97:
-	; LDA Player_Score+1
-	; CMP Map_NSpade_NextScore+1
-	; BLT PRG011_ACF0	 ; If Score middle digit < Map_NSpade_NextScore+1, jump to PRG011_ACF0 (RTS)
-	; BEQ PRG011_ACA4	 ; If Score middle digit = Map_NSpade_NextScore+1, jump to PRG011_ACA4
+PRG011_ACAC:
+	JSR Map_FindEmptyObjectSlot
 
-	; JMP PRG011_ACAC	 ; Jump to PRG011_ACAC
+	; Set the N-Spade's location!
+	LDA Map_BonusAppY
+	STA Map_Objects_Y,Y
+	STA Map_Object_ActY,Y
 
-; PRG011_ACA4:
-	; LDA Player_Score+2
-	; CMP Map_NSpade_NextScore+2
-	; BLT PRG011_ACF0	 ; If Score low digit < Map_NSpade_NextScore+2, jump to PRG011_ACF0 (RTS)
+	LDA Map_BonusAppXHi
+	STA Map_Objects_XHi,Y
+	STA Map_Object_ActXH,Y
 
-; PRG011_ACAC:
-	; JSR Map_FindEmptyObjectSlot
+	LDA Map_BonusAppX
+	STA Map_Objects_XLo,Y
+	STA Map_Object_ActX,Y
 
-	; ; Set the N-Spade's location!
-	; LDA Map_BonusAppY
-	; STA Map_Objects_Y,Y
-	; STA Map_Object_ActY,Y
+	LDX <Temp_Var16	 	; X = Temp_Var16
+	LDA Map_WhiteObjects,X	; Load the proper bonus object ID (will always be MAPOBJ_NSPADE; this is a bit superfluous)
+	STA Map_Objects_IDs,Y	; Set the N-Spade ID
 
-	; LDA Map_BonusAppXHi
-	; STA Map_Objects_XHi,Y
-	; STA Map_Object_ActXH,Y
+	; N-Spade appears every 80,000 points, but the leading zero is fake, so 8000
 
-	; LDA Map_BonusAppX
-	; STA Map_Objects_XLo,Y
-	; STA Map_Object_ActX,Y
+	; +8000 (80,000 points) to the Map_NSpade_NextScore
 
-	; LDX <Temp_Var16	 	; X = Temp_Var16
-	; LDA Map_WhiteObjects,X	; Load the proper bonus object ID (will always be MAPOBJ_NSPADE; this is a bit superfluous)
-	; STA Map_Objects_IDs,Y	; Set the N-Spade ID
+	; High byte of the N-Spade score
+	LDA Map_NSpade_NextScore+2
+	ADD #LOW(8000)
+	STA Map_NSpade_NextScore+2
 
-	; ; N-Spade appears every 80,000 points, but the leading zero is fake, so 8000
+	; Middle byte of the N-Spade score
+	LDA Map_NSpade_NextScore+1
+	ADC #HIGH(8000)
+	STA Map_NSpade_NextScore+1
 
-	; ; +8000 (80,000 points) to the Map_NSpade_NextScore
+	; Low byte of the N-Spade score
+	LDA Map_NSpade_NextScore
+	ADC #$00
+	STA Map_NSpade_NextScore
 
-	; ; High byte of the N-Spade score
-	; LDA Map_NSpade_NextScore+2
-	; ADD #LOW(8000)
-	; STA Map_NSpade_NextScore+2
+	; Bonus appearance sound!
+	LDA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
 
-	; ; Middle byte of the N-Spade score
-	; LDA Map_NSpade_NextScore+1
-	; ADC #HIGH(8000)
-	; STA Map_NSpade_NextScore+1
+PRG011_ACF0:
+	RTS		 ; Return
 
-	; ; Low byte of the N-Spade score
-	; LDA Map_NSpade_NextScore
-	; ADC #$00
-	; STA Map_NSpade_NextScore
 
-	; ; Bonus appearance sound!
-	; LDA #SND_MAPBONUSAPPEAR
-	; STA Sound_QMap
+MapBonusChk_WhiteToadHouse:
+	LDA Map_WhiteHouse
+	BNE PRG011_AD30	 ; If you already got the White Toad House, jump to PRG011_AD30 (RTS)
 
-; PRG011_ACF0:
-	; RTS		 ; Return
+	LDA Map_BonusType
+	CMP #$01
+	BNE PRG011_AD30	 ; If Map_BonusType <> 1 (White Toad House enable), jump to PRG011_AD30 (RTS)
 
+	LDA Coins_ThisLevel
+	CMP Map_BonusCoinsReqd
+	BLT PRG011_AD30	 ; If coins collected this level < Map_BonusCoinsReqd (coins needed for White Toad House), jump to PRG011_AD30 (RTS)
 
-; MapBonusChk_WhiteToadHouse:
-	; LDA Map_WhiteHouse
-	; BNE PRG011_AD30	 ; If you already got the White Toad House, jump to PRG011_AD30 (RTS)
+	; Find an empty map object slot
+	JSR Map_FindEmptyObjectSlot
 
-	; LDA Map_BonusType
-	; CMP #$01
-	; BNE PRG011_AD30	 ; If Map_BonusType <> 1 (White Toad House enable), jump to PRG011_AD30 (RTS)
+	; Put the White Toad House here!
+	LDA #MAPOBJ_WHITETOADHOUSE
+	STA Map_Objects_IDs,Y
 
-	; LDA Coins_ThisLevel
-	; CMP Map_BonusCoinsReqd
-	; BLT PRG011_AD30	 ; If coins collected this level < Map_BonusCoinsReqd (coins needed for White Toad House), jump to PRG011_AD30 (RTS)
+	; Set the White Toad House's location!
+	LDA Map_BonusAppY
+	STA Map_Objects_Y,Y
+	STA Map_Object_ActY,Y
 
-	; ; Find an empty map object slot
-	; JSR Map_FindEmptyObjectSlot
+	LDA Map_BonusAppXHi
+	STA Map_Objects_XHi,Y
+	STA Map_Object_ActXH,Y
 
-	; ; Put the White Toad House here!
-	; LDA #MAPOBJ_WHITETOADHOUSE
-	; STA Map_Objects_IDs,Y
+	LDA Map_BonusAppX
+	STA Map_Objects_XLo,Y
+	STA Map_Object_ActX,Y
 
-	; ; Set the White Toad House's location!
-	; LDA Map_BonusAppY
-	; STA Map_Objects_Y,Y
-	; STA Map_Object_ActY,Y
+	INC Map_WhiteHouse	 ; Set Map_WhiteHouse (you got the White Toad House, there won't be any more!)
 
-	; LDA Map_BonusAppXHi
-	; STA Map_Objects_XHi,Y
-	; STA Map_Object_ActXH,Y
+	; Bonus appearance sound!
+	LDA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
 
-	; LDA Map_BonusAppX
-	; STA Map_Objects_XLo,Y
-	; STA Map_Object_ActX,Y
+PRG011_AD30:
+	RTS		 ; Return
 
-	; INC Map_WhiteHouse	 ; Set Map_WhiteHouse (you got the White Toad House, there won't be any more!)
 
-	; ; Bonus appearance sound!
-	; LDA #SND_MAPBONUSAPPEAR
-	; STA Sound_QMap
+; The old Coin Ship ruleset:
+; 1.) End the stage with an even number on the clock.
+; 2.) Coins must be a Multiple of 11.
+; 3.) The 10′s digit of your score must be the multiple of 11 that corresponds to your coins.
+; 4.) Finally it must be in World 1, 3, 5, and 6.
+;	NOTE: The worlds that don't count are literally because there's no "Hammer Bro"
+;	map objects there; the code doesn't actually care about the world number!
 
-; PRG011_AD30:
-	; RTS		 ; Return
+MapBonusChk_CoinShip:
+	LDA Map_CoinShip	 
+	BNE PRG011_AD5F	 ; If you already got the Coin Ship, jump to PRG011_AD30 (RTS)
 
+	LDA StatusBar_CoinH
+	CMP StatusBar_CoinL
+	BNE PRG011_AD5F	 ; If the two digits of your coins are not the same, jump to PRG011_AD5F (RTS)
 
-; ; The old Coin Ship ruleset:
-; ; 1.) End the stage with an even number on the clock.
-; ; 2.) Coins must be a Multiple of 11.
-; ; 3.) The 10′s digit of your score must be the multiple of 11 that corresponds to your coins.
-; ; 4.) Finally it must be in World 1, 3, 5, and 6.
-; ;	NOTE: The worlds that don't count are literally because there's no "Hammer Bro"
-; ;	map objects there; the code doesn't actually care about the world number!
+	CMP StatusBar_Score+5
+	BNE PRG011_AD5F	 ; If the tens digit of your score is not the same as the equal coins, jump to PRG011_AD5F (RTS) 
 
-; MapBonusChk_CoinShip:
-	; LDA Map_CoinShip	 
-	; BNE PRG011_AD5F	 ; If you already got the Coin Ship, jump to PRG011_AD30 (RTS)
+	LDY #$00	 ; Y = 0
+PRG011_AD45:
+	LDA Map_Objects_IDs,Y
+	CMP #MAPOBJ_HAMMERBRO
+	BEQ PRG011_AD52	 ; If this is a hammer brother, jump to PRG011_AD52
 
-	; LDA StatusBar_CoinH
-	; CMP StatusBar_CoinL
-	; BNE PRG011_AD5F	 ; If the two digits of your coins are not the same, jump to PRG011_AD5F (RTS)
+	INY		 ; Y++
+	CPY #MAPOBJ_TOTAL
+	BNE PRG011_AD45	 ; If index <> passed the last map object, loop!
 
-	; CMP StatusBar_Score+5
-	; BNE PRG011_AD5F	 ; If the tens digit of your score is not the same as the equal coins, jump to PRG011_AD5F (RTS) 
+	RTS		 ; Return
 
-	; LDY #$00	 ; Y = 0
-; PRG011_AD45:
-	; LDA Map_Objects_IDs,Y
-	; CMP #MAPOBJ_HAMMERBRO
-	; BEQ PRG011_AD52	 ; If this is a hammer brother, jump to PRG011_AD52
+PRG011_AD52:
 
-	; INY		 ; Y++
-	; CPY #MAPOBJ_TOTAL
-	; BNE PRG011_AD45	 ; If index <> passed the last map object, loop!
+	; Change the Hammer Bro to the Coin Ship
+	LDA #MAPOBJ_COINSHIP
+	STA Map_Objects_IDs,Y
 
-	; RTS		 ; Return
+	INC Map_CoinShip	 ; Set Map_CoinShip (you got the Coin Ship, there won't be any more!)
 
-; PRG011_AD52:
+	; Bonus appearance sound!
+	LDA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
 
-	; ; Change the Hammer Bro to the Coin Ship
-	; LDA #MAPOBJ_COINSHIP
-	; STA Map_Objects_IDs,Y
+PRG011_AD5F:
+	RTS		 ; Return
 
-	; INC Map_CoinShip	 ; Set Map_CoinShip (you got the Coin Ship, there won't be any more!)
 
-	; ; Bonus appearance sound!
-	; LDA #SND_MAPBONUSAPPEAR
-	; STA Sound_QMap
+	; This will always appear at the same location!!
+MAPOBJ_UNK0C_Y:	.byte $60
+MAPOBJ_UNK0C_X:	.byte $60
 
-; PRG011_AD5F:
-	; RTS		 ; Return
+MapBonusChk_MAPOBJ_UNK0C:
+	LDA Map_BonusType
+	CMP #$02
+	BNE PRG011_AD9C	 ; If Map_BonusType <> 2, jump to PRG011_AD9C (RTS)
 
+	LDA Coins_ThisLevel
+	CMP Map_BonusCoinsReqd
+	BLT PRG011_AD9C	 ; If Coins_ThisLevel < Map_BonusCoinsReqd, jump to PRG011_AD9C (RTS)
 
-	; ; This will always appear at the same location!!
-; MAPOBJ_UNK0C_Y:	.byte $60
-; MAPOBJ_UNK0C_X:	.byte $60
+	; Find an empty map object slot
+	JSR Map_FindEmptyObjectSlot
 
-; MapBonusChk_MAPOBJ_UNK0C:
-	; LDA Map_BonusType
-	; CMP #$02
-	; BNE PRG011_AD9C	 ; If Map_BonusType <> 2, jump to PRG011_AD9C (RTS)
+	; Put the MAPOBJ_UNK0C here
+	LDA #MAPOBJ_UNK0C
+	STA Map_Objects_IDs,Y
 
-	; LDA Coins_ThisLevel
-	; CMP Map_BonusCoinsReqd
-	; BLT PRG011_AD9C	 ; If Coins_ThisLevel < Map_BonusCoinsReqd, jump to PRG011_AD9C (RTS)
+	; Set the MAPOBJ_UNK0C Y
+	LDA MAPOBJ_UNK0C_Y
+	STA Map_Objects_Y,Y
+	STA Map_Object_ActY,Y
 
-	; ; Find an empty map object slot
-	; JSR Map_FindEmptyObjectSlot
+	LDA MAPOBJ_UNK0C_X
+	PHA		 ; Save original value
 
-	; ; Put the MAPOBJ_UNK0C here
-	; LDA #MAPOBJ_UNK0C
-	; STA Map_Objects_IDs,Y
+	; Set the MAPOBJ_UNK0C XHi
+	AND #%00001111	 ; The lower 4 bits are the X Hi
+	STA Map_Objects_XHi,Y
+	STA Map_Object_ActXH,Y
 
-	; ; Set the MAPOBJ_UNK0C Y
-	; LDA MAPOBJ_UNK0C_Y
-	; STA Map_Objects_Y,Y
-	; STA Map_Object_ActY,Y
-
-	; LDA MAPOBJ_UNK0C_X
-	; PHA		 ; Save original value
-
-	; ; Set the MAPOBJ_UNK0C XHi
-	; AND #%00001111	 ; The lower 4 bits are the X Hi
-	; STA Map_Objects_XHi,Y
-	; STA Map_Object_ActXH,Y
-
-	; PLA		 ; Restore original value
+	PLA		 ; Restore original value
  
-	; ; Set the MAPOBJ_UNK0C X
-	; AND #%11110000
-	; STA Map_Objects_XLo,Y
-	; STA Map_Object_ActX,Y
+	; Set the MAPOBJ_UNK0C X
+	AND #%11110000
+	STA Map_Objects_XLo,Y
+	STA Map_Object_ActX,Y
 
-	; ; Bonus appearance sound!
-	; LDA #SND_MAPBONUSAPPEAR
-	; STA Sound_QMap
+	; Bonus appearance sound!
+	LDA #SND_MAPBONUSAPPEAR
+	STA Sound_QMap
 
-; PRG011_AD9C:
-	; RTS		 ; Return
+PRG011_AD9C:
+	RTS		 ; Return
 
 
 	; This looks for an empty map object slot and returns the index in 'Y'

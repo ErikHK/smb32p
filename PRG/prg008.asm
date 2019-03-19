@@ -506,8 +506,6 @@ PRG008_A242:
 	; Max "Power"
 	LDA #$7f	
 	STA Player_Power ; Player_Power = $7F
-	
-	STA Orange_Power
 
 	; Infinite flight time
 	LDA #$ff
@@ -1984,7 +1982,7 @@ PRG008_A9A3:
 	RTS		 ; Return
 
 Swim_SmallBigLeaf:
-	;JSR Player_UnderwaterHControl ; Do Player left/right input for underwater
+	JSR Player_UnderwaterHControl ; Do Player left/right input for underwater
 	JSR Player_SwimV ; Do Player up/down swimming action
 	JSR Player_SwimAnim ; Do Player swim animations
 	RTS		 ; Return
@@ -2005,7 +2003,7 @@ GndMov_FireHammer:
 	RTS		 ; Return
 
 Swim_FireHammer:
-	;JSR Player_UnderwaterHControl ; Do Player left/right input for underwater
+	JSR Player_UnderwaterHControl ; Do Player left/right input for underwater
 	JSR Player_SwimV ; Do Player up/down swimming action
 	JSR Player_SwimAnim ; Do Player swim animations
 	JSR Player_ShootAnim ; Do Player shooting animation
@@ -2249,7 +2247,7 @@ GndMov_Tanooki:
 
 Swim_Tanooki:
 	JSR Player_TanookiStatue ; Change into/maintain Tanooki statue (NOTE: Will not return here if statue!)
-	;JSR Player_UnderwaterHControl ; Do Player left/right input for underwater
+	JSR Player_UnderwaterHControl ; Do Player left/right input for underwater
 	JSR Player_SwimV ; Do Player up/down swimming action
 	JSR Player_SwimAnim ; Do Player swim animations
 	RTS		 ; Return
@@ -2311,8 +2309,6 @@ PRG008_AB2B:
 PRG008_AB38:
 	RTS		 ; Return
 
-
-	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_GroundHControl
 ;
@@ -2350,7 +2346,7 @@ PRG008_AB5B:
 	JMP PRG008_AB83	 ; Jump to PRG008_AB83
 
 PRG008_AB62:
-	LDY #$18
+	LDY #Pad_Input
 
 	BIT <Pad_Holding
 	BVC PRG008_AB83	; If Player is NOT holding 'B', jump to PRG008_AB83
@@ -2443,7 +2439,7 @@ PRG008_ABB8:
 	LDA <Temp_Var3	 
 	CMP <Temp_Var14	 
 	BEQ PRG008_AC01	 ; If Player's current X velocity magnitude is the same as the selected top speed, jump to PRG008_AC01 (RTS)
-	BMI PRG008_ABCD	 ; If it's less, then jump to PRG008_ABCD
+	BMI PRG008_ABCD	 ; If it's less, then jump to PRG008_AC01
 
 	LDA <Player_InAir
 	BNE PRG008_AC01	 ; If Player is mid air, jump to PRG008_AC01
@@ -2504,44 +2500,41 @@ PRG008_AC01:
 	RTS		 ; Return
 
 
-	
-	
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Player_UnderwaterHControl
 ;
 ; Routine to control based on Player's left/right pad input underwater
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; Player_UnderwaterHControl:
-	; LDY #(Player_XAccelMain_UW - Player_XAccelMain)	; Y = index to appropriate under water values
+Player_UnderwaterHControl:
+	LDY #(Player_XAccelMain_UW - Player_XAccelMain)	; Y = index to appropriate under water values
 
-	; LDA #%00001000
-	; STA <Temp_Var14	 ; Temp_Var14 = pretend like Player is definitely hitting UP
+	LDA #%00001000
+	STA <Temp_Var14	 ; Temp_Var14 = pretend like Player is definitely hitting UP
 
-	; LDA <Player_InAir
-	; BEQ PRG008_AC14	 ; If Player is not in the air, jump to PRG008_AC14
+	LDA <Player_InAir
+	BEQ PRG008_AC14	 ; If Player is not in the air, jump to PRG008_AC14
 
-	; LDA #Pad_Input
-	; STA <Temp_Var14	 ; Temp_Var14 = actual Pad_Input (as compared to what happened above)
+	LDA #Pad_Input
+	STA <Temp_Var14	 ; Temp_Var14 = actual Pad_Input (as compared to what happened above)
 
-	; INY
-	; INY
-	; INY
-	; INY		 ; Y += 4 (offset into Player_XAccel* tables)
+	INY
+	INY
+	INY
+	INY		 ; Y += 4 (offset into Player_XAccel* tables)
  
-; PRG008_AC14:
-	; LDA <Player_InAir
-	; PHA		 ; Save Player_InAir
+PRG008_AC14:
+	LDA <Player_InAir
+	PHA		 ; Save Player_InAir
 
-	; LDA #$00
-	; STA <Player_InAir ; Player_InAir= 0
+	LDA #$00
+	STA <Player_InAir ; Player_InAir= 0
 
-	; JSR PRG008_ABA6	 ; Reuses part of normal movement code
+	JSR PRG008_ABA6	 ; Reuses part of normal movement code
 
-	; PLA		 
-	; STA <Player_InAir ; Restore Player_InAir
+	PLA		 
+	STA <Player_InAir ; Restore Player_InAir
 
-	; RTS		 ; Return
+	RTS		 ; Return
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -4733,17 +4726,14 @@ Level_DoCommonSpecialTiles:
 PRG008_B604:
 
 	; Not an ice block or if it was, Player was not interested in it...
-	
-	;JSR OrangeCheep_GetTile
 
 	LDA Level_Tile_GndL,X
-	;LDA $64B,X
 	CMP #TILEA_COIN
 	BNE PRG008_B623	 ; If Player is not touching coin, jump to PRG008_B623
 
 	LDA #CHNGTILE_DELETECOIN
-	JSR Level_QueueChangeBlock	 		; Queue a block change to erase to background!
-	JSR Level_RecordBlockHit	 		; Record having grabbed this coin so it does not come back
+	JSR Level_QueueChangeBlock	 ; Queue a block change to erase to background!
+	JSR Level_RecordBlockHit	 ; Record having grabbed this coin so it does not come back
 
 	; Play coin collected sound!
 	LDA Sound_QLevel1
@@ -4801,13 +4791,6 @@ PRG008_B652:
 
 	RTS		 ; Return
 
-
-	
-OrangeCheep_GetTile:
-
-	
-	RTS
-	
 
 	; This routine "grabs a new ice block" object and puts 
 	; it in the Player's hands, if there's room for it!
@@ -6844,35 +6827,15 @@ PRG008_BF7E:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Level_QueueChangeBlock: 
 	STA Level_ChgTileEvent	 ; Store type of block change!
-	
-	
-	; LDA <Player_YHi
-	; STA <Temp_Var13
-	; LDA <Player_Y
-	; STA <Temp_Var14
-	; LDA <Player_XHi
-	; STA <Temp_Var15
-	; LDA <Player_X
-	; STA <Temp_Var16
-	
-	; LDA <Orange_YHi
-	; STA <Temp_Var13
-	; LDA <Orange_Y
-	; STA <Temp_Var14
-	; LDA <Orange_XHi
-	; STA <Temp_Var15
-	; LDA <Orange_X
-	; STA <Temp_Var16
-	
 
-	;Store change Y Hi and Lo
+	; Store change Y Hi and Lo
 	LDA <Temp_Var13
 	STA Level_BlockChgYHi
 	LDA <Temp_Var14
 	AND #$F0		; Align to nearest grid coordinate
 	STA Level_BlockChgYLo
 
-	;Store change X Hi and Lo
+	; Store change X Hi and Lo
 	LDA <Temp_Var15
 	STA Level_BlockChgXHi
 	LDA <Temp_Var16	
