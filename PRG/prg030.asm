@@ -2020,11 +2020,6 @@ PRG030_8CDE:
 
 
 
-
-
-
-
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Orange_PowerUpdate
 ;
@@ -2110,7 +2105,9 @@ Orange_UphillSpeedVals:
 	.byte $00, $16, $15, $14, $13, $12, $11, $10, $0F, $0E, $0D
 
 Orange_GroundHControl:
-	LDA <Orange_XVel
+	LDX $610
+	
+	LDA <Orange_XVel,X
 	CMP #0
 	BMI negatefirst
 	JMP continuestoring3
@@ -2223,7 +2220,7 @@ PRG011_2_ABA6:
 	;BNE PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01 (RTS)
 	BEQ PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01 (RTS)
 
-	LDA <Orange_XVel
+	LDA <Orange_XVel,X
 	BEQ PRG011_2_AC01	 ; If Player is not moving horizontally, jump to PRG011_2_AC01 (RTS)
 	BMI PRG011_2_ABD3	 ; If Player is moving leftward, jump to PRG011_2_ABD3
 	BPL PRG011_2_ABEB	 ; If Player is moving rightward, jump to PRG011_2_ABEB
@@ -2295,9 +2292,9 @@ PRG011_2_ABF5:
 	LDA <Temp_Var1
 	ADD Counter_Wiggly	; actual value not used, looking for a semi-random carry
 
-	LDA <Orange_XVel
+	LDA <Orange_XVel,X
 	ADC <Temp_Var2
-	STA <Orange_XVel	; Orange_XVel += Temp_Var2 (and sometimes carry)
+	STA <Orange_XVel,X	; Orange_XVel += Temp_Var2 (and sometimes carry)
 	;STA $95
 
 PRG011_2_AC01:
@@ -2305,7 +2302,7 @@ PRG011_2_AC01:
 
 
 Orange_SetMoveLR:
-	LDA <Orange_XVel
+	LDA <Orange_XVel,X
 	CMP #0
 	BEQ set_zero
 	BMI set_one
@@ -2330,7 +2327,9 @@ slut:
 OrangeCheep_DoGameplay:
 	JSR Orange_PowerUpdate
 	JSR Orange_SetMoveLR
-	
+
+	LDA #$0c
+	STA $7d80
 	
 	;BUGGFIX!!
 	;LDA $58c
@@ -2393,7 +2392,7 @@ continue:
 	LDA Player_RootJumpVel	 	; Get initial jump velocity
 	;SUB Player_SpeedJumpInc,X	; Subtract a tiny bit of boost at certain X Velocity speed levels
 	ADD #4
-	STA <Orange_YVel
+	STA <Orange_YVel,X
 	;JMP check_if_holding_right
 	JMP realend
 
@@ -2416,7 +2415,7 @@ not_input_a_in_the_air:		;here we're holding A
 	BNE add_to_y_speed
 	
 	;we're in the air, and holding A, check if yvel is greater than zero, in that case, increase down acc
-	LDA <Orange_YVel
+	LDA <Orange_YVel,X
 	CMP #0
 	BMI add_to_y_speed
 	LDY #$05
@@ -2424,17 +2423,17 @@ not_input_a_in_the_air:		;here we're holding A
 add_to_y_speed:
 	;LDY #1
 	TYA
-	ADD <Orange_YVel
-	STA <Orange_YVel ; Player_YVel += Y
+	ADD <Orange_YVel,X
+	STA <Orange_YVel,X ; Player_YVel += Y
 	
 	;check if y speed is more than max
-	LDA <Orange_YVel
+	LDA <Orange_YVel,X
 	CMP #$40
 	BMI realend
 	
 	;sätt högsta farten
 	LDA #$40
-	STA <Orange_YVel
+	STA <Orange_YVel,X
 		
 	;BMI check_if_holding_right	 	; If Y velocity is negative, jump
 	
@@ -2448,9 +2447,9 @@ trueend:
 BonusGame_Loop:
 	JSR GraphicsBuf_Prep_And_WaitVSync	 ; Wait for VSync
 
-	LDA SndCur_Map
-	AND #SND_MAPENTERLEVEL
-	BNE PRG030_8D23	 ; If the "entering" sound is still playing, jump to PRG030_8D23
+	;LDA SndCur_Map
+	;AND #SND_MAPENTERLEVEL
+	;BNE PRG030_8D23	 ; If the "entering" sound is still playing, jump to PRG030_8D23
 
 	LDA Level_MusicQueue
 	BEQ PRG030_8D23	 ; If nothing is in the music queue, jump to PRG030_8D23
@@ -2463,7 +2462,7 @@ BonusGame_Loop:
 	STA Level_MusicQueue
 
 PRG030_8D23:
-	JSR BonusGame_Do	 ; Run the Bonus Game
+	;JSR BonusGame_Do	 ; Run the Bonus Game
 	JSR StatusBar_Fill_Score ; Update score
 
 	LDA <Level_ExitToMap
@@ -2856,10 +2855,15 @@ PRG030_8EE7:
 	
 	;make sure first object is an orange cheep!
 	LDX #4
+	;LDA #4
+	;sub the offset in $610
+	;SUB $610
+	;LDA $610
+	;TAX
+
 	LDA Level_ObjectID,X
 	CMP #OBJ_ORANGECHEEP
 	BNE notcheep
-	
 	
 	JSR OrangeCheep_DoGameplay
 notcheep:
@@ -3215,8 +3219,8 @@ PRG030_90C4:
 
 	; Toad House and bonuses jump to PRG030_9128
 	LDA Level_Tileset
-	CMP #15
-	BGE PRG030_9128	 ; If Level_Tileset >= 15 (some kind of Bonus Game), jump to PRG030_9128
+	;CMP #15
+	;BGE PRG030_9128	 ; If Level_Tileset >= 15 (some kind of Bonus Game), jump to PRG030_9128
 	CMP #$07
 	BEQ PRG030_9128	 ; If Level_Tileset = 7 (Toad House), jump to PRG030_9128
 
@@ -3794,44 +3798,44 @@ PRG030_93F4:
 	TAY		 ; Y = the OTHER Player's index
 
 	; Swap all Player map position variables because the challenger lost!
-	LDA Map_Previous_Y,Y
-	STA <Temp_Var1
-	LDA Map_Previous_XHi,Y
-	STA <Temp_Var2
-	LDA Map_Previous_X,Y
-	STA <Temp_Var3
-	LDA Map_Prev_XOff2,Y
-	STA <Temp_Var4
-	LDA Map_Prev_XHi2,Y
-	STA <Temp_Var5
-	LDA Map_Prev_XOff,Y
-	STA <Temp_Var6
-	LDA Map_Prev_XHi,Y
-	STA <Temp_Var7
-	LDA Map_Previous_Y,X
-	STA Map_Previous_Y,Y
-	LDA Map_Previous_XHi,X
-	STA Map_Previous_XHi,Y
-	LDA Map_Previous_X,X
-	STA Map_Previous_X,Y
-	LDA Map_Prev_XOff2,X
-	STA Map_Prev_XOff2,Y
-	LDA Map_Prev_XHi2,X
-	STA Map_Prev_XHi2,Y
-	LDA <Temp_Var1
-	STA Map_Previous_Y,X
-	LDA <Temp_Var2
-	STA Map_Previous_XHi,X
-	LDA <Temp_Var3
-	STA Map_Previous_X,X
-	LDA <Temp_Var4
-	STA Map_Prev_XOff2,X
-	LDA <Temp_Var5
-	STA Map_Prev_XHi2,X
-	LDA <Temp_Var6
-	STA Map_Prev_XOff,X
-	LDA <Temp_Var7
-	STA Map_Prev_XHi,X
+	; LDA Map_Previous_Y,Y
+	; STA <Temp_Var1
+	; LDA Map_Previous_XHi,Y
+	; STA <Temp_Var2
+	; LDA Map_Previous_X,Y
+	; STA <Temp_Var3
+	; LDA Map_Prev_XOff2,Y
+	; STA <Temp_Var4
+	; LDA Map_Prev_XHi2,Y
+	; STA <Temp_Var5
+	; LDA Map_Prev_XOff,Y
+	; STA <Temp_Var6
+	; LDA Map_Prev_XHi,Y
+	; STA <Temp_Var7
+	; LDA Map_Previous_Y,X
+	; STA Map_Previous_Y,Y
+	; LDA Map_Previous_XHi,X
+	; STA Map_Previous_XHi,Y
+	; LDA Map_Previous_X,X
+	; STA Map_Previous_X,Y
+	; LDA Map_Prev_XOff2,X
+	; STA Map_Prev_XOff2,Y
+	; LDA Map_Prev_XHi2,X
+	; STA Map_Prev_XHi2,Y
+	; LDA <Temp_Var1
+	; STA Map_Previous_Y,X
+	; LDA <Temp_Var2
+	; STA Map_Previous_XHi,X
+	; LDA <Temp_Var3
+	; STA Map_Previous_X,X
+	; LDA <Temp_Var4
+	; STA Map_Prev_XOff2,X
+	; LDA <Temp_Var5
+	; STA Map_Prev_XHi2,X
+	; LDA <Temp_Var6
+	; STA Map_Prev_XOff,X
+	; LDA <Temp_Var7
+	; STA Map_Prev_XHi,X
 
 PRG030_946C:
 

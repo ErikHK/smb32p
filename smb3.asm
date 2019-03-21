@@ -1817,6 +1817,7 @@ ASCONFIG_HDISABLE	= $80	; Disables horizontal auto scroll coordinate adjustment 
 	Orange_RunFlag:			.ds		1
 	Orange_PMeterCnt:		.ds		1
 	Orange_MoveLR:			.ds		1
+	Orange_Offset:			.ds		1
 	; ASSEMBLER BOUNDARY CHECK, END OF $0600
 .BoundGame_0600:	BoundCheck .BoundGame_0600, $0606, $05xx Gameplay context
 

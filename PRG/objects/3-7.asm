@@ -1,5 +1,6 @@
 	.byte $01	; Unknown purpose
 
+	.byte OBJ_ORANGECHEEP, $04, $16
 	.byte OBJ_SPIKE, $0F, $16
 	.byte OBJ_SPIKE, $12, $11
 	.byte OBJ_SPIKE, $1E, $10

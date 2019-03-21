@@ -1,5 +1,6 @@
 	.byte $00	; Unknown purpose
 
+	.byte OBJ_ORANGECHEEP, $04, $16
 	.byte OBJ_PODOBOO, $0D, $13
 	.byte OBJ_THWOMP, $16, $12
 	.byte OBJ_ROTODISCCCLOCKWISE, $11, $14

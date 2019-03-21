@@ -5100,8 +5100,10 @@ PRG005_B909:
 	; spawn into slot 6, regardless of what was there previously.
 	; (Normal objects are in lower slots so this generally should
 	; not be too noticeable.)
+	
 	CMP #OBJ_ENDLEVELCARD
 	BNE PRG005_B911	 ; If object ID <> OBJ_ENDLEVELCARD, jump to PRG005_B911
+
 
 	LDX #$06	 ; X = 6
 	BNE PRG005_B91E	 ; Jump (technically always) to PRG005_B91E (skip looking for empty slot, force 6)
@@ -5109,11 +5111,31 @@ PRG005_B909:
 PRG005_B911:
 	LDX #$04	 ; X = 4
 PRG005_B913:
-	LDA Objects_State,X	
+	;LDA Level_Objects,X
+	
+	CMP #OBJ_ORANGECHEEP
+	BEQ PRG005_B91E
+	
+	LDA Objects_State,X
 	BEQ PRG005_B91E	 ; If this object slot is "dead/empty", jump to PRG005_B91E
+
 	DEX		 ; X--
+
 	BPL PRG005_B913	 ; While X >= 0, loop!
 	JMP PRG005_B956	 ; Jump to PRG005_B956 (RTS)
+
+;fixit:
+	;LDX #$04
+	;TXA				; A = X
+	;LDA #5
+	;STA $610
+	;SBC $610,X
+	
+	;STA $610		; store offset in $610
+	;STX Orange_Offset
+	;JMP after
+	;LDA Objects_State,X	
+	;BEQ PRG005_B91E	 ; If this object slot is "dead/empty", jump to PRG005_B91E
 
 PRG005_B91E:
 
@@ -5162,6 +5184,10 @@ PRG005_B91E:
 	; Store original spawn index
 	STA Objects_SpawnIdx,X
 
+	LDA Level_Objects,X
+	CMP #OBJ_ORANGECHEEP
+	BEQ PRG005_B956
+	
 	; Set object state to 1
 	INC Objects_State,X
 

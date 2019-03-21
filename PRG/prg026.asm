@@ -3706,108 +3706,43 @@ PRG026_B4F5:
 	RTS		 ; Return
 
 
+
+	
+	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; LevelLoad_CopyObjectList
 ;
 ; Copies the level's object list in from ROM to RAM
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 LevelLoad_CopyObjectList:
-	
 	LDY #$00	 ; Y = 0
-	
+
 	LDA [Level_ObjPtr_AddrL],Y	; Get first byte from object layout data
 	STA Level_Objects,Y	 	; Copy to beginning of Level_Objects array
-	
-	;Try to add another object first..
-	;;;INY
-	;;;LDA #$88 ;OBJECT!!!!!!!!!!!!
-	;;;STA Level_Objects,Y
-
-	; Copy in start column of object (X!)
-	;;;INY
-	;;;LDA <Player_XStart
-	;LDA Level_XStarts
-	
-	;;;LSR A
-	;;;LSR A
-	
-	;;;ADD #3
-	;ADD #$01
-	;AND #$f0
-	;LDA #$03
-	;AND #$f0
-	;;;STA Level_Objects,Y
-
-	; Copy in start row of object (Y!)
-	;;;INY
-	;LDA #$15
-	;;;LDX #0
-	;;;LDA GamePlay_YStart,X
-	;LDA <Player_Y
-	;ADD #32
-	;SUB #32
-	;;;LSR A
-	;;;LSR A
-	;LSR A
-	;LSR A
-	;;;SUB #$04
-	;ADD #1
-	;AND #$f0
-	;;;STA Level_Objects,Y
-	
-	LDY #$00
-	;;;LDX #$03
-	LDX #00
-	
-	
 
 PRG026_B506:
 
 	; Next byte is ID of object (or $FF to terminate the list)
 	INY
-	INX
 	LDA [Level_ObjPtr_AddrL],Y
-	STA Level_Objects,X
-	
-	CMP #OBJ_AIRSHIPANCHOR
-	BEQ remove_orange
-	CMP #OBJ_TOADANDKING
-	BEQ remove_orange
-	;CMP #OBJ_AUTOSCROLL
-	;BEQ remove_orange
-	
-	
-
-cont:
+	STA Level_Objects,Y
 
 	CMP #$ff	 
 	BEQ PRG026_B51F	 	; If terminator hit, jump to PRG026_B51F (RTS)
 
 	; Copy in start column of object
-	INY
-	INX	
+	INY		 
 	LDA [Level_ObjPtr_AddrL],Y
-	STA Level_Objects,X
+	STA Level_Objects,Y
 
 	; Copy in start row of object
 	INY
-	INX
 	LDA [Level_ObjPtr_AddrL],Y
-	STA Level_Objects,X
+	STA Level_Objects,Y
 
 	JMP PRG026_B506		; Loop!
-	
-remove_orange:
-	STA Level_Objects,X
-	LDY #0
-	LDX #0
-	LDA [Level_ObjPtr_AddrL],Y
-	STA Level_Objects,X
-	JMP cont
-	
 
 PRG026_B51F:
-	LDX #0
 	RTS		 ; Return
 
 ; Rest of ROM bank was empty...

@@ -1,10 +1,11 @@
 	.byte $01	; Unknown purpose
 
+	.byte OBJ_ORANGECHEEP, $04, $16
 	.byte OBJ_TWIRLINGPLATCW, $12, $16
 	.byte OBJ_TWIRLINGPLATCW, $19, $18
 	.byte OBJ_GOOMBA, $1E, $12
 	.byte OBJ_GOOMBA, $23, $12
-	.byte OBJ_GOOMBA, $24, $12
+	;.byte OBJ_GOOMBA, $24, $12
 	.byte OBJ_WOODENPLATUNSTABLE, $2E, $13
 	.byte OBJ_OSCILLATING_HS, $3F, $19
 	.byte OBJ_WOODENPLATFORMFALL, $46, $18

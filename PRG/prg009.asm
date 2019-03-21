@@ -4256,7 +4256,7 @@ PRG009_B460:
 	; Set Vs_NextObjectIsLast; because it is!
 	INC Vs_NextObjectIsLast
 
-	LDX #$03	 ; X = 4
+	LDX #$04	 ; X = 4
 PRG009_B494:
 	LDA Vs_ObjectState,X
 	BEQ PRG009_B49D	 ; If object slot is dead/empty, jump to PRG009_B49D
