@@ -1362,6 +1362,12 @@ PRG000_C713:
 	BNE PRG000_C736
 
 PRG000_C72E:
+	LDA #$04
+	STA <Orange_In_Air
+	LDA Level_ObjectID,X
+	CMP #OBJ_ORANGECHEEP
+	BEQ PRG000_C736
+
 	INC Objects_QSandCtr,X	; Increment the quicksand counter
 
 	LDA #OBJSTATE_KILLED
@@ -3165,7 +3171,7 @@ PRG000_CFA8:
 ;	NOP
 ;	NOP
 ;	NOP
-	NOP
+;	NOP
 
 ObjState_Killed:
 	JSR Object_FallAndDelete	; Have object fall and delete if it gets too low (at which point we don't return)
@@ -3249,6 +3255,10 @@ Object_CalcAndDrawKilled:
 
 	; If object was killed by sinking in quicksand or just killed, do this...
 Object_DoKilledAction:
+	LDA Level_ObjectID,X
+	CMP #OBJ_ORANGECHEEP
+	BEQ PRG000_D044
+
 	LDA <Player_HaltGame
 	BNE PRG000_D054	 ; If gameplay is halted, jump to PRG000_D054
 
@@ -3265,6 +3275,7 @@ Object_DoKilledAction:
 
 PRG000_D02E:
 
+	
 	; Slow object descent
 	LDA #$04
 	STA <Objects_YVel,X
@@ -5645,7 +5656,7 @@ Player_GetHurt:
 	ORA Player_SuitLost		; ... just lost a power-up suit ...
 	ORA <Player_HaltGame		; ... gameplay halted ...
 	ORA Player_HaltTick		; ... Player halted ...
-	ORA Player_DebugNoHitFlag	; ... debug invincibility flag is set (unused) ...
+	;ORA Player_DebugNoHitFlag	; ... debug invincibility flag is set (unused) ...
 	BNE PRG000_D9B7	 ; ... then jump to PRG000_D9B7 (RTS)
 
 	JMP PRG000_DA15	 ; Jump to PRG000_DA15 (skips lost/dead Japanese version code)
@@ -6722,7 +6733,7 @@ PRG000_DE03:
 
 	LDA #$00
 	STA Objects_XVelFrac	; Objects_XVelFrac = 0
-	STA THouse_UnusedFlag	; THouse_UnusedFlag = 0 (set here, never used otherwise)
+	;STA THouse_UnusedFlag	; THouse_UnusedFlag = 0 (set here, never used otherwise)
 
 	LDA #$ff	 
 	STA Objects_Timer	 ; Objects_Timer = $FF

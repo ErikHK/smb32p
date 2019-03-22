@@ -2177,9 +2177,11 @@ Player_StandOnPlatform:
 	LDA <Objects_Y,X	 
 	SUB #31
 	STA <Player_Y
+	;STA <Orange_Y
 	LDA <Objects_YHi,X
 	SBC #$00
 	STA <Player_YHi
+	;STA <Orange_YHi
 
 	; Flag Player as NOT mid-air
 	LDY #$00
@@ -2194,9 +2196,11 @@ PRG002_AA7B:
 	; Add to Player_X, with carry
 	ADD <Player_X
 	STA <Player_X
+	;STA <Orange_X
 	TYA
 	ADC <Player_XHi
 	STA <Player_XHi
+	;STA <Orange_XHi
 
 PRG002_AA85:
 	RTS		 ; Return
@@ -6334,7 +6338,7 @@ PRG002_BFD3:
 
 	; ?? Someone wanna claim this?
 PRG002_BFD4:
-	.byte $FC, $A9, $00, $22, $0B, $01, $A9, $22, $14, $01, $A9, $22, $29, $04, $A9, $FC
-	.byte $FC, $A9, $22, $33, $04, $A9, $FC, $FC, $A9, $22, $4A, $04, $A9, $A9, $FC, $A9
-	.byte $22, $52, $04, $A9, $FC, $A9, $A9, $22, $6C, $48, $A9, $00
+	;.byte $FC, $A9, $00, $22, $0B, $01, $A9, $22, $14, $01, $A9, $22, $29, $04, $A9, $FC
+	;.byte $FC, $A9, $22, $33, $04, $A9, $FC, $FC, $A9, $22, $4A, $04, $A9, $A9, $FC, $A9
+	;.byte $22, $52, $04, $A9, $FC, $A9, $A9, $22, $6C, $48, $A9, $00
 
