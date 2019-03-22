@@ -2042,8 +2042,14 @@ PRG000_CA5C:
 
 	; Y contains index to the base value for this group of object IDs
 	; A contains the object's ID
+	
 
 	INY		 ; Y++
+	
+	CMP #OBJ_ORANGECHEEP
+	BEQ teeeeeest
+	
+	
 	SUB ObjectID_BaseVals-1,Y ; Subtract next group's ID to make this object's ID relative to group
 
 	STA ObjGroupRel_Idx ; Set ObjGroupRel_Idx to this group-relative index value
@@ -2061,7 +2067,8 @@ PRG000_CA5C:
 	; Object's can request a particular pattern set to be available to them.
 	; They may set either the fifth or sixth bank of CHRROM, which is specified
 	; by bit 7.  
-
+	
+	
 	LDX #$00	 ; X = 0 (fifth CHRROM bank)
 	LDA ObjectGroup_PatTableSel,Y	 ; Load CHRROM bank request for this object, if any
 	BEQ PRG000_CA7F	 ; If CHRROM bank request is zero, no change, jump to PRG000_CA7F
@@ -2071,6 +2078,29 @@ PRG000_CA5C:
 PRG000_CA7A:
 	AND #$7f	 ; Bit 7 is used to specify which bank, so filter it here
 	STA PatTable_BankSel+4,X	 ; Store pattern bank
+	JMP PRG000_CA7F
+	
+teeeeeest:
+	SUB ObjectID_BaseVals-1,Y ; Subtract next group's ID to make this object's ID relative to group
+
+	STA ObjGroupRel_Idx ; Set ObjGroupRel_Idx to this group-relative index value
+
+	; Y is now a value of 1 to 5, and that value dictates the page 
+	; where this object's code can be found...
+	STY PAGE_A000	 ; Set new page
+	TAY		; Object group-relative index -> 'Y'
+		 
+	JSR PRGROM_Change_A000	 ; Set page @ A000 to appropriate object page...
+
+	;LDA Objects_DisPatChng,X
+	;BNE PRG000_CA81	 ; If pattern bank enforcement is disabled, jump to PRG000_CA81
+
+
+	LDX #$00
+	INX
+	LDA #$4f
+	STA PatTable_BankSel+4,X	 ; Store pattern bank
+
 
 PRG000_CA7F:
 	LDX <SlotIndexBackup		 ; Restore X as the object slot index
@@ -5663,41 +5693,41 @@ Player_GetHurt:
 
 	;;;;;;;;;;;;;; Begin SMB3-J Only Code ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-	; SB: Lost/Dead Code -- This was the Japanese version suit loss code
-	; For detail why it was removed, see PRG007 LostShoe_Pattern
-; $D9EC
-	LDA Player_Kuribo
-	BNE PRG000_D9F7	 ; If Player is in Kuribo's Shoe, jump to PRG000_D9F7
+	; ; SB: Lost/Dead Code -- This was the Japanese version suit loss code
+	; ; For detail why it was removed, see PRG007 LostShoe_Pattern
+; ; $D9EC
+	; LDA Player_Kuribo
+	; BNE PRG000_D9F7	 ; If Player is in Kuribo's Shoe, jump to PRG000_D9F7
 
-	; Player is NOT in Kuribo's Shoe...
+	; ; Player is NOT in Kuribo's Shoe...
 
-	LDA <Player_Suit
-	CMP #PLAYERSUIT_SUPERSUITBEGIN
-	BLS PRG000_DA4E	 ; If Player is not in one of the Super Suits, jump to PRG000_DA4E
+	; LDA <Player_Suit
+	; CMP #PLAYERSUIT_SUPERSUITBEGIN
+	; BLS PRG000_DA4E	 ; If Player is not in one of the Super Suits, jump to PRG000_DA4E
 
-PRG000_D9F7:
+; PRG000_D9F7:
 
-	; Player was in a Kuribo's Shoe or one of the Super Suits
+	; ; Player was in a Kuribo's Shoe or one of the Super Suits
 
-	; Play "shoe lost" sound
-	LDA Sound_QLevel1
-	ORA #SND_LEVELSHOE
-	STA Sound_QLevel1
+	; ; Play "shoe lost" sound
+	; LDA Sound_QLevel1
+	; ORA #SND_LEVELSHOE
+	; STA Sound_QLevel1
 
-	LDY <Player_Suit	; Y = Player's power up
-	LDA SMB3J_SuitLossFrame,Y	 ; Get correct "loss" frame
-	STA <Temp_Var1		 ; -> Temp_Var1
-	JSR Player_LoseKuribo	 ; Suit pops off
+	; LDY <Player_Suit	; Y = Player's power up
+	; LDA SMB3J_SuitLossFrame,Y	 ; Get correct "loss" frame
+	; STA <Temp_Var1		 ; -> Temp_Var1
+	; JSR Player_LoseKuribo	 ; Suit pops off
 
-	; Switch back to just Big
-	LDA #$01
-	STA Player_QueueSuit
+	; ; Switch back to just Big
+	; LDA #$01
+	; STA Player_QueueSuit
 
-	; You no longer have the Kuribo's Shoe
-	LDA #$00
-	STA Player_Kuribo
+	; ; You no longer have the Kuribo's Shoe
+	; LDA #$00
+	; STA Player_Kuribo
 
-	BEQ PRG000_DA6D	 ; Jump (technically always) to PRG000_DA6D
+	; BEQ PRG000_DA6D	 ; Jump (technically always) to PRG000_DA6D
 
 	;;;;;;;;;;;;;; End SMB3-J Only Code ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

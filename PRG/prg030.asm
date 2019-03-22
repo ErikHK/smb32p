@@ -2119,8 +2119,10 @@ continuestoring3:
 	STA <Temp_Var3
 	
 
-	LDA Player_UphillFlag
-	BEQ PRG011_2_AB56	 ; If Player is not going up hill, jump to PRG011_2_AB56
+	;LDA Player_UphillFlag
+	;BEQ PRG011_2_AB56	 ; If Player is not going up hill, jump to PRG011_2_AB56
+	;no uphill code for the fish! she's super strong
+	JMP PRG011_2_AB56
 
 	;INC Player_WalkAnimTicks	; Player_WalkAnimTicks++
 
@@ -2263,8 +2265,10 @@ PRG011_2_ABCD:
 PRG011_2_ABD3:
 
 	; Player moving leftward
-
+	; update sprite
 	LDA #$00
+	STA $67d
+	
 	SUB Player_XAccelPseudoFrac,Y ; Negate value from Player_XAccelPseudoFrac[Y]
 	STA <Temp_Var1	  ; -> Temp_Var1
 
@@ -2281,6 +2285,10 @@ PRG011_2_ABD3:
 PRG011_2_ABEB:
 
 	; Player moving rightward
+	; update sprite
+	LDA #$40
+	STA $67d
+	
 
 	LDA Player_XAccelPseudoFrac,Y ; Get value from Player_XAccelPseudoFrac[Y]
 	STA <Temp_Var1	  ; -> Temp_Var1
@@ -2325,11 +2333,30 @@ slut:
 
 ;8CEC
 OrangeCheep_DoGameplay:
+	;LDA #$4f
+	;STA PatTable_BankSel+5	 ; Sixth pattern table bank = $4F
+
 	JSR Orange_PowerUpdate
 	JSR Orange_SetMoveLR
 
+	;fill up with objects
 	LDA #$0c
 	STA $7d80
+	
+	LDA #$07
+	STA $7d81
+
+	LDA #$07
+	STA $7d82
+	
+	LDA #$07
+	STA $7d83
+	
+	LDA #$07
+	STA $7d84
+	
+	LDA #$07
+	STA $7d85
 	
 	;BUGGFIX!!
 	;LDA $58c
@@ -2419,7 +2446,7 @@ not_input_a_in_the_air:		;here we're holding A
 	CMP #0
 	BMI add_to_y_speed
 	LDY #$05
-	
+
 add_to_y_speed:
 	;LDY #1
 	TYA
@@ -2442,7 +2469,12 @@ realend:
 trueend:
 	RTS
 	
-	; The Bonus Game Loop begins here...
+
+	
+
+
+
+; The Bonus Game Loop begins here...
 
 BonusGame_Loop:
 	JSR GraphicsBuf_Prep_And_WaitVSync	 ; Wait for VSync

@@ -5113,9 +5113,6 @@ PRG005_B911:
 PRG005_B913:
 	;LDA Level_Objects,X
 	
-	CMP #OBJ_ORANGECHEEP
-	;BEQ PRG005_B91E
-	
 	LDA Objects_State,X
 	BEQ PRG005_B91E	 ; If this object slot is "dead/empty", jump to PRG005_B91E
 
@@ -5124,11 +5121,12 @@ PRG005_B913:
 	BPL PRG005_B913	 ; While X >= 0, loop!
 	JMP PRG005_B956	 ; Jump to PRG005_B956 (RTS)
 
-;fixit:
+fixit:
 	;LDX #$04
-	;TXA				; A = X
+	TXA				; A = X
 	;LDA #5
-	;STA $610
+	STA $701
+	JMP contadaaa
 	;SBC $610,X
 	
 	;STA $610		; store offset in $610
@@ -5138,7 +5136,11 @@ PRG005_B913:
 	;BEQ PRG005_B91E	 ; If this object slot is "dead/empty", jump to PRG005_B91E
 
 PRG005_B91E:
+	LDA Level_Objects,X
+	CMP #OBJ_ORANGECHEEP
+	BEQ fixit
 
+contadaaa:
 	; Set object X
 	LDA <Temp_Var1
 	STA <Objects_X,X
