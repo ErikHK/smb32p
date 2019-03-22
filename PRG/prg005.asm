@@ -5114,7 +5114,7 @@ PRG005_B913:
 	;LDA Level_Objects,X
 	
 	CMP #OBJ_ORANGECHEEP
-	BEQ PRG005_B91E
+	;BEQ PRG005_B91E
 	
 	LDA Objects_State,X
 	BEQ PRG005_B91E	 ; If this object slot is "dead/empty", jump to PRG005_B91E
@@ -5184,9 +5184,9 @@ PRG005_B91E:
 	; Store original spawn index
 	STA Objects_SpawnIdx,X
 
-	LDA Level_Objects,X
-	CMP #OBJ_ORANGECHEEP
-	BEQ PRG005_B956
+	;LDA Level_Objects,X
+	;CMP #OBJ_ORANGECHEEP
+	;BEQ PRG005_B956
 	
 	; Set object state to 1
 	INC Objects_State,X
@@ -5893,6 +5893,11 @@ PRG005_BCB8:
 	CMP #OBJ_GIANTBLOCKCTL	 
 	BEQ PRG005_BCCD	 ; If object ID = OBJ_GIANTBLOCKCTL (the Giant World block controller), jump to PRG005_BCCD
 
+	LDA Level_ObjectID,Y
+	CMP #OBJ_ORANGECHEEP
+	BEQ PRG005_BCCD	 ; If object ID = OBJ_ORANGECHEEP (the Giant World block controller), jump to PRG005_BCCD
+
+	
 	LDA Objects_State,Y	
 	BNE PRG005_BCF4	 ; If this object slot is not "dead/empty", jump to PRG005_BCF4
 

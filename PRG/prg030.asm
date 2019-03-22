@@ -2107,7 +2107,7 @@ Orange_UphillSpeedVals:
 Orange_GroundHControl:
 	LDX $610
 	
-	LDA <Orange_XVel,X
+	LDA <Orange_XVel
 	CMP #0
 	BMI negatefirst
 	JMP continuestoring3
@@ -2220,7 +2220,7 @@ PRG011_2_ABA6:
 	;BNE PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01 (RTS)
 	BEQ PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01 (RTS)
 
-	LDA <Orange_XVel,X
+	LDA <Orange_XVel
 	BEQ PRG011_2_AC01	 ; If Player is not moving horizontally, jump to PRG011_2_AC01 (RTS)
 	BMI PRG011_2_ABD3	 ; If Player is moving leftward, jump to PRG011_2_ABD3
 	BPL PRG011_2_ABEB	 ; If Player is moving rightward, jump to PRG011_2_ABEB
@@ -2292,9 +2292,9 @@ PRG011_2_ABF5:
 	LDA <Temp_Var1
 	ADD Counter_Wiggly	; actual value not used, looking for a semi-random carry
 
-	LDA <Orange_XVel,X
+	LDA <Orange_XVel
 	ADC <Temp_Var2
-	STA <Orange_XVel,X	; Orange_XVel += Temp_Var2 (and sometimes carry)
+	STA <Orange_XVel	; Orange_XVel += Temp_Var2 (and sometimes carry)
 	;STA $95
 
 PRG011_2_AC01:
@@ -2302,7 +2302,7 @@ PRG011_2_AC01:
 
 
 Orange_SetMoveLR:
-	LDA <Orange_XVel,X
+	LDA <Orange_XVel
 	CMP #0
 	BEQ set_zero
 	BMI set_one
@@ -2392,7 +2392,7 @@ continue:
 	LDA Player_RootJumpVel	 	; Get initial jump velocity
 	;SUB Player_SpeedJumpInc,X	; Subtract a tiny bit of boost at certain X Velocity speed levels
 	ADD #4
-	STA <Orange_YVel,X
+	STA <Orange_YVel
 	;JMP check_if_holding_right
 	JMP realend
 
@@ -2415,7 +2415,7 @@ not_input_a_in_the_air:		;here we're holding A
 	BNE add_to_y_speed
 	
 	;we're in the air, and holding A, check if yvel is greater than zero, in that case, increase down acc
-	LDA <Orange_YVel,X
+	LDA <Orange_YVel
 	CMP #0
 	BMI add_to_y_speed
 	LDY #$05
@@ -2423,17 +2423,17 @@ not_input_a_in_the_air:		;here we're holding A
 add_to_y_speed:
 	;LDY #1
 	TYA
-	ADD <Orange_YVel,X
-	STA <Orange_YVel,X ; Player_YVel += Y
+	ADD <Orange_YVel
+	STA <Orange_YVel ; Player_YVel += Y
 	
 	;check if y speed is more than max
-	LDA <Orange_YVel,X
+	LDA <Orange_YVel
 	CMP #$40
 	BMI realend
 	
 	;sätt högsta farten
 	LDA #$40
-	STA <Orange_YVel,X
+	STA <Orange_YVel
 		
 	;BMI check_if_holding_right	 	; If Y velocity is negative, jump
 	
