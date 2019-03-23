@@ -2125,11 +2125,19 @@ continuestoring3:
 	JMP PRG011_2_AB56
 
 	;INC Player_WalkAnimTicks	; Player_WalkAnimTicks++
+	
+	LDA Player_Current
+	BNE luigi_B
 
 	LDY #10	 ; Y = 10 (Player NOT holding B)
 
 	BIT <Pad_Holding_2
 	BVC PRG011_2_AB5B	 ; If Player is NOT holding 'B', jump to PRG011_2_AB5B
+	
+luigi_B:
+	BIT <Pad_Holding
+	BVC PRG011_2_AB5B	 ; If Player is NOT holding 'B', jump to PRG011_2_AB5B
+	
 
 	LDY #1	 ; Y = 1 (Player holding B)
 	BNE PRG011_2_AB5B	 ; Jump (technically always) to PRG011_2_AB5B
@@ -2201,12 +2209,21 @@ PRG011_2_AB9E:
 	INY	; Y += 4 (offset 4 inside Player_XAccel* tables)
 
 PRG011_2_ABA6:
+	LDA Player_Current
+	BNE luigi_holdingtest
+
 	LDA <Pad_Holding_2
+	AND #(PAD_LEFT | PAD_RIGHT)
+	BNE PRG011_2_ABB8	 ; If Player is pressing LEFT or RIGHT, jump to PRG011_2_ABB8
+	JMP afterholdingtest
+	
+luigi_holdingtest:
+	LDA <Controller1
 	AND #(PAD_LEFT | PAD_RIGHT)
 	BNE PRG011_2_ABB8	 ; If Player is pressing LEFT or RIGHT, jump to PRG011_2_ABB8
 
 	; Player not pressing LEFT/RIGHT...
-
+afterholdingtest:
 	LDA <Orange_In_Air
 	;BNE PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01 (RTS)
 	BEQ PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01 (RTS)
@@ -2246,10 +2263,18 @@ PRG011_2_ABCD:
 	; block was jumped, otherwise bit 0 is set if the X velocity is
 	; less than the specified maximum, clear if over the max
 
+	LDA Player_Current
+	BNE luigi_right
 
 	LDA <Pad_Holding_2
 	AND #PAD_RIGHT
 	BNE PRG011_2_ABEB	 ; If Player is holding RIGHT, jump to PRG011_2_ABEB (moving rightward code)
+	JMP PRG011_2_ABD3
+	
+luigi_right:
+	LDA <Controller1
+	AND #PAD_RIGHT
+	BNE PRG011_2_ABEB	 ; If Player is holding RIGHT, jump to PRG011_2_ABEB (moving rightward code)	
 
 PRG011_2_ABD3:
 
