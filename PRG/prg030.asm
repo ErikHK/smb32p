@@ -2126,19 +2126,21 @@ continuestoring3:
 
 	;INC Player_WalkAnimTicks	; Player_WalkAnimTicks++
 	
+	LDY #10	 ; Y = 10 (Player NOT holding B)
+	
 	LDA Player_Current
 	BNE luigi_B
 
-	LDY #10	 ; Y = 10 (Player NOT holding B)
 
 	BIT <Pad_Holding_2
 	BVC PRG011_2_AB5B	 ; If Player is NOT holding 'B', jump to PRG011_2_AB5B
+	JMP player_holding_B
 	
 luigi_B:
-	BIT <Pad_Holding
+	BIT <Controller1
 	BVC PRG011_2_AB5B	 ; If Player is NOT holding 'B', jump to PRG011_2_AB5B
 	
-
+player_holding_B:
 	LDY #1	 ; Y = 1 (Player holding B)
 	BNE PRG011_2_AB5B	 ; Jump (technically always) to PRG011_2_AB5B
 
@@ -2156,12 +2158,21 @@ PRG011_2_AB5B:
 
 PRG011_2_AB62:
 	LDY #$18
+	
+	LDA Player_Current
+	BNE kollaluigiholdingB
 
 	BIT <Pad_Holding_2
 	BVC PRG011_2_AB83	; If Player is NOT holding 'B', jump to PRG011_2_AB83
+	JMP playerisholdingB
 
+	;luigi playing:
+kollaluigiholdingB:
+	BIT <Controller1
+	BVC PRG011_2_AB83	; If Player is NOT holding 'B', jump to PRG011_2_AB83
+	
 	; Player is holding B...
-
+playerisholdingB:
 	LDA <Orange_In_Air
 	;;;ORA Player_Slide
 	;;;BNE PRG011_2_AB78	 ; If Player is mid air or sliding, jump to PRG011_2_AB78
@@ -2419,10 +2430,22 @@ contaa:
 	
 
 continue:
+	;check if luigi is playing
+	LDA Player_Current
+	BNE luigiplaying
+
 	;check if jumping
 	LDA <Pad_Input_2
 	AND #PAD_A
 	BEQ not_input_a
+	JMP afterluigiplayingtest
+	
+luigiplaying:
+	LDA <Controller1Press
+	AND #PAD_A
+	BEQ not_input_a
+
+afterluigiplayingtest:
 	
 	;is inputting A, is orange in air?
 	LDA <Orange_In_Air
@@ -2441,9 +2464,20 @@ continue:
 ;8d02
 not_input_a:	;not inputting A, but maybe we're holding A? may be both in air and not
 	LDY #$05
+	LDA Player_Current
+	BNE kollaluigiholding
+
+	
 	LDA <Pad_Holding_2
 	AND #PAD_A
 	BEQ add_to_y_speed	;not holding A and not inputting A, jump away
+	JMP not_input_a_in_the_air
+	
+kollaluigiholding:
+	LDA <Controller1
+	AND #PAD_A
+	BEQ add_to_y_speed	;not holding A and not inputting A, jump away
+	
 	
 
 	;8d0a
