@@ -2,15 +2,29 @@
 
 	.byte OBJ_ORANGECHEEP, $04, $14
 	
-	.byte OBJ_DRYBONES, $11, $19
+	;.byte OBJ_DRYBONES, $11, $19
+	.byte OBJ_REDTROOPA, $11, $19
+	
 	;.byte OBJ_DRYBONES, $1A, $19
-	.byte OBJ_DRYBONES, $1C, $19
+	
+	
+	;.byte OBJ_DRYBONES, $1C, $19
+	.byte OBJ_REDTROOPA, $1C, $19
+	
 	.byte OBJ_THWOMP, $1F, $11
-	.byte OBJ_DRYBONES, $28, $19
-	.byte OBJ_DRYBONES, $2E, $16
+	
+	;.byte OBJ_DRYBONES, $28, $19
+	.byte OBJ_REDTROOPA, $28, $19
+	
+	;.byte OBJ_DRYBONES, $2E, $16
+	.byte OBJ_REDTROOPA, $2E, $16
+	
 	.byte OBJ_THWOMP, $3D, $11
 	.byte OBJ_BOO, $42, $12
-	.byte OBJ_DRYBONES, $4C, $16
+	
+	;.byte OBJ_DRYBONES, $4C, $16
+	.byte OBJ_REDTROOPA, $4C, $16
+	
 	.byte OBJ_THWOMP, $60, $01
 	.byte OBJ_BOO, $6D, $01
 	.byte OBJ_THWOMP, $76, $01

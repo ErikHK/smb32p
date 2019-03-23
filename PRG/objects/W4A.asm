@@ -1,5 +1,6 @@
 	.byte $00	; Unknown purpose
 
+	;.byte OBJ_ORANGECHEEP, $08, $06
 	.byte OBJ_AUTOSCROLL, $00, $05
 	.byte OBJ_CLOUDSINBGBEGIN, $01, $03
 	.byte OBJ_FIREJET_RIGHT, $14, $0B

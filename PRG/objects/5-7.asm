@@ -1,5 +1,6 @@
 	.byte $01	; Unknown purpose
 
+	.byte OBJ_ORANGECHEEP, $04, $18		;should work..
 	.byte OBJ_GREENTROOPA, $0B, $18
 	.byte OBJ_PILEDRIVER, $22, $16
 	.byte OBJ_PILEDRIVER, $2E, $13

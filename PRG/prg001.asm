@@ -2863,6 +2863,7 @@ PRG001_ADB1:
 	STA Map_ReturnStatus
 
 	STA <Player_XVel ; Halt Player horizontally
+	STA <Orange_XVel
 
 PRG001_ADBB:
 	JMP Object_Draw16x32Sprite	 ; Draw the door and don't come back

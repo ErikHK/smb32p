@@ -1,6 +1,6 @@
 	.byte $01	; Unknown purpose
 
-	.byte OBJ_ORANGECHEEP, $04, $17
+	;.byte OBJ_ORANGECHEEP, $04, $17
 	.byte OBJ_WATERCURRENTUPWARD, $06, $17
 	.byte OBJ_LAKITU, $0F, $03
 	.byte OBJ_LAKITUFLEE, $16, $03

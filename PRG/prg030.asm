@@ -2180,19 +2180,8 @@ PRG011_2_AB78:
 PRG011_2_AB83:
 	STY <Temp_Var14	 ; Store top speed -> Temp_Var14
 
-	LDY Player_Slippery
-	BEQ PRG011_2_AB98	 ; If ground is not slippery at all, jump to PRG011_2_AB98
-
-	;INC Player_WalkAnimTicks ; Player_WalkAnimTicks++
-
-	DEY
-	TYA
-	ASL A
-	ASL A
-	ASL A
-	ADD #$40
-	TAY		 ; Y = ((selected top speed - 1) << 3) + $40 ??
-	BNE PRG011_2_AB9E	 ; And as long as that's not zero, jump to PRG011_2_AB9E
+	;LDY Player_Slippery
+	;OrangeCheep doesn't slip! code removed here
 
 PRG011_2_AB98:
 	LDA <Player_Suit
@@ -2343,7 +2332,7 @@ OrangeCheep_DoGameplay:
 	LDA #$0c
 	STA $7d80
 	
-	LDA #$07
+	LDA #$0c
 	STA $7d81
 
 	LDA #$07

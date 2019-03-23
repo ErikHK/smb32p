@@ -4,7 +4,7 @@
 	.byte OBJ_PIRANHASPIKEBALL, $10, $15
 	.byte OBJ_GREENTROOPA, $1A, $17
 	.byte OBJ_NIPPER, $21, $17
-	.byte OBJ_NIPPER, $23, $17
+	;.byte OBJ_NIPPER, $23, $17
 	.byte OBJ_NIPPER, $27, $16
 	.byte OBJ_NIPPERHOPPING, $2A, $15
 	.byte OBJ_NIPPERHOPPING, $2F, $16

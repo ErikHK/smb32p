@@ -1,5 +1,6 @@
 	.byte $00	; Unknown purpose
 
+	;.byte OBJ_ORANGECHEEP, $08, $06	;bad sprite, bc of fire??
 	.byte OBJ_AUTOSCROLL, $00, $03
 	.byte OBJ_CLOUDSINBGBEGIN, $01, $03
 	.byte OBJ_CFIRE_ULCANNON, $17, $0F

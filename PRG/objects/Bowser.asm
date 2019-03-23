@@ -1,5 +1,6 @@
 	.byte $00	; Unknown purpose
 
+	;.byte OBJ_ORANGECHEEP, $04, $17	;FIX PLATFORM!
 	.byte OBJ_CFIRE_LASER, $18, $14
 	.byte OBJ_CFIRE_LASER, $1D, $14
 	.byte OBJ_CFIRE_LASER, $22, $14

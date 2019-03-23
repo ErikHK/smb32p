@@ -754,10 +754,12 @@ PRG008_A38E:
 
 	LDA <Player_X	
 	STA <Pipe_PlayerX	 ; Pipe_PlayerX = Player_X
+	STA <Orange_X
 
 	LDA <Player_Y
 	AND #$F0	
 	STA <Pipe_PlayerY
+	STA <Orange_Y
 	DEC <Pipe_PlayerY 	; Pipe_PlayerY = Player_Y aligned to nearest 16, minus 1
 
 	LDA Level_7Vertical
@@ -1694,6 +1696,7 @@ PRG008_A852:
 	STY Map_ReturnStatus	 ; Map_ReturnStatus = 0
 
 	STY <Player_XVel	 ; Player_XVel = 0
+	STY <Orange_XVel
 
 	LDA <Player_X
 	AND #$08
@@ -1706,6 +1709,7 @@ PRG008_A864:
 	ADD <Player_X	 ; Add offset to Player_X if needed
 	AND #$F0	 ; Lock to nearest column (place directly in doorway)
 	STA <Player_X	 ; Update Player_X
+	STA <Orange_X
 
 PRG008_A86C:
 

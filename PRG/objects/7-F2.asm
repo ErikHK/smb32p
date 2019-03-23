@@ -1,5 +1,6 @@
 	.byte $00	; Unknown purpose
 
+	.byte OBJ_ORANGECHEEP, $04, $11
 	.byte OBJ_REDPIRANHA, $0C, $14
 	.byte OBJ_REDPIRANHA, $13, $17
 	.byte OBJ_BOO, $14, $10
