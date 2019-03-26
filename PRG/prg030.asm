@@ -2394,9 +2394,9 @@ OrangeCheep_DoGameplay:
 	RTS
 	
 contaa:
-	LDA $64E ;=3 if orange is in water??
-	CMP #3
-	BNE isnotinwater
+	LDA $6BB ;=1 if orange is in water?? 0 otherwise
+	;CMP #3
+	BEQ isnotinwater
 		
 	JSR Orange_UnderwaterHControl ; Do Player left/right input for underwater
 	JSR Orange_SwimV ; Do Player up/down swimming action
