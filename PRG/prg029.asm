@@ -2345,14 +2345,57 @@ PRG029_D7FC:
 
 	RTS		 ; Return
 
+
+
+; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; ; Orange_UnderwaterHControl
+; ;
+; ; Routine to control based on Player's left/right pad input underwater
+; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Orange_UnderwaterHControll:
+	; RTS
+	; LDY #(Player_XAccelMain_UW - Player_XAccelMain)	; Y = index to appropriate under water values
+
+	; LDA #%00001000
+	; STA <Temp_Var14	 ; Temp_Var14 = pretend like Player is definitely hitting UP
+
+	; LDA <Orange_In_Air
+	; BEQ PRG030_AC14	 ; If Player is not in the air, jump to PRG030_AC14
+
+	; LDA #Pad_Input
+	; STA <Temp_Var14	 ; Temp_Var14 = actual Pad_Input (as compared to what happened above)
+
+	; INY
+	; INY
+	; INY
+	; INY		 ; Y += 4 (offset into Player_XAccel* tables)
+ 
+; PRG030_AC14:
+	; LDA <Orange_In_Air
+	; PHA		 ; Save Orange_In_Air
+
+	; LDA #$00
+	; STA <Orange_In_Air ; Orange_In_Air= 0
+
+	; JSR PRG011_2_ABA6	 ; Reuses part of normal movement code
+
+	; PLA		 
+	; STA <Orange_In_Air ; Restore Orange_In_Air
+
+	; RTS		 ; Return
+
+
+	
+	
+	
 	;; BEGIN HUGE UNUSED SPACE
 
 	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D80A - $D819
 	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D81A - $D829
 	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D82A - $D839
 	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D83A - $D849
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D84A - $D859
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D85A - $D869
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D84A - $D859
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D85A - $D869
 	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D86A - $D879
 	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D87A - $D889
 	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF ; $D88A - $D899

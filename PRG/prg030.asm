@@ -483,12 +483,12 @@ PRG030_8437:
 	; N-Spade appears every 80,000 points, but the leading zero is fake, so 8000
 
 	; Middle byte of the N-Spade score
-	LDA #HIGH(8000)
-	STA Map_NSpade_NextScore+1
+	;LDA #HIGH(8000)
+	;STA Map_NSpade_NextScore+1
 
 	; Lowest byte of the N-Spade score
-	LDA #LOW(8000)
-	STA Map_NSpade_NextScore+2
+	;LDA #LOW(8000)
+	;STA Map_NSpade_NextScore+2
 
 PRG030_845A:
 	JSR Sprite_RAM_Clear	 
@@ -2093,6 +2093,8 @@ PRG011_2_A523:
 
 	RTS		 ; Return
 	
+Orange_SwimAnim:
+	RTS
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Orange_GroundHControl
@@ -2392,7 +2394,19 @@ OrangeCheep_DoGameplay:
 	RTS
 	
 contaa:
+	LDA $64E ;=3 if orange is in water??
+	CMP #3
+	BNE isnotinwater
+		
+	JSR Orange_UnderwaterHControl ; Do Player left/right input for underwater
+	JSR Orange_SwimV ; Do Player up/down swimming action
+	JMP afterinwater
+	
+isnotinwater:
 	JSR Orange_GroundHControl
+afterinwater:
+	;JSR Orange_SwimAnim ; Do Player swim animations
+	
 	
 	; ;first check if Player_XHi and Orange_XHi is the same:
 	; LDA <Player_XHi

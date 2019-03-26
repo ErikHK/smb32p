@@ -56,14 +56,134 @@ DMC02_End
 
 	;
 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Orange_UnderwaterHControl
+;
+; Routine to control based on Player's left/right pad input underwater
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Orange_UnderwaterHControl:
+	LDY #(Player_XAccelMain_UW - Player_XAccelMain)	; Y = index to appropriate under water values
+
+	LDA #%00001000
+	STA <Temp_Var14	 ; Temp_Var14 = pretend like Player is definitely hitting UP
+
+	LDA <Orange_In_Air
+	BEQ PRG030_AC14	 ; If Player is not in the air, jump to PRG030_AC14
+
+	LDA #Pad_Input
+	STA <Temp_Var14	 ; Temp_Var14 = actual Pad_Input (as compared to what happened above)
+
+	INY
+	INY
+	INY
+	INY		 ; Y += 4 (offset into Player_XAccel* tables)
+ 
+PRG030_AC14:
+	LDA <Orange_In_Air
+	PHA		 ; Save Orange_In_Air
+
+	LDA #$00
+	STA <Orange_In_Air ; Orange_In_Air= 0
+
+	JSR PRG011_2_ABA6	 ; Reuses part of normal movement code
+
+	PLA		 
+	STA <Orange_In_Air ; Restore Orange_In_Air
+
+	RTS		 ; Return
+
+	
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; Orange_SwimV
+;
+; Controls the acts of swimming (the up/down part only), not
+; including the Frog Suit style (which is totally different)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+Orange_SwimV:
+	LDA <Pad_Input_2
+	BPL PRG031_AD4C	 ; If Orange is NOT pressing 'A', jump to PRG031_AD4C
+
+	; Player swimming sound
+	LDA Sound_QPlayer
+	ORA #SND_PLAYERSWIM
+	STA Sound_QPlayer
+
+	LDY <Orange_In_Air
+	BNE PRG031_AD45	 ; If Orange is swimming above ground, jump to PRG031_AD4A
+
+	LDA #PLAYER_SWIMSTART_YVEL
+	STA <Orange_In_Air ; "mid air" underwater
+	BNE PRG031_AD4A	 ; Jump (technically always) to PRG031_AD4A
+
+PRG031_AD45:
+
+	; Swimming speed the rest of the time
+
+	LDA <Orange_YVel
+	SUB #PLAYER_SWIM_YVEL	 ; A = Player_YVel - PLAYER_SWIM_YVEL
+
+PRG031_AD4A:
+	STA <Orange_YVel ; Set Player_YVel appropriately
+
+PRG031_AD4C:
+	LDA <Orange_In_Air
+	BEQ PRG031_AD7E	 ; If Player is on the ground, jump to PRG031_AD7E
+
+	LDA <Orange_YVel
+	BMI PRG031_AD5A	 ; If Player's Y velocity is < 0 (moving upward), jump to PRG031_AD5A
+
+	LDA <Counter_1
+	AND #$02
+	BNE PRG031_AD5C	 ; Every 4 ticks, jump to PRG031_AD5C
+
+PRG031_AD5A:
+
+	; Player's sink rate...
+
+	INC <Orange_YVel ; Player_YVel++
+
+PRG031_AD5C:
+	LDY #PLAYER_SWIM_YVEL	 ; Y = PLAYER_SWIM_YVEL
+
+	LDA <Orange_YVel
+	BPL PRG031_AD75	 ; If Player's Y velocity is < 0 (moving upward), jump to PRG031_AD75
+
+	;LDY Player_AboveTop
+	;BPL PRG031_AD73	 ; If Player is not above top of screen, jump to PRG031_AD73
+	
+	; LDY Player_SpriteY
+	; CPY #-8	 
+	; BGE PRG031_AD73	 ; If Player sprite is a bit high up, jump to PRG031_AD73
+
+	; ADD #$10
+	; STA <Player_YVel ; Player_YVel += $10
+
+PRG031_AD73:
+	LDY #PLAYER_SWIMSTART_YVEL	 ; Y = PLAYER_SWIMSTART_YVEL
+
+PRG031_AD75:
+	ADD #PLAYER_SWIM_YVEL
+	CMP #PLAYER_MAXSPEED
+	BLT PRG031_AD7E	 ; If result is less than Player's max speed, jump to PRG031_AD7E
+
+	STY <Orange_YVel ; Otherwise, update it
+
+PRG031_AD7E:
+	RTS		 ; Return
+
+
+
+
 
 Music_PlayDMC:
 	LDA DMC_Queue	 ; Get value queued for DMC
