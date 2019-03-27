@@ -119,7 +119,7 @@ Orange_SwimV:
 	STA Sound_QPlayer
 
 	LDY <Orange_In_Air
-	BNE PRG031_AD45	 ; If Orange is swimming above ground, jump to PRG031_AD4A
+	BEQ PRG031_AD45	 ; If Orange is swimming above ground, jump to PRG031_AD4A
 
 	LDA #PLAYER_SWIMSTART_YVEL
 	STA <Orange_In_Air ; "mid air" underwater
@@ -137,7 +137,7 @@ PRG031_AD4A:
 
 PRG031_AD4C:
 	LDA <Orange_In_Air
-	BEQ PRG031_AD7E	 ; If Player is on the ground, jump to PRG031_AD7E
+	BNE PRG031_AD7E	 ; If Player is on the ground, jump to PRG031_AD7E
 
 	LDA <Orange_YVel
 	BMI PRG031_AD5A	 ; If Player's Y velocity is < 0 (moving upward), jump to PRG031_AD5A
@@ -155,18 +155,18 @@ PRG031_AD5A:
 PRG031_AD5C:
 	LDY #PLAYER_SWIM_YVEL	 ; Y = PLAYER_SWIM_YVEL
 
-	LDA <Orange_YVel
-	BPL PRG031_AD75	 ; If Player's Y velocity is < 0 (moving upward), jump to PRG031_AD75
+	;;;;LDA <Orange_YVel
+	;;;;BPL PRG031_AD75	 ; If Player's Y velocity is < 0 (moving upward), jump to PRG031_AD75
 
-	;LDY Player_AboveTop
-	;BPL PRG031_AD73	 ; If Player is not above top of screen, jump to PRG031_AD73
+	; LDY Player_AboveTop
+	; BPL PRG031_AD73	 ; If Player is not above top of screen, jump to PRG031_AD73
 	
 	; LDY Player_SpriteY
 	; CPY #-8	 
 	; BGE PRG031_AD73	 ; If Player sprite is a bit high up, jump to PRG031_AD73
 
-	; ADD #$10
-	; STA <Player_YVel ; Player_YVel += $10
+	ADD #$10
+	STA <Player_YVel ; Player_YVel += $10
 
 PRG031_AD73:
 	LDY #PLAYER_SWIMSTART_YVEL	 ; Y = PLAYER_SWIMSTART_YVEL

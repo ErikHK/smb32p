@@ -2358,93 +2358,8 @@ slut:
 	RTS
 	
 
-;8CEC
-OrangeCheep_DoGameplay:
-	;LDA #$4f
-	;STA PatTable_BankSel+5	 ; Sixth pattern table bank = $4F
-
-	JSR Orange_PowerUpdate
-	JSR Orange_SetMoveLR
-
-	;fill up with objects
-	LDA #$0c
-	STA $7d80
-	
-	LDA #$0c
-	STA $7d81
-
-	LDA #$07
-	STA $7d82
-	
-	LDA #$07
-	STA $7d83
-	
-	LDA #$07
-	STA $7d84
-	
-	LDA #$07
-	STA $7d85
-	
-	;BUGGFIX!!
-	;LDA $58c
-	LDA Player_InPipe
-	CMP #0
-	BEQ contaa
-
-	RTS
-	
-contaa:
-	LDA $6BB ;=1 if orange is in water?? 0 otherwise
-	;CMP #3
-	BEQ isnotinwater
-		
-	JSR Orange_UnderwaterHControl ; Do Player left/right input for underwater
-	JSR Orange_SwimV ; Do Player up/down swimming action
-	JMP afterinwater
-	
-isnotinwater:
-	JSR Orange_GroundHControl
-afterinwater:
-	;JSR Orange_SwimAnim ; Do Player swim animations
-	
-	
-	; ;first check if Player_XHi and Orange_XHi is the same:
-	; LDA <Player_XHi
-	; SUB <Orange_XHi
-	; CMP #2
-	; BMI continue
-	
-	; ;otherwise kill both!!
-	; LDA #5
-	; STA <Player_Suit
-	
-	; ;LDA #1
-	; ;STA Player_HaltGame
-	; ;;;JSR Player_Die
-	; ;LDA #0
-	; ;STA Event_Countdown
-	; ;JMP Player_GetHurt
-	
-	
-	; ;;LDA #$01
-	; ;;STA <Player_IsDying	 ; Player_IsDying = 1 (superfluous, Player_Die sets it to 1)
-	
-	; ;LDA #$c0
-	; ;STA Event_Countdown ; Event_Countdown = $C0
-	; ;;;LDA #$01
-	; ;;;STA <Player_IsDying	; Player_IsDying = 1
-	
-	; ;JSR Player_Die_Dying
-
-	; ;;;;;;INC <Level_ExitToMap	; Level_ExitToMap = 1
-
-	; ;;;;;;LDA #$01
-	; ;;;;;;STA Map_ReturnStatus	 ; Map_ReturnStatus = 1 (Player died, level is not clear)
-
-	
-
-continue:
-	;check if luigi is playing
+add_gravity:
+;check if luigi is playing
 	LDA Player_Current
 	BNE luigiplaying
 
@@ -2531,6 +2446,59 @@ realend:
 trueend:
 	RTS
 	
+	
+;8CEC
+OrangeCheep_DoGameplay:
+	;LDA #$4f
+	;STA PatTable_BankSel+5	 ; Sixth pattern table bank = $4F
+
+	JSR Orange_PowerUpdate
+	JSR Orange_SetMoveLR
+
+	;fill up with objects
+	LDA #$0c
+	STA $7d80
+	
+	LDA #$0c
+	STA $7d81
+
+	LDA #$07
+	STA $7d82
+	
+	LDA #$07
+	STA $7d83
+	
+	LDA #$07
+	STA $7d84
+	
+	LDA #$07
+	STA $7d85
+	
+	;BUGGFIX!!
+	;LDA $58c
+	LDA Player_InPipe
+	CMP #0
+	BEQ contaa
+
+	RTS
+	
+contaa:
+	LDA $6BB ;=1 if orange is in water?? 0 otherwise
+	;CMP #3
+	BEQ isnotinwater
+		
+	JSR Orange_UnderwaterHControl ; Do Player left/right input for underwater
+	JSR Orange_SwimV ; Do Player up/down swimming action
+	JMP afterinwater
+	
+isnotinwater:
+	JSR Orange_GroundHControl
+	JSR add_gravity
+afterinwater:
+
+continue:
+	
+	RTS
 
 	
 

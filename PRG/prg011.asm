@@ -2174,85 +2174,86 @@ MO_CheckForBonusRules:
 	JSR DynJump
 
 	; THESE MUST FOLLOW DynJump FOR THE DYNAMIC JUMP TO WORK!!
-	.word MapBonusChk_NSpade		; Check if an N-Spade should appear
+	;.word MapBonusChk_NSpade		; Check if an N-Spade should appear
+	.word MapBonusChk_WhiteToadHouse	; Check if a White Toad House should appear
 	.word MapBonusChk_WhiteToadHouse	; Check if a White Toad House should appear
 	.word MapBonusChk_CoinShip		; Check if a Coin Ship should appear
 	.word MapBonusChk_MAPOBJ_UNK0C		; Check if the UNKNOWN MAPOBJ_UNK0C should appear
 
 
 ; N-Spade will appear on the map every 80,000 points you earn
-MapBonusChk_NSpade:
-	LDA World_Num
-	CMP #$07
-	BEQ PRG011_ACF0	 ; If World_Num = 7 (World 8), jump to PRG011_ACF0 (RTS)
+; MapBonusChk_NSpade:
+	; LDA World_Num
+	; CMP #$07
+	; BEQ PRG011_ACF0	 ; If World_Num = 7 (World 8), jump to PRG011_ACF0 (RTS)
 
-	LDX Player_Current	 ; X = Player_Current
+	; LDX Player_Current	 ; X = Player_Current
 
-	LDA Player_Score
-	CMP Map_NSpade_NextScore
-	BLT PRG011_ACF0	 ; If Score high digit < Map_NSpade_NextScore, jump to PRG011_ACF0 (RTS)
-	BEQ PRG011_AC97	 ; If Score high digit = Map_NSpade_NextScore, jump to PRG011_AC97
+	; LDA Player_Score
+	; CMP Map_NSpade_NextScore
+	; BLT PRG011_ACF0	 ; If Score high digit < Map_NSpade_NextScore, jump to PRG011_ACF0 (RTS)
+	; BEQ PRG011_AC97	 ; If Score high digit = Map_NSpade_NextScore, jump to PRG011_AC97
 
-	JMP PRG011_ACAC	 ; Jump to PRG011_ACAC
+	; JMP PRG011_ACAC	 ; Jump to PRG011_ACAC
 
-PRG011_AC97:
-	LDA Player_Score+1
-	CMP Map_NSpade_NextScore+1
-	BLT PRG011_ACF0	 ; If Score middle digit < Map_NSpade_NextScore+1, jump to PRG011_ACF0 (RTS)
-	BEQ PRG011_ACA4	 ; If Score middle digit = Map_NSpade_NextScore+1, jump to PRG011_ACA4
+; PRG011_AC97:
+	; LDA Player_Score+1
+	; CMP Map_NSpade_NextScore+1
+	; BLT PRG011_ACF0	 ; If Score middle digit < Map_NSpade_NextScore+1, jump to PRG011_ACF0 (RTS)
+	; BEQ PRG011_ACA4	 ; If Score middle digit = Map_NSpade_NextScore+1, jump to PRG011_ACA4
 
-	JMP PRG011_ACAC	 ; Jump to PRG011_ACAC
+	; JMP PRG011_ACAC	 ; Jump to PRG011_ACAC
 
-PRG011_ACA4:
-	LDA Player_Score+2
-	CMP Map_NSpade_NextScore+2
-	BLT PRG011_ACF0	 ; If Score low digit < Map_NSpade_NextScore+2, jump to PRG011_ACF0 (RTS)
+; PRG011_ACA4:
+	; LDA Player_Score+2
+	; CMP Map_NSpade_NextScore+2
+	; BLT PRG011_ACF0	 ; If Score low digit < Map_NSpade_NextScore+2, jump to PRG011_ACF0 (RTS)
 
-PRG011_ACAC:
-	JSR Map_FindEmptyObjectSlot
+; PRG011_ACAC:
+	; JSR Map_FindEmptyObjectSlot
 
-	; Set the N-Spade's location!
-	LDA Map_BonusAppY
-	STA Map_Objects_Y,Y
-	STA Map_Object_ActY,Y
+	; ; Set the N-Spade's location!
+	; LDA Map_BonusAppY
+	; STA Map_Objects_Y,Y
+	; STA Map_Object_ActY,Y
 
-	LDA Map_BonusAppXHi
-	STA Map_Objects_XHi,Y
-	STA Map_Object_ActXH,Y
+	; LDA Map_BonusAppXHi
+	; STA Map_Objects_XHi,Y
+	; STA Map_Object_ActXH,Y
 
-	LDA Map_BonusAppX
-	STA Map_Objects_XLo,Y
-	STA Map_Object_ActX,Y
+	; LDA Map_BonusAppX
+	; STA Map_Objects_XLo,Y
+	; STA Map_Object_ActX,Y
 
-	LDX <Temp_Var16	 	; X = Temp_Var16
-	LDA Map_WhiteObjects,X	; Load the proper bonus object ID (will always be MAPOBJ_NSPADE; this is a bit superfluous)
-	STA Map_Objects_IDs,Y	; Set the N-Spade ID
+	; LDX <Temp_Var16	 	; X = Temp_Var16
+	; LDA Map_WhiteObjects,X	; Load the proper bonus object ID (will always be MAPOBJ_NSPADE; this is a bit superfluous)
+	; STA Map_Objects_IDs,Y	; Set the N-Spade ID
 
-	; N-Spade appears every 80,000 points, but the leading zero is fake, so 8000
+	; ; N-Spade appears every 80,000 points, but the leading zero is fake, so 8000
 
-	; +8000 (80,000 points) to the Map_NSpade_NextScore
+	; ; +8000 (80,000 points) to the Map_NSpade_NextScore
 
-	; High byte of the N-Spade score
-	LDA Map_NSpade_NextScore+2
-	ADD #LOW(8000)
-	STA Map_NSpade_NextScore+2
+	; ; High byte of the N-Spade score
+	; LDA Map_NSpade_NextScore+2
+	; ADD #LOW(8000)
+	; STA Map_NSpade_NextScore+2
 
-	; Middle byte of the N-Spade score
-	LDA Map_NSpade_NextScore+1
-	ADC #HIGH(8000)
-	STA Map_NSpade_NextScore+1
+	; ; Middle byte of the N-Spade score
+	; LDA Map_NSpade_NextScore+1
+	; ADC #HIGH(8000)
+	; STA Map_NSpade_NextScore+1
 
-	; Low byte of the N-Spade score
-	LDA Map_NSpade_NextScore
-	ADC #$00
-	STA Map_NSpade_NextScore
+	; ; Low byte of the N-Spade score
+	; LDA Map_NSpade_NextScore
+	; ADC #$00
+	; STA Map_NSpade_NextScore
 
-	; Bonus appearance sound!
-	LDA #SND_MAPBONUSAPPEAR
-	STA Sound_QMap
+	; ; Bonus appearance sound!
+	; LDA #SND_MAPBONUSAPPEAR
+	; STA Sound_QMap
 
-PRG011_ACF0:
-	RTS		 ; Return
+; PRG011_ACF0:
+	; RTS		 ; Return
 
 
 MapBonusChk_WhiteToadHouse:
