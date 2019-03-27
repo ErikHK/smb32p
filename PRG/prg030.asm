@@ -2454,25 +2454,6 @@ OrangeCheep_DoGameplay:
 
 	JSR Orange_PowerUpdate
 	JSR Orange_SetMoveLR
-
-	;fill up with objects
-	LDA #$0c
-	STA $7d80
-	
-	LDA #$0c
-	STA $7d81
-
-	LDA #$07
-	STA $7d82
-	
-	LDA #$07
-	STA $7d83
-	
-	LDA #$07
-	STA $7d84
-	
-	LDA #$07
-	STA $7d85
 	
 	;BUGGFIX!!
 	;LDA $58c
@@ -2483,6 +2464,63 @@ OrangeCheep_DoGameplay:
 	RTS
 	
 contaa:
+; ;first check if Player_XHi and Orange_XHi is the same:
+	LDA <Player_XHi
+	SUB <Orange_XHi
+	CMP #2
+	BMI continue
+	
+	; ;otherwise kill both!!
+	; LDA #5
+	; STA <Player_Suit
+	
+	; ;LDA #1
+	; ;STA Player_HaltGame
+	; ;;;JSR Player_Die
+	; ;LDA #0
+	; ;STA Event_Countdown
+	; ;JMP Player_GetHurt
+	
+	
+	; ;;LDA #$01
+	; ;;STA <Player_IsDying	 ; Player_IsDying = 1 (superfluous, Player_Die sets it to 1)
+	
+	; ;LDA #$c0
+	; ;STA Event_Countdown ; Event_Countdown = $C0
+	; ;;;LDA #$01
+	; ;;;STA <Player_IsDying	; Player_IsDying = 1
+	
+	; ;JSR Player_Die_Dying
+
+kill:
+	INC <Level_ExitToMap	; Level_ExitToMap = 1
+
+	LDA #$01
+	STA Map_ReturnStatus	 ; Map_ReturnStatus = 1 (Player died, level is not clear)
+	RTS
+	
+
+
+continue:
+	;also check Y difference!
+	LDA <Orange_YHi
+	SUB <Player_YHi
+	CMP #2
+	BMI continue2
+	
+	;here they should die:
+	JMP kill
+	
+continue2:
+	;also check other Y difference:
+	LDA <Player_YHi
+	SUB <Orange_YHi
+	CMP #2
+	BMI continue3
+	
+	JMP kill
+
+continue3:	
 	LDA $6BB ;=1 if orange is in water?? 0 otherwise
 	;CMP #3
 	BEQ isnotinwater
@@ -2496,7 +2534,6 @@ isnotinwater:
 	JSR add_gravity
 afterinwater:
 
-continue:
 	
 	RTS
 
@@ -2506,167 +2543,167 @@ continue:
 
 ; The Bonus Game Loop begins here...
 
-BonusGame_Loop:
-	JSR GraphicsBuf_Prep_And_WaitVSync	 ; Wait for VSync
+; BonusGame_Loop:
+	; JSR GraphicsBuf_Prep_And_WaitVSync	 ; Wait for VSync
 
-	;LDA SndCur_Map
-	;AND #SND_MAPENTERLEVEL
-	;BNE PRG030_8D23	 ; If the "entering" sound is still playing, jump to PRG030_8D23
+	; ;LDA SndCur_Map
+	; ;AND #SND_MAPENTERLEVEL
+	; ;BNE PRG030_8D23	 ; If the "entering" sound is still playing, jump to PRG030_8D23
 
-	LDA Level_MusicQueue
-	BEQ PRG030_8D23	 ; If nothing is in the music queue, jump to PRG030_8D23
+	; LDA Level_MusicQueue
+	; BEQ PRG030_8D23	 ; If nothing is in the music queue, jump to PRG030_8D23
 
-	; Start the queued music
-	STA Sound_QMusic2
+	; ; Start the queued music
+	; STA Sound_QMusic2
 
-	; Clear the music queue
-	LDA #$00
-	STA Level_MusicQueue
+	; ; Clear the music queue
+	; LDA #$00
+	; STA Level_MusicQueue
 
-PRG030_8D23:
-	;JSR BonusGame_Do	 ; Run the Bonus Game
-	JSR StatusBar_Fill_Score ; Update score
+; PRG030_8D23:
+	; ;JSR BonusGame_Do	 ; Run the Bonus Game
+	; JSR StatusBar_Fill_Score ; Update score
 
-	LDA <Level_ExitToMap
-	BEQ BonusGame_Loop	 ; If Level_ExitToMap = 0, loop!!
+	; LDA <Level_ExitToMap
+	; BEQ BonusGame_Loop	 ; If Level_ExitToMap = 0, loop!!
 
-	; Exiting the Bonus Game loop...
+	; ; Exiting the Bonus Game loop...
 
-	LDA #%00101000	 	; use 8x16 sprites, sprites use PT2 (NOTE: No VBlank trigger!)
-	STA PPU_CTL1	 	
-	STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync!
+	; LDA #%00101000	 	; use 8x16 sprites, sprites use PT2 (NOTE: No VBlank trigger!)
+	; STA PPU_CTL1	 	
+	; STA <PPU_CTL1_Copy	; Keep PPU_CTL1_Copy in sync!
 
-	;LDA Bonus_GameType
-	;CMP #BONUS_UNUSED_DDDD
-	;BNE PRG030_8D43	 ; If Bonus_GameType <> BONUS_UNUSED_DDDD (??!), jump to PRG030_8D43
+	; ;LDA Bonus_GameType
+	; ;CMP #BONUS_UNUSED_DDDD
+	; ;BNE PRG030_8D43	 ; If Bonus_GameType <> BONUS_UNUSED_DDDD (??!), jump to PRG030_8D43
 
-	; BONUS_UNUSED_DDDD (??!) only...
+	; ; BONUS_UNUSED_DDDD (??!) only...
 
-	; Set Bonus_DDDD = 1 (??)
-	;LDA #$01
-	;STA Bonus_DDDD
+	; ; Set Bonus_DDDD = 1 (??)
+	; ;LDA #$01
+	; ;STA Bonus_DDDD
 
-	JMP PRG030_8D4A	 ; Jump to PRG030_8D4A
+	; JMP PRG030_8D4A	 ; Jump to PRG030_8D4A
 
-PRG030_8D43:
-	;CMP #BONUS_UNUSED_2RETURN
-	;BNE PRG030_8D4A	 ; If Bonus_GameType <> BONUS_UNUSED_2RETURN (??!), jump to PRG030_8D4A
+; PRG030_8D43:
+	; ;CMP #BONUS_UNUSED_2RETURN
+	; ;BNE PRG030_8D4A	 ; If Bonus_GameType <> BONUS_UNUSED_2RETURN (??!), jump to PRG030_8D4A
 
-	; BONUS_UNUSED_2RETURN (??!) only...
+	; ; BONUS_UNUSED_2RETURN (??!) only...
 
-	JSR Bonus_Return2_SetMapPos	; Change Player's map position and mark them as having died??
+	; JSR Bonus_Return2_SetMapPos	; Change Player's map position and mark them as having died??
 
-PRG030_8D4A:
-	; BonusText_CPos = 0
-	;;LDA #$00
-	;;STA BonusText_CPos
-	;;STA Bonus_UnusedFlag	 ; Bonus_UnusedFlag = 0
+; PRG030_8D4A:
+	; ; BonusText_CPos = 0
+	; ;;LDA #$00
+	; ;;STA BonusText_CPos
+	; ;;STA Bonus_UnusedFlag	 ; Bonus_UnusedFlag = 0
 
-	; Set page @ A000 to 26
-	LDA #26
-	STA PAGE_A000
-	JSR PRGROM_Change_A000
+	; ; Set page @ A000 to 26
+	; LDA #26
+	; STA PAGE_A000
+	; JSR PRGROM_Change_A000
 
-	JSR Palette_FadeOut	 		; Fade out
+	; JSR Palette_FadeOut	 		; Fade out
 
-	LDA #%00011000
-	STA <PPU_CTL2_Copy	; Show BG+Sprites
+	; LDA #%00011000
+	; STA <PPU_CTL2_Copy	; Show BG+Sprites
 
-	JSR GraphicsBuf_Prep_And_WaitVSync	 ; Wait for vertical sync
+	; JSR GraphicsBuf_Prep_And_WaitVSync	 ; Wait for vertical sync
 
-	LDA #$00
-	STA PPU_CTL2	 ; Most importantly, hide sprites/bg
+	; LDA #$00
+	; STA PPU_CTL2	 ; Most importantly, hide sprites/bg
 
-	; NOTE: This jumps to PRG030_8DC3, which returns to World Map, if the die is face value 1.
-	; Seems like the die face logic for jumping to "Roulette" / "Card" is not implemented.
-	LDA Bonus_DieCnt
-	BEQ PRG030_8DC3	 ; If Bonus_DieCnt = 0 (Face value 1), jump to PRG030_8DC3
+	; ; NOTE: This jumps to PRG030_8DC3, which returns to World Map, if the die is face value 1.
+	; ; Seems like the die face logic for jumping to "Roulette" / "Card" is not implemented.
+	; LDA Bonus_DieCnt
+	; BEQ PRG030_8DC3	 ; If Bonus_DieCnt = 0 (Face value 1), jump to PRG030_8DC3
 
-	LDY #$00	 ; Level tileset 0 (World Map)
+	; LDY #$00	 ; Level tileset 0 (World Map)
 
-	;LDA Bonus_GameType
-	;CMP #BONUS_SPADE
-	;BNE PRG030_8D85	 ; If Bonus_GameType <> BONUS_SPADE, jump to PRG030_8D85
+	; ;LDA Bonus_GameType
+	; ;CMP #BONUS_SPADE
+	; ;BNE PRG030_8D85	 ; If Bonus_GameType <> BONUS_SPADE, jump to PRG030_8D85
 
-	; Select palettes
-	LDA #$01
-	STA PalSel_Tile_Colors
-	LDA #$09
-	STA PalSel_Obj_Colors
+	; ; Select palettes
+	; LDA #$01
+	; STA PalSel_Tile_Colors
+	; LDA #$09
+	; STA PalSel_Obj_Colors
 
-	LDY #16		; Level tileset 16 (Spade)
+	; LDY #16		; Level tileset 16 (Spade)
 
-	BNE PRG030_8D95	 ; Jump (technically always) to PRG030_8D95
+	; BNE PRG030_8D95	 ; Jump (technically always) to PRG030_8D95
 
-PRG030_8D85:
-	;CMP #BONUS_NSPADE
-	;BNE PRG030_8D95	 ; If Bonus_GameType <> BONUS_NSPADE, jump to PRG030_8D95
+; PRG030_8D85:
+	; ;CMP #BONUS_NSPADE
+	; ;BNE PRG030_8D95	 ; If Bonus_GameType <> BONUS_NSPADE, jump to PRG030_8D95
 
-	; Select palettes
-	LDA #$02
-	STA PalSel_Tile_Colors
-	LDA #$0a
-	STA PalSel_Obj_Colors
+	; ; Select palettes
+	; LDA #$02
+	; STA PalSel_Tile_Colors
+	; LDA #$0a
+	; STA PalSel_Obj_Colors
 
-	LDY #17		; Level tileset 17 (N-Spade)
+	; LDY #17		; Level tileset 17 (N-Spade)
 
-PRG030_8D95:
-	STY Level_Tileset	; Update Level_Tileset
-	STY Level_BG_Page1_2	; Use proper BG patterns
+; PRG030_8D95:
+	; STY Level_Tileset	; Update Level_Tileset
+	; STY Level_BG_Page1_2	; Use proper BG patterns
 
-	CPY #$00
-	BEQ PRG030_8DC3	 ; If tileset = 0 (exit back to world map :(), jump to PRG030_8DC3
-
-
-	; About to enter Spade / N-Spade game!
-
-	; Stop Update_Select activity temporarily
-	INC UpdSel_Disable
-
-	; A little cleanup loop...
-
-	; Clears page 0 addresses $00-$FD, excluding $69-$74 (?)
-
-	LDY #$fd	 ; Y = $FD
-	LDA #$00	 ; A = 0
-PRG030_BDA6:
-	STA Temp_Var1,Y	 ; Clear this byte
-
-PRG030_BDA9:
-	DEY		 ; Y--
-
-	CPY #World_Map_Y
-	BGE PRG030_8DB2	 ; If Y >= World_Map_Y, jump to PRG030_8DB2
-
-	; Range between $69-$74 is not cleared ... mainly protecting sound engine I think
-
-	CPY #Video_Upd_AddrL
-	BGE PRG030_BDA9	 ; If Y >= Video_Upd_AddrL, jump to PRG030_BDA9
-PRG030_8DB2: 
-	CPY #$ff
-	BNE PRG030_BDA6	 ; If Y <> $FF (underflow), loop!
+	; CPY #$00
+	; BEQ PRG030_8DC3	 ; If tileset = 0 (exit back to world map :(), jump to PRG030_8DC3
 
 
-	; Clears memory $0400-$04CF (mainly Bonus game cleanup)
-	LDY #$cf	 ; Y = $CF
-PRG030_8DB8:
-	STA Roulette_Pos,Y	; Clear this byte
+	; ; About to enter Spade / N-Spade game!
 
-	DEY		 ; Y--
-	CPY #$ff
-	BNE PRG030_8DB8	 ; If Y <> $FF (underflow), loop!
+	; ; Stop Update_Select activity temporarily
+	; INC UpdSel_Disable
 
-	JMP PRG030_897B	 ; Jump to PRG030_897B
+	; ; A little cleanup loop...
 
-PRG030_8DC3:
+	; ; Clears page 0 addresses $00-$FD, excluding $69-$74 (?)
 
-	; Exiting to world map...
+	; LDY #$fd	 ; Y = $FD
+	; LDA #$00	 ; A = 0
+; PRG030_BDA6:
+	; STA Temp_Var1,Y	 ; Clear this byte
 
-	; Bonus_DieCnt = 0
-	LDA #$00
-	STA Bonus_DieCnt
+; PRG030_BDA9:
+	; DEY		 ; Y--
 
-	JMP PRG030_8FA8	; Jump to PRG030_8FA8 (proceed back to World Map)
+	; CPY #World_Map_Y
+	; BGE PRG030_8DB2	 ; If Y >= World_Map_Y, jump to PRG030_8DB2
+
+	; ; Range between $69-$74 is not cleared ... mainly protecting sound engine I think
+
+	; CPY #Video_Upd_AddrL
+	; BGE PRG030_BDA9	 ; If Y >= Video_Upd_AddrL, jump to PRG030_BDA9
+; PRG030_8DB2: 
+	; CPY #$ff
+	; BNE PRG030_BDA6	 ; If Y <> $FF (underflow), loop!
+
+
+	; ; Clears memory $0400-$04CF (mainly Bonus game cleanup)
+	; LDY #$cf	 ; Y = $CF
+; PRG030_8DB8:
+	; STA Roulette_Pos,Y	; Clear this byte
+
+	; DEY		 ; Y--
+	; CPY #$ff
+	; BNE PRG030_8DB8	 ; If Y <> $FF (underflow), loop!
+
+	; JMP PRG030_897B	 ; Jump to PRG030_897B
+
+; PRG030_8DC3:
+
+	; ; Exiting to world map...
+
+	; ; Bonus_DieCnt = 0
+	; LDA #$00
+	; STA Bonus_DieCnt
+
+	; JMP PRG030_8FA8	; Jump to PRG030_8FA8 (proceed back to World Map)
 
 PRG030_8DCB:
 	LDY Level_Tileset

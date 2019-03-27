@@ -2843,6 +2843,26 @@ PRG010_CEF4:
 	JMP PRG010_CEAC	 		; Jump to PRG010_CEAC
 
 WorldMap_UpdateAndDraw:
+	
+	;fill up with objects
+	LDA #$0c
+	STA $7d80
+	
+	LDA #$0c
+	STA $7d81
+
+	LDA #$07
+	STA $7d82
+	
+	LDA #$07
+	STA $7d83
+	
+	LDA #$07
+	STA $7d84
+	
+	LDA #$07
+	STA $7d85
+
 	LDY Player_Current 	; Y = Player_Current
 
 	LDA Map_UnusedPlayerVal2,Y	; A = Map_UnusedPlayerVal2
