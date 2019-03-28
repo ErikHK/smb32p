@@ -4744,12 +4744,15 @@ LevelLoad:	; $97B7
 	; Set up the vertical starting position!
 	LDA GamePlay_YHiStart,X
 	STA <Player_YHi		; Player_YHi = GamePlay_YHiStart[X]
+	STA <Orange_YHi
 
 	LDA GamePlay_YStart,X
 	STA <Player_Y		; Player_Y = GamePlay_YStart[X]
+	STA <Orange_Y
 
 	LDA #$00	 
 	STA <Player_XHi		; Player_XHi = 0
+	STA <Orange_XHi
 
 	; Set the starting vertical position
 	LDA GamePlay_VStart,X
@@ -4848,6 +4851,7 @@ PRG030_9864:
 	LDA Level_SizeOrig
 	STA <Vert_Scroll_Hi
 	STA <Player_YHi		; Player's Y High is the same!
+	STA <Orange_YHi
 	JMP PRG030_9893	
 
 
@@ -4861,6 +4865,7 @@ PRG030_987C:
 	LDA <Level_Width
 	STA <Vert_Scroll_Hi
 	STA <Player_YHi	
+	STA <Orange_YHi
 	STA Level_SizeOrig
 
 PRG030_988E:

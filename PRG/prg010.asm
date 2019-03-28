@@ -2848,19 +2848,19 @@ WorldMap_UpdateAndDraw:
 	LDA #$0c
 	STA $7d80
 	
-	LDA #$0c
+	LDA #$07
 	STA $7d81
 
-	LDA #$07
+	LDA #$08
 	STA $7d82
 	
-	LDA #$07
+	LDA #$09
 	STA $7d83
 	
-	LDA #$07
+	LDA #$06
 	STA $7d84
 	
-	LDA #$07
+	LDA #$05
 	STA $7d85
 
 	LDY Player_Current 	; Y = Player_Current

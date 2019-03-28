@@ -531,6 +531,7 @@ PRG008_A27A:
 	JSR LevelJct_GetVScreenH2
 	STY <Player_YHi
 	STA <Player_Y
+	STA <Orange_Y
 
 	; Level_UnusedFlag = 1 (unused; only set, never read!)
 	LDA #$01
@@ -3892,6 +3893,7 @@ AutoScroll_CalcPlayerY:
 PRG008_B23C:
 	ADD <Player_Y
 	STA <Player_Y	 ; Player_Y = Level_ScrollDiffV + Player_Y
+	;STA <Orange_Y
 
 	BCC PRG008_B245	 ; If no carry, jump to PRG008_B245
 

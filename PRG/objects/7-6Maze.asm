@@ -1,5 +1,6 @@
 	.byte $01	; Unknown purpose
 
+	
 	.byte OBJ_PIRANHASIDEWAYSRIGHT, $0B, $0D
 	.byte OBJ_PIRANHASIDEWAYSLEFT, $05, $0F
 	.byte OBJ_GREENPIRANHA, $04, $42

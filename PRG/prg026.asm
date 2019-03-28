@@ -1943,6 +1943,7 @@ LevelJct_GenericExit:
 	; Generic exit uses a predictable start position
 	LDA #$00
 	STA <Player_XHi
+	STA <Orange_XHi
 	STA <Horz_Scroll
 	STA <Vert_Scroll_Hi
 	STA <Horz_Scroll_Hi
@@ -1956,14 +1957,17 @@ LevelJct_GenericExit:
 
 	LDA #$28
 	STA <Player_X	 ; Player_X = $28
+	STA <Orange_X
 
 	LDA #$01
 	STA <Player_YHi	 ; Player_YHi = 1
+	STA <Orange_YHi
 
 	STA Level_PipeExitDir	 ; Level_PipeExitDir = 1
 
 	LDA #$80
 	STA <Player_Y	 ; Player_Y = $80
+	STA <Orange_Y
 
 	JMP PRG026_AB0E	 ; Jump to PRG026_AB0E
 
