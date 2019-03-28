@@ -2259,6 +2259,7 @@ PRG011_2_ABB8:
 	DEY		 ; Y-- (back one offset, the "normal" rate)
 
 	LDA <Temp_Var3
+	;LDA <Orange_XVel
 	CMP <Temp_Var14	 
 	BEQ PRG011_2_AC01	 ; If Player's current X velocity magnitude is the same as the selected top speed, jump to PRG011_2_AC01 (RTS)
 	BMI PRG011_2_ABCD	 ; If it's less, then jump to PRG011_2_AC01

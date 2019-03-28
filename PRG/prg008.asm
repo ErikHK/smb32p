@@ -2519,8 +2519,8 @@ Player_UnderwaterHControl:
 	LDA <Player_InAir
 	BEQ PRG008_AC14	 ; If Player is not in the air, jump to PRG008_AC14
 
-	LDA #Pad_Input
-	STA <Temp_Var14	 ; Temp_Var14 = actual Pad_Input (as compared to what happened above)
+	LDA #$18
+	STA <Temp_Var14
 
 	INY
 	INY
@@ -2772,7 +2772,7 @@ Player_SwimV:
 	STA Sound_QPlayer
 
 	LDY <Player_InAir
-	BNE PRG008_AD45	 ; If Player is swimming above ground, jump to PRG008_AD4A
+	BNE PRG008_AD45	 ; If Player is swimming above ground, jump to PRG008_AD45
 
 	LDA #PLAYER_SWIMSTART_YVEL
 	STA <Player_InAir ; "mid air" underwater

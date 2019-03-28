@@ -73,13 +73,15 @@ DMC02_End
 Orange_UnderwaterHControl:
 	LDY #(Player_XAccelMain_UW - Player_XAccelMain)	; Y = index to appropriate under water values
 
-	LDA #%00001000
+	;LDA #%00001000
+	LDA #$18
 	STA <Temp_Var14	 ; Temp_Var14 = pretend like Player is definitely hitting UP
 
 	LDA <Orange_In_Air
 	BEQ PRG030_AC14	 ; If Player is not in the air, jump to PRG030_AC14
 
-	LDA #Pad_Input
+	;LDA #Pad_Input
+	LDA #$18
 	STA <Temp_Var14	 ; Temp_Var14 = actual Pad_Input (as compared to what happened above)
 
 	INY
@@ -91,9 +93,21 @@ PRG030_AC14:
 	LDA <Orange_In_Air
 	PHA		 ; Save Orange_In_Air
 
-	LDA #$00
+	LDA #$04
 	STA <Orange_In_Air ; Orange_In_Air= 0
-
+	
+	;set Temp_Var3 to |Orange_XVel|
+	LDA <Orange_XVel
+	BMI negateitnow
+	JMP afternegate
+	
+negateitnow:	
+	JSR Negate
+	;LDY #PLAYER_TOPPOWERSPEED
+	LDY #$18
+	STY <Temp_Var14
+afternegate:
+	STA <Temp_Var3
 	JSR PRG011_2_ABA6	 ; Reuses part of normal movement code
 
 	PLA		 
@@ -123,7 +137,8 @@ Orange_SwimV:
 
 	LDA #PLAYER_SWIMSTART_YVEL
 	STA <Orange_In_Air ; "mid air" underwater
-	BNE PRG031_AD4A	 ; Jump (technically always) to PRG031_AD4A
+	;BNE PRG031_AD4A	 ; Jump (technically always) to PRG031_AD4A
+	JMP PRG031_AD4A
 
 PRG031_AD45:
 
@@ -136,8 +151,8 @@ PRG031_AD4A:
 	STA <Orange_YVel ; Set Player_YVel appropriately
 
 PRG031_AD4C:
-	LDA <Orange_In_Air
-	BNE PRG031_AD7E	 ; If Player is on the ground, jump to PRG031_AD7E
+	;LDA <Orange_In_Air
+	;BEQ PRG031_AD7E	 ; If Player is on the ground, jump to PRG031_AD7E
 
 	LDA <Orange_YVel
 	BMI PRG031_AD5A	 ; If Player's Y velocity is < 0 (moving upward), jump to PRG031_AD5A
@@ -155,8 +170,8 @@ PRG031_AD5A:
 PRG031_AD5C:
 	LDY #PLAYER_SWIM_YVEL	 ; Y = PLAYER_SWIM_YVEL
 
-	;;;;LDA <Orange_YVel
-	;;;;BPL PRG031_AD75	 ; If Player's Y velocity is < 0 (moving upward), jump to PRG031_AD75
+	LDA <Orange_YVel
+	BPL PRG031_AD75	 ; If Player's Y velocity is < 0 (moving upward), jump to PRG031_AD75
 
 	; LDY Player_AboveTop
 	; BPL PRG031_AD73	 ; If Player is not above top of screen, jump to PRG031_AD73
@@ -165,8 +180,8 @@ PRG031_AD5C:
 	; CPY #-8	 
 	; BGE PRG031_AD73	 ; If Player sprite is a bit high up, jump to PRG031_AD73
 
-	ADD #$10
-	STA <Player_YVel ; Player_YVel += $10
+	;ADD #$10
+	;STA <Orange_YVel ; Player_YVel += $10
 
 PRG031_AD73:
 	LDY #PLAYER_SWIMSTART_YVEL	 ; Y = PLAYER_SWIMSTART_YVEL
