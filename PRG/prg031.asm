@@ -73,16 +73,15 @@ DMC02_End
 Orange_UnderwaterHControl:
 	LDY #(Player_XAccelMain_UW - Player_XAccelMain)	; Y = index to appropriate under water values
 
-	;LDA #%00001000
-	LDA #$18
-	STA <Temp_Var14	 ; Temp_Var14 = pretend like Player is definitely hitting UP
+	LDA #$08
+	STA <Temp_Var14	 ; Store max speed
 
 	LDA <Orange_In_Air
-	BEQ PRG030_AC14	 ; If Player is not in the air, jump to PRG030_AC14
+	BNE PRG030_AC14	 ; If Player is not in the air, jump to PRG030_AC14
 
 	;LDA #Pad_Input
 	LDA #$18
-	STA <Temp_Var14	 ; Temp_Var14 = actual Pad_Input (as compared to what happened above)
+	STA <Temp_Var14	 ; Store bigger max speed
 
 	INY
 	INY

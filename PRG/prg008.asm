@@ -2514,12 +2514,12 @@ Player_UnderwaterHControl:
 	LDY #(Player_XAccelMain_UW - Player_XAccelMain)	; Y = index to appropriate under water values
 
 	LDA #%00001000
-	STA <Temp_Var14	 ; Temp_Var14 = pretend like Player is definitely hitting UP
+	STA <Temp_Var14  ;store max speed of 8
 
 	LDA <Player_InAir
 	BEQ PRG008_AC14	 ; If Player is not in the air, jump to PRG008_AC14
 
-	LDA #$18
+	LDA #$18		 ;store max speed of $18
 	STA <Temp_Var14
 
 	INY

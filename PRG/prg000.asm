@@ -1317,7 +1317,22 @@ PRG000_C6D0:
 	PHA		 ; Save underwater flag
 
 	JSR Object_WaterSplash	 ; Hit water; splash!
-
+	
+	;check if the current object is Betty, then increase her Y vel!
+	LDA Level_ObjectID,X
+	CMP #OBJ_ORANGECHEEP
+	BNE afterincvel
+	
+	;Also check if player is holding UP..
+	LDA <Pad_Holding_2
+	AND #(PAD_A)
+	BEQ afterincvel
+	
+	;is holding A and UP, increase y vel!!
+	LDA #-$34
+	STA <Orange_YVel
+	
+afterincvel:
 	PLA		 ; Restore underwater flag
 
 PRG000_C6FA:
@@ -1795,8 +1810,8 @@ PRG000_C918:
 	BEQ PRG000_C927	 ; If Player is NOT pressing SELECT, jump to PRG000_C927
 
 	; Toggle invincibility flag
-	EOR Player_DebugNoHitFlag
-	STA Player_DebugNoHitFlag
+	;EOR Player_DebugNoHitFlag
+	;STA Player_DebugNoHitFlag
 
 PRG000_C927:
 	LDA Splash_DisTimer
@@ -5483,7 +5498,7 @@ PRG000_D929:
 
 ; FIXME: Anybody want to claim this?
 ; $D92B
-	.byte $F0, $00, $10, $20
+;	.byte $F0, $00, $10, $20
 
 
 	; Calculates the upper-left and returns the lower-right offsets
