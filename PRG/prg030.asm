@@ -2261,12 +2261,13 @@ PRG011_2_ABB8:
 	LDA <Temp_Var3
 	;LDA <Orange_XVel
 	CMP <Temp_Var14	 
-	BEQ PRG011_2_AC01	 ; If Player's current X velocity magnitude is the same as the selected top speed, jump to PRG011_2_AC01 (RTS)
-	BMI PRG011_2_ABCD	 ; If it's less, then jump to PRG011_2_AC01
+	;BEQ PRG011_2_AC01	 ; If Player's current X velocity magnitude is the same as the selected top speed, jump to PRG011_2_AC01 (RTS)
+	BEQ innanAC01
+	BMI PRG011_2_ABCD	 ; If it's less, then jump to PRG011_2_ABCD
 
 	LDA <Orange_In_Air
 	;BNE PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01
-	BEQ PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01
+	BEQ PRG011_2_AC01	 ; If Player is mid air, jump to PRG011_2_AC01 (RTS)
 
 	DEY		 ; Y-- (back one offset, the "friction" stopping rate)
 
@@ -2332,6 +2333,11 @@ PRG011_2_ABF5:
 	ADC <Temp_Var2
 	STA <Orange_XVel	; Orange_XVel += Temp_Var2 (and sometimes carry)
 	;STA $95
+	JMP PRG011_2_AC01
+	
+innanAC01:
+	NOP
+	NOP
 
 PRG011_2_AC01:
 	RTS		 ; Return

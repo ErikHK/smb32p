@@ -98,13 +98,14 @@ PRG030_AC14:
 	;set Temp_Var3 to |Orange_XVel|
 	LDA <Orange_XVel
 	BMI negateitnow
+	
 	JMP afternegate
 	
 negateitnow:	
-	JSR Negate
+	JSR Negate	
 	;LDY #PLAYER_TOPPOWERSPEED
-	LDY #$18
-	STY <Temp_Var14
+	;LDY #$18
+	;STY <Temp_Var14
 afternegate:
 	STA <Temp_Var3
 	JSR PRG011_2_ABA6	 ; Reuses part of normal movement code
