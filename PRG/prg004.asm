@@ -5364,12 +5364,16 @@ PRG004_B98D:
 
 PRG004_B9AF:
 	; Store right sprite pattern
+	;LDA #$05
 	STA Sprite_RAM+$05,Y
 
 	LDA ObjectGroup03_PatternSets+1,X ; Get the next pattern
 
 	; Store left sprite pattern
+	;LDA #$E9
+	;LDA #$07
 	STA Sprite_RAM+$01,Y
+	
 
 PRG004_B9B8:
 	LDX <SlotIndexBackup	 ; X = object slot index

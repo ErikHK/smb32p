@@ -1,7 +1,8 @@
-	.byte $00	; Unknown purpose
+	;.byte $00	; Unknown purpose
+	.byte $01	; Unknown purpose
 
-	;.byte OBJ_ORANGECHEEP, $04, $14
-	.byte OBJ_BONUSCONTROLLER, $00, $2E
+	.byte OBJ_ORANGECHEEP, $04, $10
+	;.byte OBJ_BONUSCONTROLLER, $00, $2E
 	.byte OBJ_NIPPERHOPPING, $0E, $0A
 	.byte OBJ_NIPPER, $1D, $08
 	.byte OBJ_NIPPER, $23, $06

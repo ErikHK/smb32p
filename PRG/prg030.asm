@@ -2500,12 +2500,12 @@ contaa:
 	; ;JSR Player_Die_Dying
 
 kill:
-	INC <Level_ExitToMap	; Level_ExitToMap = 1
+	;;;;;INC <Level_ExitToMap	; Level_ExitToMap = 1
 
-	LDA #$01
-	STA Map_ReturnStatus	 ; Map_ReturnStatus = 1 (Player died, level is not clear)
-	RTS
-	
+	;;;;;LDA #$01
+	;;;;;STA Map_ReturnStatus	 ; Map_ReturnStatus = 1 (Player died, level is not clear)
+	;;;;;RTS
+	JMP continue2
 
 
 continue:

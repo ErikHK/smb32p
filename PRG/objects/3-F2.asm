@@ -1,6 +1,6 @@
 	.byte $00	; Unknown purpose
 
-	.byte OBJ_ORANGECHEEP, $04, $17
+	;.byte OBJ_ORANGECHEEP, $04, $17
 	.byte OBJ_BOOSTRETCH_FLIP, $2A, $17
 	.byte OBJ_BOOSTRETCH_FLIP, $2D, $13
 	.byte OBJ_BOOSTRETCH, $2D, $15

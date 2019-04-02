@@ -4880,6 +4880,7 @@ Object_Draw16x16Sprite:
 ; Temp_Var7 = Object's Sprite_RAM offset (and -> 'Y')
 ; Temp_Var8 = Objects_SprHVis
 
+
 	LDA <Temp_Var5	; Check sprite vertical visibility
 	LSR A		; Shift right (checking lowest bit)
 	BCS PRG000_D6C6	; If this bit is set, this sprite piece is invisible, jump to PRG000_D6C6 (RTS)
