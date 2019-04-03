@@ -11,7 +11,7 @@
 	.byte OBJ_PODOBOO, $53, $14
 	.byte OBJ_PODOBOO, $5E, $11
 	.byte OBJ_ROTODISCCLOCKWISE, $5B, $17
-	;.byte OBJ_DRYBONES, $6B, $18
-	.byte OBJ_REDTROOPA, $6B, $18
+	.byte OBJ_DRYBONES, $6B, $18
+	;.byte OBJ_REDTROOPA, $6B, $18
 	.byte OBJ_BOOMBOOMJUMP, $9D, $17
 	.byte $FF	; Terminator

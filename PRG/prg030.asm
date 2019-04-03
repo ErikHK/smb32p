@@ -2458,6 +2458,9 @@ trueend:
 OrangeCheep_DoGameplay:
 	;LDA #$4f
 	;STA PatTable_BankSel+5	 ; Sixth pattern table bank = $4F
+	
+	;LDA #$4f
+	;STA PatTable_BankSel+4
 
 	JSR Orange_PowerUpdate
 	JSR Orange_SetMoveLR

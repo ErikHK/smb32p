@@ -1,6 +1,6 @@
 	.byte $01	; Unknown purpose
 
-	;.byte OBJ_ORANGECHEEP, $04, $02
+	.byte OBJ_ORANGECHEEP, $04, $02
 	.byte OBJ_WATERCURRENTUPWARD, $14, $09
 	.byte OBJ_BLOOPER, $1D, $06
 	.byte OBJ_WATERCURRENTUPWARD, $24, $09
