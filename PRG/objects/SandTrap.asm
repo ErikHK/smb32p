@@ -1,6 +1,6 @@
 	.byte $01	; Unknown purpose
 
-	;.byte OBJ_ORANGECHEEP, $04, $17 ;doesn't work for some reason.. maybe because sun is closer to the left??
+	.byte OBJ_ORANGECHEEP, $01, $17 ;doesn't work for some reason.. maybe because sun is closer to the left??
 	.byte OBJ_ENEMYSUN, $02, $11
 	.byte OBJ_GREENPIRANHA_FIRE, $1A, $1A
 	.byte OBJ_FLYINGREDPARATROOPA, $1B, $12
