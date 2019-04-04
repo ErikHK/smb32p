@@ -1797,8 +1797,19 @@ PRG026_AA9A:
 	AND #$f0	 ; Get the X low part
 	ORA #$08	 ; Center it
 	STA <Player_X	 ; Store it!
+	
+	PHA				;save A
+	LDA Orange_ObjectID
+	CMP #OBJ_ORANGECHEEP
+	BNE efterorangex2
+	
+	PLA				;reload A
 	STA <Orange_X	 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	JMP efterorangex2_2
 
+efterorangex2:
+	PLA
+efterorangex2_2:
 	LDA Level_JctYLHStart,X	
 
 	; A = a few things:
@@ -1820,8 +1831,18 @@ PRG026_AA9A:
 	LDA <Player_X
 	AND #$f0
 	STA <Player_X
+	
+	PHA
+	LDA Orange_ObjectID
+	CMP #OBJ_ORANGECHEEP
+	BNE efterorangex3
+	
+	PLA
 	STA <Orange_X	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	JMP PRG026_AABD
 
+efterorangex3:
+	PLA
 PRG026_AABD:
 	PLA		 ; Restore Level_JctYLHStart
 	AND #$80
@@ -1957,18 +1978,30 @@ LevelJct_GenericExit:
 
 	LDA #$28
 	STA <Player_X	 ; Player_X = $28
-	STA <Orange_X
 
 	LDA #$01
 	STA <Player_YHi	 ; Player_YHi = 1
-	STA <Orange_YHi
 
 	STA Level_PipeExitDir	 ; Level_PipeExitDir = 1
 
 	LDA #$80
 	STA <Player_Y	 ; Player_Y = $80
-	STA <Orange_Y
+	
+	LDA Orange_ObjectID
+	CMP #OBJ_ORANGECHEEP
+	BNE efteralltihopa
+	
+	LDA #$28
+	STA <Orange_X
 
+	LDA #$01
+	STA <Orange_YHi
+
+	LDA #$80
+	STA <Orange_Y
+	
+
+efteralltihopa:
 	JMP PRG026_AB0E	 ; Jump to PRG026_AB0E
 
 

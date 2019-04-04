@@ -3158,7 +3158,9 @@ PRG003_AFFA:
 	RTS		 ; Return
 
 LavaLotus_RightEdgePatTop:	.byte $C1, $C9, $D1
+;LavaLotus_RightEdgePatTop:	.byte $F6, $F7, $F8
 LavaLotus_RightEdgePatBottom:	.byte $C3, $CB, $D3
+;LavaLotus_RightEdgePatBottom:	.byte $F9, $FA, $FB
 
 ObjNorm_LavaLotus:
 	JSR Object_CheckIfNormalState

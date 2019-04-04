@@ -755,16 +755,25 @@ PRG008_A38E:
 
 	LDA <Player_X	
 	STA <Pipe_PlayerX	 ; Pipe_PlayerX = Player_X
+	
+	LDA Orange_ObjectID
+	CMP #OBJ_ORANGECHEEP
+	BNE efterorange
+	
+	LDA <Player_X	
 	ADD #$0A			 ; offset to circumvent bug
 	STA <Orange_X
-	;INC <Orange_X
+	
+	LDA <Player_Y
+	AND #$F0	
+	STA <Orange_Y
+	;DEC <Orange_Y
 
+efterorange:
 	LDA <Player_Y
 	AND #$F0	
 	STA <Pipe_PlayerY
-	STA <Orange_Y
 	DEC <Pipe_PlayerY 	; Pipe_PlayerY = Player_Y aligned to nearest 16, minus 1
-	DEC <Orange_Y
 
 	LDA Level_7Vertical
 	BNE PRG008_A3B6	 	; If level is vertical, jump to PRG008_A3B6
@@ -4424,11 +4433,11 @@ PRG008_B47E:
 	; sense, but Level_GndLUT_Addr/H isn't used in a non-slope level anyway, so this is
 	; probably some bit of "dead" code or something...
 
-	LDA NonSlope_LUT_Addr
-	STA <Level_GndLUT_Addr
+	;LDA NonSlope_LUT_Addr
+	;STA <Level_GndLUT_Addr
 
-	LDA NonSlope_LUT_Addr+1
-	STA <Level_GndLUT_Addr+1
+	;LDA NonSlope_LUT_Addr+1
+	;STA <Level_GndLUT_Addr+1
 
 PRG008_B4A2:
 	JMP PRG000_B9D8	 ; Jump to PRG000_B9D8

@@ -2243,7 +2243,7 @@ PipeMove_LeftRight:
 	; Move Player up/down within pipe
 PipeMove_UpDown:
 	LDX #4
-	LDA Level_ObjectID, X
+	LDA Orange_ObjectID
 	CMP #OBJ_ORANGECHEEP
 	BNE pipemoove
 	
@@ -2278,10 +2278,17 @@ Player_StopMovement:
 	STA Level_PipeMove	; Not moving through a pipe
 	STA <Player_XVel	; Player stopped horizontall
 	STA <Player_YVel	; Player stopped vertically
+	STA <Player_InAir	; Not mid-air
+
+	;LDA Orange_ObjectID
+	;CMP #OBJ_ORANGECHEEP
+	;BNE efterorangeda
+	
 	STA <Orange_YVel
 	STA <Orange_XVel
-	STA <Player_InAir	; Not mid-air
 	STA <Orange_In_Air
+	
+efterorangeda:
 	RTS		 ; Return
 
 SuitLost_Poof_Patterns:
