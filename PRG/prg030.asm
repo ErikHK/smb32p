@@ -2363,7 +2363,135 @@ set_two:
 slut:
 	STA Orange_MoveLR
 	RTS
+
+OrangeObject_HitTest:
+	RTS
+
 	
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; OrangeLevel_ObjCalcXDiffs
+;
+; For a given object slot in 'X'...
+; Returns: Temp_Var16 as pixel difference between Orange and object X coordinates
+; 	   And 'Y' is set to 0 if Player is to the right of object, 1 if to the left
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; $DD2C
+OrangeLevel_ObjCalcXDiffs:
+	LDA <Orange_X
+	SUB <Objects_X,X
+	STA <Temp_Var16	 ; Temp_Var16 = difference between Orange's X and object's X
+
+	LDY #$00	 ; Y = 0
+	LDA <Orange_XHi	 
+	SBC <Objects_XHi,X
+	BPL PRG000_2_DD3C	 ; If Player's X Hi >= Object's X Hi, jump to PRG000_DD3C (RTS)
+
+	INY		 ; Otherwise Y = 1
+
+PRG000_2_DD3C:
+	RTS		 ; Return
+
+
+
+OrangePlatform_Collide:
+	;JSR OrangeObject_HitTest	 ; Test if Player is touching object
+	SEC
+	BCC PRG002_2_BAEE	 	; If not, jump to PRG002_2_BAEE (RTS)
+
+	; Test if Orange is standing on top of platform
+
+	;LDA <Orange_Y
+	LDA $B9 ;Orange_SpriteY??
+	;ADD #24
+	CMP <Objects_SpriteY,X
+	BGE PRG002_2_BABE	 ; If Orange's bottom is beneath object's top, jump to PRG002_2_BABE
+
+	LDA <Orange_YVel
+	BMI PRG002_2_BABD	 ; If Orange is moving upward, jump to PRG002_2_BABD
+
+	JSR Orange_StandOnPlatform	 ; Stand on platform
+	SEC		 ; Set carry (collided)
+
+PRG002_2_BABD:
+	RTS		 ; Return
+
+PRG002_2_BABE:
+
+PRG002_2_BAC9:
+	LDA #$08	 ; A = 8 if small or ducking
+
+PRG002_2_BACB:
+	;ADD <Orange_Y
+	ADD $B9
+	CMP <Objects_SpriteY,X
+	BLT PRG002_2_BADC	 ; If Orange's Sprite top is near object's top, jump to PRG002_2_BADC
+
+	LDA <Orange_YVel
+	BPL PRG002_2_BADA	 ; If Orange is falling, jump to PRG002_2_BADA
+
+	; Orange hits head off platform
+	LDA #$10
+	STA <Orange_YVel
+
+PRG002_2_BADA:
+	CLC		 ; Clear carry (no collision)
+	RTS		 ; Return
+
+PRG002_2_BADC:
+	LDA <Objects_XVel,X
+	BEQ PRG002_2_BAF4	 ; If platform is not moving horizontally, jump to PRG002_2_BAF4
+
+	; Platform is moving horizontally...
+
+	LDA <Orange_X
+	SUB <Objects_X,X	; Difference between Orange and Platform X
+	EOR <Objects_XVel,X	; Most importantly, check if sign differs from velocity
+
+	CLC		 ; Clear carry (no collision)
+	BMI PRG002_2_BAEF	 ; If signs differ, jump to PRG002_2_BAEF
+
+	; Otherwise, set Orange's X velocity to platform's X velocity
+	LDA <Objects_XVel,X
+	STA <Orange_XVel
+
+PRG002_2_BAEE:
+	RTS		 ; Return
+
+
+PRG002_2_BAEF:
+
+	; Halt Orange's movement
+	LDA #$00
+	STA <Orange_XVel
+
+	RTS		 ; Return
+
+PRG002_2_BAF4:
+
+	; Platform is not moving horizontally...
+
+	JSR OrangeLevel_ObjCalcXDiffs
+
+	INY		 ; Y = 1 or 2, depending on Orange's relative position
+
+	LDA <Pad_Holding_2
+	AND #(PAD_LEFT | PAD_RIGHT)
+	STA <Temp_Var1	 ; Temp_Var1 is non-zero if Orange is pressing left/right
+
+	CPY <Temp_Var1	 ; Check if Orange is pressing a direction favorable to their position
+
+	CLC		 ; Clear carry (no collision)
+
+	BNE PRG002_2_BAEF	 ; If Orange is pressing against it, jump to PRG002_2_BAEF (halt Orange's movement)
+
+	; Orange pushing with platform
+	LDA OrangePushWithPlatform_XVel-1,Y
+	STA <Orange_XVel
+
+	RTS		 ; Return
+
+OrangePushWithPlatform_XVel:	.byte $04, -$04
+
 
 add_gravity:
 ;check if luigi is playing
@@ -2474,7 +2602,7 @@ OrangeCheep_DoGameplay:
 	RTS
 	
 contaa:
-; ;first check if Player_XHi and Orange_XHi is the same:
+    ;first check if Player_XHi and Orange_XHi is the same:
 	LDA <Player_XHi
 	SUB <Orange_XHi
 	CMP #2
