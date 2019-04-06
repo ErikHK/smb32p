@@ -2060,6 +2060,7 @@ PRG002_A9F5:
 	LDA #$00
 	STA Object_VelCarry
 
+	JSR OrangePlatform_Collide
 	JSR PlayerPlatform_Collide
 	BCC PRG002_AA03	 ; If Player is not being carried by lift, jump to PRG002_AA03 (RTS)
 
@@ -2213,7 +2214,7 @@ ObjNorm_WoodenPlatRider:
 	BNE PRG002_AAA6	 ; If gameplay is halted, jump to PRG002_AAA6 (RTS)
 
 	JSR Object_ApplyXVel	 ; Apply X velocity
-	;JSR OrangePlatform_Collide
+	JSR OrangePlatform_Collide
 	JSR PlayerPlatform_Collide	 ; Collide and ride
 	
 
@@ -2407,6 +2408,7 @@ PRG002_AB5E:
 	LDA #$00
 	STA Object_VelCarry
 
+	JSR OrangePlatform_Collide
 	JSR PlayerPlatform_Collide	; Do Player-platform collision
 	BCC PRG002_AB8F	 		; If Player did not collide with Platform, jump to PRG002_AB8F
 
@@ -2667,6 +2669,7 @@ PRG002_AC9C:
 PRG002_ACAB:
 	JSR Object_ApplyYVel	 ; Apply Y Velocity
 	JSR Object_ApplyXVel	 ; Apply X velocity
+	JSR OrangePlatform_Collide
 	JSR PlayerPlatform_Collide	 ; Do Player-to-platform collision
 	BCC PRG002_ACBC	 ; If Player did not collide with platform, jump to PRG002_ACBC (RTS)
 
