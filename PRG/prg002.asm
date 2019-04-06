@@ -2213,8 +2213,9 @@ ObjNorm_WoodenPlatRider:
 	BNE PRG002_AAA6	 ; If gameplay is halted, jump to PRG002_AAA6 (RTS)
 
 	JSR Object_ApplyXVel	 ; Apply X velocity
+	;JSR OrangePlatform_Collide
 	JSR PlayerPlatform_Collide	 ; Collide and ride
-	JSR OrangePlatform_Collide
+	
 
 	LDA <Objects_XVel,X
 	BNE PRG002_AA9A	 ; If platform is moving horizontally, jump to PRG002_AA9A
@@ -2442,8 +2443,9 @@ ObjNorm_WoodenPlatform:
 
 	JSR Object_ApplyYVel	 ; Apply Y Velocity
 	JSR Object_ApplyXVel	 ; Apply X velocity
-	JSR PlayerPlatform_Collide	 ; Player collision with platform
 	JSR OrangePlatform_Collide
+	JSR PlayerPlatform_Collide	 ; Player collision with platform
+	
 
 	LDA <Objects_YVel,X
 	BNE PRG002_ABA8	 ; If Platform is moving vertically, jump to PRG002_ABA8

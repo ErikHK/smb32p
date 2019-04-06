@@ -157,6 +157,7 @@ Map_Bottom_Tiles:
 	.byte TILE_BORDER1, TILE_BORDER1, TILE_BORDER1, TILE_BORDER1, TILE_BORDER2
 	.byte TILE_BORDER1, TILE_BORDER1, TILE_BORDER3, TILE_BORDER1
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; Map_Reload_with_Completions
 ;

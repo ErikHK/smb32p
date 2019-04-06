@@ -2005,40 +2005,6 @@ efteralltihopa:
 	JMP PRG026_AB0E	 ; Jump to PRG026_AB0E
 
 
-
-
-
-Orange_StandOnPlatform:
-	; Set Orange to object's Y - 31
-	LDA <Objects_Y,X	 
-	SUB #31
-	STA <Orange_Y
-	LDA <Objects_YHi,X
-	SBC #$00
-	STA <Orange_YHi
-
-	; Flag Orange as NOT mid-air
-	LDY #$04
-	STY <Orange_In_Air
-
-	LDA Object_VelCarry
-	BPL PRG002_2_AA7B	
-
-	DEY		 ; Y = -1 (provides a sort of carry if Orange's X Velocity caused one)
-
-PRG002_2_AA7B:
-	; Add to Orange_X, with carry
-	ADD <Orange_X
-	STA <Orange_X
-	TYA
-	ADC <Orange_XHi
-	STA <Orange_XHi
-PRG002_2_AA85:
-	RTS		 ; Return
-
-
-
-
 LevelJct_SpecialToadHouse:
 	; NOTE: This does NOT set the layout / object pointers!!
 	; These MUST be set prior to using this Level Junction!

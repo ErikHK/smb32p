@@ -322,24 +322,24 @@ EndLevelCard_PalData:
 	.byte $00	; Terminator
 
 Video_YouGotCardH:
-	vaddr $22C7
-	.byte $13
-	;       Y    O    U         G    O    T         A         C    A    R    D         |              |
-	.byte $0D, $0E, $0A, $FC, $06, $0E, $09, $FC, $00, $FC, $05, $00, $02, $07, $FC, $26, $FE, $FE, $27
-	vaddr $22B6
-	.byte $04 ;  _    _    _   _
-	;           |               |
-	.byte      $20, $21, $21, $22
+	; vaddr $22C7
+	; .byte $13
+	; ;       Y    O    U         G    O    T         A         C    A    R    D         |              |
+	; .byte $0D, $0E, $0A, $FC, $06, $0E, $09, $FC, $00, $FC, $05, $00, $02, $07, $FC, $26, $FE, $FE, $27
+	; vaddr $22B6
+	; .byte $04 ;  _    _    _   _
+	; ;           |               |
+	; .byte      $20, $21, $21, $22
 
-	vaddr $22F6
-	.byte $04
-	;       |              |
-	.byte $26, $FE, $FE, $27
+	; vaddr $22F6
+	; .byte $04
+	; ;       |              |
+	; .byte $26, $FE, $FE, $27
 
-	vaddr $2316
-	.byte $04
-	;      |_    _    _   _|
-	.byte $28, $24, $24, $25
+	; vaddr $2316
+	; .byte $04
+	; ;      |_    _    _   _|
+	; .byte $28, $24, $24, $25
 
 	.byte $00	; Terminator
 
@@ -424,11 +424,11 @@ PAGE_A000_ByTileset: ; $83E9
 PT2_Anim:	.byte $60, $62, $64, $66
 
 PAUSE_Sprites:
-	.byte $58, $F1, $03, $60	; P
-	.byte $58, $F5, $03, $70	; A
-	.byte $58, $F9, $03, $80	; U
-	.byte $58, $FD, $03, $90	; S
-	.byte $58, $FF, $03, $A0	; E
+;	.byte $58, $F1, $03, $60	; P
+;	.byte $58, $F5, $03, $70	; A
+;	.byte $58, $F9, $03, $80	; U
+;	.byte $58, $FD, $03, $90	; S
+;	.byte $58, $FF, $03, $A0	; E
 PAUSE_Sprites_End
 
 	; The BGM per world (see also World_BGM_Restore in PRG010)
@@ -2364,8 +2364,8 @@ slut:
 	STA Orange_MoveLR
 	RTS
 
-OrangeObject_HitTest:
-	RTS
+;OrangeObject_HitTest:
+;	RTS
 
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2393,16 +2393,126 @@ PRG000_2_DD3C:
 
 
 
+
+Orange_StandOnPlatform:
+	; Set Orange to object's Y - 31
+	LDA <Objects_Y,X	 
+	SUB #31
+	STA <Orange_Y
+	LDA <Objects_YHi,X
+	SBC #$00
+	STA <Orange_YHi
+
+	; Flag Orange as NOT mid-air
+	LDY #$04
+	STY <Orange_In_Air
+
+	LDA Object_VelCarry
+	BPL PRG002_2_AA7B	
+
+	DEY		 ; Y = -1 (provides a sort of carry if Orange's X Velocity caused one)
+
+PRG002_2_AA7B:
+	; Add to Orange_X, with carry
+	ADD <Orange_X
+	STA <Orange_X
+	TYA
+	ADC <Orange_XHi
+	STA <Orange_XHi
+PRG002_2_AA85:
+	RTS		 ; Return
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; OrangeObject_HitTest
+; OrangeObject_HitTestRespond
+;
+; Tests if Player has collided with another object
+; If using "Object_HitTestRespond", then if the Player has touched
+; the object, it will call appropriate ObjectGroup_CollideJumpTable
+; routine after a successful intersection.
+;
+; In any case, carry is set if there was a collision, or clear
+; if the Player did not collide with the object!
+;
+; X is object's slot
+; Y is group relative object index
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; $D836
+OrangeObject_HitTest:
+	LDA #$01	 ; Test only, do NOT perform "collide" routine
+	JMP PRG000_2_D83D	 ; Jump to PRG000_2_D83D
+
+; $D83B
+OrangeObject_HitTestRespond:
+	LDA #$00	; Test and do "collide" routine
+
+PRG000_2_D83D:
+	STA <Temp_Var16	 ; Temp_Var16 = 0 or 1, depending on entry point
+
+	; Clear the Player hit status bits
+	;LDA Objects_PlayerHitStat,X
+	;AND #%11111100
+	;STA Objects_PlayerHitStat,X
+
+	CLC	; Carry flag will be used as a result
+
+	;LDA <Player_IsDying	; If Player is dying...
+	;ORA Player_OffScreen	; ... off-screen ...
+	;ORA Player_Behind_En	; ... or behind the scenes ...
+	;BNE PRG000_2_D82B	 	; ... jump to PRG000_2_D82B (RTS)
+
+	JSR Object_CalcBoundBox	; Calculate object's bounding box
+
+	;LDA <Player_Suit
+	;BEQ PRG000_2_D862	 ; If Player is small, jump to PRG000_2_D862
+
+	;LDA #$00	 ; A = 0 when small or ducking
+
+	;LDY Player_IsDucking	 
+	;BNE PRG000_2_D862	 ; If Player is ducking, jump to PRG000_2_D862
+
+	;LDA #$01	 ; A = 1 otherwise
+
+PRG000_2_D862:
+	;LDA #$00
+	;ASL A
+	;ASL A		 ; Multiply by 4
+	;TAY		 ; Y = 0 (small/ducking) or 4 (otherwise)
+	LDY #0
+
+	; Calculate upper left of bounding box and lower right offsets of Player
+	LDA <Orange_SpriteX
+	ADD Player_BoundBox,Y
+	STA <Temp_Var3	
+
+	LDA <Orange_SpriteY
+	ADD Player_BoundBox+2,Y
+	STA <Temp_Var7	
+
+	LDA Player_BoundBox+1,Y
+	STA <Temp_Var4	
+
+	LDA Player_BoundBox+3,Y
+	STA <Temp_Var8	
+
+	JSR ObjectObject_Intersect	; Returns carry SET if object and Player intersected
+	;BCC PRG000_2_D82B	 	; If carry clear, object and Player did not intersect, jump to PRG000_2_D82B (RTS)
+
+PRG000_2_D82B:
+	RTS
+
+
 OrangePlatform_Collide:
-	;JSR OrangeObject_HitTest	 ; Test if Player is touching object
-	SEC
+	JSR OrangeObject_HitTest	 ; Test if Player is touching object
+	
 	BCC PRG002_2_BAEE	 	; If not, jump to PRG002_2_BAEE (RTS)
 
 	; Test if Orange is standing on top of platform
 
-	;LDA <Orange_Y
-	LDA $B9 ;Orange_SpriteY??
-	;ADD #24
+	LDA <Orange_SpriteY
+	ADD #24
 	CMP <Objects_SpriteY,X
 	BGE PRG002_2_BABE	 ; If Orange's bottom is beneath object's top, jump to PRG002_2_BABE
 

@@ -1,11 +1,14 @@
 Orange_X		= $95
 Orange_Y		= $a7
+Orange_SpriteX	= $b0
+Orange_SpriteY	= $b9
 Orange_XHi		= $7a
 Orange_YHi		= $8c
 Orange_XVel		= $c2
 Orange_YVel		= $d4
 Orange_In_Air	= $dd
 Orange_ObjectID	= $675
+
 	
 Pad_Input_2		= $f6
 Pad_Holding_2	= $f8

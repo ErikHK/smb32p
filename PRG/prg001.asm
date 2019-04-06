@@ -6322,4 +6322,3 @@ PRG001_BF9B:
 	RTS		 ; Return
 
 ; Rest of ROM bank was empty
-

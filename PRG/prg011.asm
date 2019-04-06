@@ -91,6 +91,7 @@ W7_Obj_Items:	.include "PRG/maps/World7OI"
 W8_Obj_Items:	.include "PRG/maps/World8OI"
 
 
+
 PRG011_A1C8:
 	.byte $03, $04, $05, $01, $03, $05, $01, $01
 	.byte $00, $00, $00, $00, $00, $00, $00, $00
