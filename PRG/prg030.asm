@@ -2363,10 +2363,6 @@ set_two:
 slut:
 	STA Orange_MoveLR
 	RTS
-
-;OrangeObject_HitTest:
-;	RTS
-
 	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; OrangeLevel_ObjCalcXDiffs
@@ -2393,19 +2389,20 @@ PRG000_2_DD3C:
 
 
 
-
 Orange_StandOnPlatform:
 	; Set Orange to object's Y - 31
 	LDA <Objects_Y,X	 
-	SUB #31
+	;SUB #31
+	SUB #16
 	STA <Orange_Y
 	LDA <Objects_YHi,X
-	SBC #$00
+	;SBC #$00
 	STA <Orange_YHi
 
 	; Flag Orange as NOT mid-air
 	LDY #$04
 	STY <Orange_In_Air
+	LDY #$00
 
 	LDA Object_VelCarry
 	BPL PRG002_2_AA7B	
@@ -2484,17 +2481,21 @@ PRG000_2_D862:
 
 	; Calculate upper left of bounding box and lower right offsets of Player
 	LDA <Orange_SpriteX
-	ADD Player_BoundBox,Y
+	;ADD Player_BoundBox,Y
+	ADD #$04
 	STA <Temp_Var3	
 
 	LDA <Orange_SpriteY
-	ADD Player_BoundBox+2,Y
+	;ADD Player_BoundBox+2,Y
+	ADD #$10
 	STA <Temp_Var7	
 
-	LDA Player_BoundBox+1,Y
+	;LDA Player_BoundBox+1,Y
+	LDA #$04
 	STA <Temp_Var4	
 
-	LDA Player_BoundBox+3,Y
+	;LDA Player_BoundBox+3,Y
+	LDA #$04
 	STA <Temp_Var8	
 
 	JSR ObjectObject_Intersect	; Returns carry SET if object and Player intersected
@@ -2512,7 +2513,7 @@ OrangePlatform_Collide:
 	; Test if Orange is standing on top of platform
 
 	LDA <Orange_SpriteY
-	ADD #24
+	;ADD #0
 	CMP <Objects_SpriteY,X
 	BGE PRG002_2_BABE	 ; If Orange's bottom is beneath object's top, jump to PRG002_2_BABE
 
@@ -2531,8 +2532,7 @@ PRG002_2_BAC9:
 	LDA #$08	 ; A = 8 if small or ducking
 
 PRG002_2_BACB:
-	;ADD <Orange_Y
-	ADD $B9
+	ADD <Orange_SpriteY
 	CMP <Objects_SpriteY,X
 	BLT PRG002_2_BADC	 ; If Orange's Sprite top is near object's top, jump to PRG002_2_BADC
 
