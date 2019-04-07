@@ -350,25 +350,25 @@ Video_CourseClear:
 	.byte $85, $8E, $8A, $82, $83, $84, $FC, $85, $8B, $84, $80, $82, $FC, $9B, $00
 
 Video_YouGotCard:
-	vaddr $28E7
-	.byte $13
-	;       Y    O    U         G    O    T         A         C    A    R    D         |              |
-	.byte $8D, $8E, $8A, $FC, $86, $8E, $89, $FC, $80, $FC, $85, $80, $82, $87, $FC, $A6, $FE, $FE, $A7
+	; vaddr $28E7
+	; .byte $13
+	; ;       Y    O    U         G    O    T         A         C    A    R    D         |              |
+	; .byte $8D, $8E, $8A, $FC, $86, $8E, $89, $FC, $80, $FC, $85, $80, $82, $87, $FC, $A6, $FE, $FE, $A7
 
-	vaddr $28D6
-	.byte $04 ;  _    _    _   _
-	;           |               |
-	.byte      $A0, $A1, $A1, $A2
+	; vaddr $28D6
+	; .byte $04 ;  _    _    _   _
+	; ;           |               |
+	; .byte      $A0, $A1, $A1, $A2
 
-	vaddr $2916
-	.byte $04
-	;       |              |
-	.byte $A6, $FE, $FE, $A7
+	; vaddr $2916
+	; .byte $04
+	; ;       |              |
+	; .byte $A6, $FE, $FE, $A7
 
-	vaddr $2936
-	.byte $04
-	;      |_    _    _   _|
-	.byte $A8, $A4, $A4, $A5
+	; vaddr $2936
+	; .byte $04
+	; ;      |_    _    _   _|
+	; .byte $A8, $A4, $A4, $A5
 	.byte $00	; Terminator
 
 	.byte $AF, $11
@@ -2499,10 +2499,54 @@ PRG000_2_D862:
 	STA <Temp_Var8	
 
 	JSR ObjectObject_Intersect	; Returns carry SET if object and Player intersected
-	;BCC PRG000_2_D82B	 	; If carry clear, object and Player did not intersect, jump to PRG000_2_D82B (RTS)
+	BCC PRG000_2_D82B	 	; If carry clear, object and Player did not intersect, jump to PRG000_2_D82B (RTS)
+	
 
+	; Intersection occurred by 8-bit values that represent "screen relative" positions,
+	; but this is not a complete check as Player or object may be at different "High/Low"
+	; positions (full 16-bit coordinate check)
+
+	STA <Temp_Var1		 ; Store Player's bounding box top offset -> Temp_Var1
+
+	;LDA Level_7Vertical
+	;BNE PRG000_2_D8B1	 ; If level is vertical, jump to PRG000_D8B1
+
+	; Calculate full 16-bit X difference of object -> Temp_Var14/15
+	LDA <Orange_X
+	SUB <Objects_X,X
+	STA <Temp_Var15	
+
+	LDA <Orange_XHi
+	SBC <Objects_XHi,X
+
+	STA <Temp_Var14	
+
+	BPL PRG000_2_D8A9	 ; If overall result is positive, jump to PRG000_D8A9
+
+	; Otherwise, 16-bit negate Temp_Var14/15
+	LDA <Temp_Var15
+	JSR Negate	
+	STA <Temp_Var15	
+
+	LDA <Temp_Var14
+	EOR #$ff	
+	ADC #$00	
+	STA <Temp_Var14	
+
+PRG000_2_D8A9:
+	LDA <Temp_Var14
+	BNE PRG000_2_D920	 ; If Temp_Var14 is not zero, there's a difference in the "High" component of the Player/Object, so no intersect!  Jump to PRG000_D920
+
+	LDA <Temp_Var15
+	BMI PRG000_2_D920	 ; If Temp_Var15 is negative, no intersect, jump to PRG000_D920
+	
 PRG000_2_D82B:
 	RTS
+	
+PRG000_2_D920:
+	CLC		 ; Clear carry
+	RTS		 ; Return
+
 
 
 OrangePlatform_Collide:
