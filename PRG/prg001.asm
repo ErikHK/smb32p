@@ -1214,7 +1214,35 @@ PRG001_A5D5:
 PRG001_A5EE:
 	STA <Objects_YVel,X	 ; Set Y Velocity 
 	STA <Player_YVel	 ; ... of Player too
+	
+	;check if orange is close, then set her yvel too..
+	LDA <Player_Y
+	SUB <Orange_Y
+	AND #$f0
+	CMP #$f0
+	BEQ set_orange_yes
+	CMP #$00
+	BEQ set_orange_yes
+	JMP dont_set_orange_no
+	
+set_orange_yes:
+	LDA <Player_X
+	SUB <Orange_X
+	AND #$f0
+	CMP #$f0
+	BEQ set_orange_yes_yes
+	CMP #$00
+	BEQ set_orange_yes_yes
+	JMP dont_set_orange_no
 
+set_orange_yes_yes:
+	LDA <Player_YVel
+	STA <Orange_YVel
+	LDA <Player_Y
+	ADD #$10
+	STA <Orange_Y
+
+dont_set_orange_no:
 	LDA <Pad_Input
 	AND #PAD_A
 	BEQ PRG001_A5FD	 ; If Player is not pressing A, jump to PRG001_A5FD
