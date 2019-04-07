@@ -2281,6 +2281,7 @@ ObjNorm_OscillatingH:
 
 	JSR Platform_Oscillate	 ; Do platform oscillation
 	JSR Object_ApplyXVel	 ; Apply X velocity
+	JSR OrangePlatform_Collide
 	JMP PlayerPlatform_Collide	 ; Do platform-player collision tests and don't come back!
 
 	; Timers set per direction (long and short, respectively)
@@ -2340,7 +2341,8 @@ ObjNorm_OscillatingV:
 	; Clear X velocity remainders
 	LDA #$00
 	STA Object_VelCarry
-
+	
+	JSR OrangePlatform_Collide
 	JMP PlayerPlatform_Collide	; Do Player-platform collision and don't come back!
 
 ObjInit_FloatWoodenPlat:

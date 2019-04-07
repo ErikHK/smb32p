@@ -1610,7 +1610,7 @@ PRG030_8A79:
 PRG030_8AC0:
 	JSR GraphicsBuf_Prep_And_WaitVSync	; VSync
 
-	JSR NSpade_DoGame	 ; Run N-Spade game
+	;JSR NSpade_DoGame	 ; Run N-Spade game
 
 	JSR StatusBar_UpdateValues	 ; Update status bar
 
@@ -2498,15 +2498,14 @@ PRG000_2_D862:
 	LDA #$04
 	STA <Temp_Var8	
 
-	JSR ObjectObject_Intersect	; Returns carry SET if object and Player intersected
-	BCC PRG000_2_D82B	 	; If carry clear, object and Player did not intersect, jump to PRG000_2_D82B (RTS)
+	JSR ObjectObject_Intersect	; Returns carry SET if object and Betty intersected
+	BCC PRG000_2_D82B	 	; If carry clear, object and Betty did not intersect, jump to PRG000_2_D82B (RTS)
 	
-
 	; Intersection occurred by 8-bit values that represent "screen relative" positions,
-	; but this is not a complete check as Player or object may be at different "High/Low"
+	; but this is not a complete check as Betty or object may be at different "High/Low"
 	; positions (full 16-bit coordinate check)
 
-	STA <Temp_Var1		 ; Store Player's bounding box top offset -> Temp_Var1
+	STA <Temp_Var1		 ; Store Betty's bounding box top offset -> Temp_Var1
 
 	;LDA Level_7Vertical
 	;BNE PRG000_2_D8B1	 ; If level is vertical, jump to PRG000_D8B1
@@ -2535,7 +2534,7 @@ PRG000_2_D862:
 
 PRG000_2_D8A9:
 	LDA <Temp_Var14
-	BNE PRG000_2_D920	 ; If Temp_Var14 is not zero, there's a difference in the "High" component of the Player/Object, so no intersect!  Jump to PRG000_D920
+	BNE PRG000_2_D920	 ; If Temp_Var14 is not zero, there's a difference in the "High" component of the Betty/Object, so no intersect!  Jump to PRG000_D920
 
 	LDA <Temp_Var15
 	BMI PRG000_2_D920	 ; If Temp_Var15 is negative, no intersect, jump to PRG000_D920
@@ -2550,7 +2549,7 @@ PRG000_2_D920:
 
 
 OrangePlatform_Collide:
-	JSR OrangeObject_HitTest	 ; Test if Player is touching object
+	JSR OrangeObject_HitTest	 ; Test if Betty is touching object
 	
 	BCC PRG002_2_BAEE	 	; If not, jump to PRG002_2_BAEE (RTS)
 

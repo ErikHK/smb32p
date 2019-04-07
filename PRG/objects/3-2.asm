@@ -1,7 +1,7 @@
 	.byte $01	; Unknown purpose
 
 	.byte OBJ_ORANGECHEEP, $04, $10
-	;.byte OBJ_AUTOSCROLL, $00, $60
+	.byte OBJ_AUTOSCROLL, $00, $60
 	.byte OBJ_CHARGINGCHEEPCHEEP, $04, $19 ;changed to 04 from 00
 	.byte OBJ_WOODENPLATFORMFALL, $0B, $11
 	.byte OBJ_WOODENPLATFORMFALL, $0F, $17

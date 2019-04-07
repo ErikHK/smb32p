@@ -1261,12 +1261,45 @@ PRG003_A67C:
 	BMI PRG003_A691	 ; If Player is moving upward, jump to PRG003_A691 (RTS)
 
 	; Otherwise, lock Player at 31 pixels above donut lift
+	
+	; check if orange is close, in that case, set him too!
+	LDA <Orange_X
+	SUB <Player_X
+	AND #$f0
+	CMP #$f0
+	BEQ set_orange
+	CMP #00
+	BEQ set_orange
+	
+	JMP dont_set_orange
+	
+set_orange:
+	;also check Y
+	LDA <Orange_Y
+	SUB <Player_Y
+	SUB #$0f
+	AND #$f0
+	BNE dont_set_orange
+	
+	;set orange!
+	LDA <Objects_Y,X
+	SUB #15
+	STA <Orange_Y
+	LDA <Objects_YHi,X
+	SBC #$00
+	STA <Orange_YHi
+	LDA #$10
+	STA <Orange_YVel
+	
+dont_set_orange:	
 	LDA <Objects_Y,X
 	SUB #31
 	STA <Player_Y
 	LDA <Objects_YHi,X
 	SBC #$00
 	STA <Player_YHi
+	
+	
 
 	; Player is not in air
 	LDA #$00
