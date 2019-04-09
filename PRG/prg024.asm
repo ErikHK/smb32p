@@ -1565,7 +1565,8 @@ PRG024_A8C8:
 	BPL PRG024_A8C8	 ; Loop while X >= 0...
 
 	; Set Mario and Luigi's lives to 4
-	LDA #$04
+	;LDA #$04
+	LDA #$08
 	STA Player_Lives
 	STA Player_Lives+1
 

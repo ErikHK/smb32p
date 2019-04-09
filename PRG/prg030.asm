@@ -46,7 +46,37 @@ Tile_Mem_AddrVH:
 	.byte Tile_MemH+$B, Tile_MemH+$C, Tile_MemH+$D, Tile_MemH+$E
 
 
+Map_Y_Starts:
+	; Map Y start positions, World 1-8 (X is always $20)
+	.byte $40, $A0, $A0, $40, $80, $60, $30, $50
 
+	; The normal level VROM page cycle set
+PT2_Anim:	.byte $60, $62, $64, $66
+
+
+	; List of C000 pages to switch to by Level_Tileset
+PAGE_C000_ByTileset: ; $83D6
+	.byte 10, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 22, 22, 22, 14
+
+	; List of A000 pages to switch to by Level_Tileset
+PAGE_A000_ByTileset: ; $83E9
+	.byte 11, 15, 21, 16, 17, 19, 18, 18, 18, 20, 23, 19, 17, 19, 13, 26, 26, 26, 9
+
+	
+
+	; This single byte is used in plant infestation levels to load the animation counter
+PlantInfest_ACnt_MaxConst:	.byte (PlantInfest_PTPAC_End - PlantInfest_PatTablePerACnt - 1)
+PlantInfest_PatTablePerACnt:
+	.byte $60, $60, $60, $60, $60, $60, $60, $60, $60, $60, $62, $64, $66, $3E, $3E, $3E
+	.byte $3E, $3E, $3E, $3E, $3E, $3E, $3E, $66, $64, $62, $06
+PlantInfest_PTPAC_End
+
+	.byte $34, $36, $38, $3A, $3C
+	.byte $3E, $08, $34, $36, $38, $36, $34, $3A, $3E, $3A
+
+
+
+	
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; This table contains commands for Video_Misc_Updates which tells
 ; it how to generate certain graphical elements programatically
@@ -347,7 +377,7 @@ Video_CourseClear:
 	vaddr $2889
 	.byte $0E
 	;       C    O    U    R    S    E         C    L    E    A    R         !
-	.byte $85, $8E, $8A, $82, $83, $84, $FC, $85, $8B, $84, $80, $82, $FC, $9B, $00
+	;.byte $85, $8E, $8A, $82, $83, $84, $FC, $85, $8B, $84, $80, $82, $FC, $9B, $00
 
 Video_YouGotCard:
 	; vaddr $28E7
@@ -373,63 +403,6 @@ Video_YouGotCard:
 
 	.byte $AF, $11
 
-Map_Y_Starts:
-	; Map Y start positions, World 1-8 (X is always $20)
-	.byte $40, $A0, $A0, $40, $80, $60, $30, $50
-
-	; A clear pattern set by Level_Tileset (for use with Clear_Nametable_Short)
-ClearPattern_ByTileset:
-	.byte $FF	; 0 - Map
-	.byte $FC	; 1 - Plains
-	.byte $FF	; 2 - Mini fortress style
-	.byte $FC	; 3 - Hills style
-	.byte $FC	; 4 - High-Up style
-	.byte $FC	; 5 - pipe world plant infestation
-	.byte $FC	; 6 - Water world
-	.byte $FF	; 7 - Toad house
-	.byte $FF	; 8 - Vertical pipe maze
-	.byte $FC	; 9 - desert level
-	.byte $FC	; 10 - airship
-	.byte $FC	; 11 - Giant World
-	.byte $FC	; 12 - ice level
-	.byte $FC	; 13 - coin heaven / sky level
-	.byte $FC	; 14 - underground
-	.byte $FF	; 15 - bonus game intro
-	.byte $FF	; 16 - spade game sliders
-	.byte $FF	; 17 - N-spade
-	.byte $FC	; 18 - 2P Vs
-
-
-	.byte $AB, $83, $C6, $83, $CD, $83
-
-	; This single byte is used in plant infestation levels to load the animation counter
-PlantInfest_ACnt_MaxConst:	.byte (PlantInfest_PTPAC_End - PlantInfest_PatTablePerACnt - 1)
-PlantInfest_PatTablePerACnt:
-	.byte $60, $60, $60, $60, $60, $60, $60, $60, $60, $60, $62, $64, $66, $3E, $3E, $3E
-	.byte $3E, $3E, $3E, $3E, $3E, $3E, $3E, $66, $64, $62, $06
-PlantInfest_PTPAC_End
-
-	.byte $34, $36, $38, $3A, $3C
-	.byte $3E, $08, $34, $36, $38, $36, $34, $3A, $3E, $3A
-
-	; List of C000 pages to switch to by Level_Tileset
-PAGE_C000_ByTileset: ; $83D6
-	.byte 10, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 22, 22, 22, 14
-
-	; List of A000 pages to switch to by Level_Tileset
-PAGE_A000_ByTileset: ; $83E9
-	.byte 11, 15, 21, 16, 17, 19, 18, 18, 18, 20, 23, 19, 17, 19, 13, 26, 26, 26, 9
-
-	; The normal level VROM page cycle set
-PT2_Anim:	.byte $60, $62, $64, $66
-
-PAUSE_Sprites:
-;	.byte $58, $F1, $03, $60	; P
-;	.byte $58, $F5, $03, $70	; A
-;	.byte $58, $F9, $03, $80	; U
-;	.byte $58, $FD, $03, $90	; S
-;	.byte $58, $FF, $03, $A0	; E
-PAUSE_Sprites_End
 
 	; The BGM per world (see also World_BGM_Restore in PRG010)
 World_BGM:	
@@ -1438,25 +1411,25 @@ PRG030_89D1:
 	; Spade game sliders (Roulette Game)
 
 	; Set pattern banks on sprite side... only really need the border sprites??
-	LDY #$20
-	STY PatTable_BankSel+2
-	INY
-	STY PatTable_BankSel+3
-	INY
-	STY PatTable_BankSel+4
-	INY
-	STY PatTable_BankSel+5
+	; LDY #$20
+	; STY PatTable_BankSel+2
+	; INY
+	; STY PatTable_BankSel+3
+	; INY
+	; STY PatTable_BankSel+4
+	; INY
+	; STY PatTable_BankSel+5
 
 	; Horizontal mirroring
 	LDA #$00
 	STA MMC3_MIRROR
 
-	JSR Roulette_DrawShapes	 	; Draw in the Roulette Shapes
-	JSR Roulette_DrawBorderSprites	; Draw the sprite borders
+	;;;JSR Roulette_DrawShapes	 	; Draw in the Roulette Shapes
+	;;;JSR Roulette_DrawBorderSprites	; Draw the sprite borders
 
 	; Render Roulette borders and set attributes
-	LDA #$07
-	JSR Video_Do_Update
+	;LDA #$07
+	;JSR Video_Do_Update
 
 	; Status bar suitable for the horizontal mirroring mode
 	LDA #$05
@@ -1503,12 +1476,12 @@ PRG030_89D1:
 	JSR Palette_FadeIn	 ; Fade in palette
 
 	; Enable the Roulette slider raster effect
-	LDA #UPDATERASTER_SPADEGAME
-	STA Update_Request
+	;LDA #UPDATERASTER_SPADEGAME
+	;STA Update_Request
 
 	; We actually get hung up here until afer the end of the Roulette
 	; game when it has completely faded out due to Update_Request = UPDATERASTER_SPADEGAME
-	JSR GraphicsBuf_Prep_And_WaitVSync
+	;JSR GraphicsBuf_Prep_And_WaitVSync
 
 	; Update_Select = $C0
 	LDA #$c0
@@ -1536,19 +1509,19 @@ PRG030_8A55:
 	; N-Spade Game
 
 	; Load graphics for N-Spade
-	LDY #$28
-	STY PatTable_BankSel+2
-	INY
-	STY PatTable_BankSel+3
-	INY
-	INY
-	STY PatTable_BankSel+5
-	LDA #$5a
-	STA PatTable_BankSel+4
+	; LDY #$28
+	; STY PatTable_BankSel+2
+	; INY
+	; STY PatTable_BankSel+3
+	; INY
+	; INY
+	; STY PatTable_BankSel+5
+	; LDA #$5a
+	; STA PatTable_BankSel+4
 
 	; Card_Index = $0E (this assignment isn't really used for anything)
-	LDA #$0E
-	STA Card_Index
+	; LDA #$0E
+	;STA Card_Index
 
 	; Temp_Var1 = $20 (VRAM High Address for Clear_Nametable_Short)
 	LDA #$20
@@ -1556,8 +1529,8 @@ PRG030_8A55:
 	JSR Clear_Nametable_Short
 
 	; Generate the candystripe background of the N-Spade game
-	LDA #$0d
-	JSR Video_Do_Update
+	;LDA #$0d
+	;JSR Video_Do_Update
 
 PRG030_8A79:
 	JSR Card_InitGame	 ; Do this stage of initialization
@@ -2336,8 +2309,8 @@ PRG011_2_ABF5:
 	JMP PRG011_2_AC01
 	
 innanAC01:
-	NOP
-	NOP
+	;NOP
+	;NOP
 
 PRG011_2_AC01:
 	RTS		 ; Return
@@ -2417,6 +2390,7 @@ PRG002_2_AA7B:
 	ADC <Orange_XHi
 	STA <Orange_XHi
 PRG002_2_AA85:
+	CLC
 	RTS		 ; Return
 
 
@@ -2438,6 +2412,10 @@ PRG002_2_AA85:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $D836
 OrangeObject_HitTest:
+	TXA
+	CMP #4
+	BEQ PRG002_2_AA85	;RTS
+
 	LDA #$01	 ; Test only, do NOT perform "collide" routine
 	JMP PRG000_2_D83D	 ; Jump to PRG000_2_D83D
 
@@ -2481,25 +2459,29 @@ PRG000_2_D862:
 
 	; Calculate upper left of bounding box and lower right offsets of Player
 	LDA <Orange_SpriteX
-	;ADD Player_BoundBox,Y
+	;ADD Player_BoundBox,Y  ;04 när liten
+	;ADD #$04
 	ADD #$04
-	STA <Temp_Var3	
+	STA <Temp_Var3		;left of oranges bounding box
 
 	LDA <Orange_SpriteY
-	;ADD Player_BoundBox+2,Y
-	ADD #$10
-	STA <Temp_Var7	
+	;ADD Player_BoundBox+2,Y  ;$11 när liten
+	;ADD #$11
+	ADD #$08
+	STA <Temp_Var7		;oranges bounding box bottom
 
-	;LDA Player_BoundBox+1,Y
-	LDA #$04
-	STA <Temp_Var4	
+	;LDA Player_BoundBox+1,Y  ;$08 när liten
+	;LDA #$04
+	LDA #$10
+	STA <Temp_Var4		;oranges right edge bounding box offset
 
-	;LDA Player_BoundBox+3,Y
-	LDA #$04
-	STA <Temp_Var8	
-
+	;LDA Player_BoundBox+3,Y  ;$0D när liten
+	;LDA #$04
+	LDA #$08
+	STA <Temp_Var8		;oranges bounding box top edge offset
+	
 	JSR ObjectObject_Intersect	; Returns carry SET if object and Betty intersected
-	BCC PRG000_2_D82B	 	; If carry clear, object and Betty did not intersect, jump to PRG000_2_D82B (RTS)
+	BCC PRG002_2_AA85	 	; If carry clear, object and Betty did not intersect, jump to PRG000_2_D82B (RTS)
 	
 	; Intersection occurred by 8-bit values that represent "screen relative" positions,
 	; but this is not a complete check as Betty or object may be at different "High/Low"
@@ -2507,8 +2489,8 @@ PRG000_2_D862:
 
 	STA <Temp_Var1		 ; Store Betty's bounding box top offset -> Temp_Var1
 
-	;LDA Level_7Vertical
-	;BNE PRG000_2_D8B1	 ; If level is vertical, jump to PRG000_D8B1
+	LDA Level_7Vertical
+	BNE PRG000_2_D8B1	 ; If level is vertical, jump to PRG000_D8B1
 
 	; Calculate full 16-bit X difference of object -> Temp_Var14/15
 	LDA <Orange_X
@@ -2538,13 +2520,119 @@ PRG000_2_D8A9:
 
 	LDA <Temp_Var15
 	BMI PRG000_2_D920	 ; If Temp_Var15 is negative, no intersect, jump to PRG000_D920
+
+PRG000_2_D8B1:
+
+	; ; The above check is not needed on a vertical level...
+	; ; no chance of being on horizontally different screens!
+
+	; Calculate full 16-bit Y difference of object -> Temp_Var14/15
+	LDA <Orange_Y
+	SUB <Objects_Y,X
+	STA <Temp_Var15	
+
+	LDA <Orange_YHi	
+	SBC <Objects_YHi,X
+	STA <Temp_Var14	
+
+	BPL PRG000_2_D8CF	 ; If overall result is positive, jump to PRG000_D8CF
+
+	; Otherwise, 16-bit negate Temp_Var14/15
+	LDA <Temp_Var15
+	JSR Negate
+	STA <Temp_Var15
+
+	LDA <Temp_Var14
+	EOR #$ff	
+	ADC #$00	
+	STA <Temp_Var14	
+
+PRG000_2_D8CF:
+	LDA <Temp_Var14
+	BNE PRG000_2_D920	 ; If Temp_Var14 is not zero, there's a difference in the "High" component of the Player/Object, so no intersect!  Jump to PRG000_D920
+
+	LDA <Temp_Var15
+	BMI PRG000_2_D920	 ; If Temp_Var15 is negative, no intersect, jump to PRG000_D920
+
+	; Temp_Var12 holds specific info:
+	;	Bit 0 - Set if Player's bbox bottom is HIGHER than object's bbox bottom
+	;	Bit 1 - Set if Player's bbox left edge is to the LEFT of object's bbox left edge
+
+	LDA <Temp_Var12
+	LSR A		
+	BCC PRG000_2_D8EB	 ; If Player's bbox bottom is NOT higher than object's, jump to PRG000_D8EB
+
+	LDA <Temp_Var1	 ; Get Player's bounding box top offset
+	SUB <Temp_Var11	 ; Get vertical difference between Player and Object's bounding box bottoms
+	CMP #$08	 
+	BLS PRG000_2_D8EB	 ; If the result < 8, jump to PRG000_D8EB
+
+	; Otherwise, flip the remaining bit of Temp_Var12
+	LDA <Temp_Var12	
+	EOR #$01	
+	STA <Temp_Var12	
+
+PRG000_2_D8EB:
+
+	; Set into status bits for this objcet
+	LDA <Temp_Var12	
+	ORA Objects_PlayerHitStat,X
+	STA Objects_PlayerHitStat,X
+	
+	LDY Level_ObjectID,X	 ; Get object's ID -> Y
+	LDA Object_AttrFlags,Y	 ; Get this object's attribute flags
+	AND #OAT_HITNOTKILL	 
+	BNE PRG000_2_D922	 	 ; If OAT_HITNOTKILL is set, jump to PRG000_D922
+
+	; For all objects where bit 7 is not set in their attributes...
+
+	LDA #OBJSTATE_KILLED
+	STA Objects_State,X	 ; Set object state to Killed
+	
+	
+	LDA #-$38	
+	STA <Objects_YVel,X	 ; Set Y Velocity to -$38
+
+	; "Kick" sound
+	;LDA Sound_QPlayer
+	;ORA #SND_PLAYERKICK
+	;STA Sound_QPlayer
+
+	; 100 points pop up
+	LDA #$05
+	JSR Score_PopUp
+
+
+	JSR Level_ObjCalcXDiffs	 ; 'Y' is set to 0 if Player is to the right of object, 1 if to the left
+
+	LDA PRG000_D834,Y
+	STA <Objects_XVel,X	 ; Set X velocity
+
+
+PRG000_2_D920:
+	CLC		 ; Clear carry
+	RTS		 ; Return
+
+PRG000_2_D922:
+
+	; For all objects where bit 7 is set in their attributes...
+
+	LDA <Temp_Var16	 ; Returns 0 or 1, depending on original entry point
+	BNE PRG000_2_D929	 ; If it was 1 (do not respond to hit), jump to PRG000_D929
+
+	; Do hit routine
+	JSR Object_DoCollision ; Otherwise...
+
+PRG000_2_D929:
+	SEC		 ; Set carry
+	RTS		 ; Return
 	
 PRG000_2_D82B:
 	RTS
 	
-PRG000_2_D920:
-	CLC		 ; Clear carry
-	RTS		 ; Return
+;PRG000_2_D920:
+;	CLC		 ; Clear carry
+;	RTS		 ; Return
 
 
 
@@ -6700,7 +6788,7 @@ PRG030_SUB_9F50:
 	; Some kind of delay loop?
 	LDX #$17	 ; X = $17
 PRG030_9F52:
-	NOP		 ; ?
+	;NOP		 ; ?
 	DEX		 ; X--
 	BPL PRG030_9F52 ; While X > 0, loop
 

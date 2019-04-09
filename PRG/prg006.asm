@@ -275,3 +275,4 @@ W8Airship_BossO:	.include "PRG/objects/W8ABoss.asm"	; World 8 Airship boss room
 W8Tank1_BossO:	.include "PRG/objects/W8Tank1B.asm"
 _DA34:		.include "PRG/objects/DA34.asm"
 _DA60:		.include "PRG/objects/DA60.asm"
+

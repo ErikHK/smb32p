@@ -3132,6 +3132,8 @@ PRG005_AF4F:
 
 	JSR Object_HitTest
 	BCC PRG005_AFE2	 ; If Player is not touching arrow platform, jump to PRG005_AFE2
+	
+	
 
 	LDA <Player_SpriteY
 	ADD #24

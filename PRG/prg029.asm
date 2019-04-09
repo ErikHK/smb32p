@@ -3173,3 +3173,28 @@ PRG029_DFEB:
 
 ; Rest of ROM bank was empty
 
+
+	; A clear pattern set by Level_Tileset (for use with Clear_Nametable_Short)
+ClearPattern_ByTileset:
+	.byte $FF	; 0 - Map
+	.byte $FC	; 1 - Plains
+	.byte $FF	; 2 - Mini fortress style
+	.byte $FC	; 3 - Hills style
+	.byte $FC	; 4 - High-Up style
+	.byte $FC	; 5 - pipe world plant infestation
+	.byte $FC	; 6 - Water world
+	.byte $FF	; 7 - Toad house
+	.byte $FF	; 8 - Vertical pipe maze
+	.byte $FC	; 9 - desert level
+	.byte $FC	; 10 - airship
+	.byte $FC	; 11 - Giant World
+	.byte $FC	; 12 - ice level
+	.byte $FC	; 13 - coin heaven / sky level
+	.byte $FC	; 14 - underground
+	.byte $FF	; 15 - bonus game intro
+	.byte $FF	; 16 - spade game sliders
+	.byte $FF	; 17 - N-spade
+	.byte $FC	; 18 - 2P Vs
+
+
+	.byte $AB, $83, $C6, $83, $CD, $83

@@ -2162,6 +2162,8 @@ ObjNorm_CloudPlat:
 	BNE PRG002_AA41	 ; If gameplay halted, jump to PRG002_AA41 (RTS)
 
 	JSR Object_ApplyXVel	 	; Apply object's X velocity
+
+	JSR OrangePlatform_Collide
 	JMP Object_HitTestRespond	; Do hit test and respond, and don't come back!
 
 
@@ -2172,6 +2174,8 @@ ObjHit_CloudPlat:
 
 	LDA <Player_YVel
 	BMI PRG002_AA85	 ; If Player is moving upward, jump to PRG002_AA85 (RTS)
+	
+	
 
 Player_StandOnPlatform:
 	; Set Player to object's Y - 31

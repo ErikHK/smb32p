@@ -375,7 +375,8 @@ ObjectGroup03_PatternStarts:
 	.byte OG3_POff(ObjP84), OG3_POff(ObjP85), OG3_POff(ObjP86), OG3_POff(ObjP87)
 	.byte OG3_POff(ObjP88), OG3_POff(ObjP89), OG3_POff(ObjP8A), OG3_POff(ObjP8B)
 	.byte OG3_POff(ObjP8C), OG3_POff(ObjP8D), OG3_POff(ObjP8E), OG3_POff(ObjP8F)
-
+	
+	
 
 	; Object group $03 (i.e. objects starting at ID $6C) pattern sets
 	; Note that each "frame" is made up of two tile starts, so there's
@@ -3972,6 +3973,13 @@ nodeleteoffscreen:
 	JMP GroundTroop_Draw	 ; Draw the enemy and don't come back!
 
 PRG004_B36E:
+	JSR OrangeObject_HitTest
+	BCC afterthis
+	
+	;here orange and groundtroop collided, handle it!
+	JSR Enemy_Kill	 ; Kill enemy
+	
+afterthis:
 	LDA Objects_FlipBits,X
 	ASL A
 	ASL A
@@ -4027,6 +4035,7 @@ nospeed:
 	CMP #OBJ_ORANGECHEEP
 	BEQ nohitenemy
 	
+playerhitenemy:
 	JMP Player_HitEnemy	 ; Do Player to enemy collision and don't come back!
 
 nohitenemy:
