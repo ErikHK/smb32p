@@ -2573,40 +2573,41 @@ PRG000_2_D8CF:
 	STA <Temp_Var12	
 
 PRG000_2_D8EB:
-
+	SEC
+	RTS
 	; Set into status bits for this objcet
-	LDA <Temp_Var12	
-	ORA Objects_PlayerHitStat,X
-	STA Objects_PlayerHitStat,X
+	; LDA <Temp_Var12	
+	; ORA Objects_PlayerHitStat,X
+	; STA Objects_PlayerHitStat,X
 	
-	LDY Level_ObjectID,X	 ; Get object's ID -> Y
-	LDA Object_AttrFlags,Y	 ; Get this object's attribute flags
-	AND #OAT_HITNOTKILL	 
-	BNE PRG000_2_D922	 	 ; If OAT_HITNOTKILL is set, jump to PRG000_D922
+	; LDY Level_ObjectID,X	 ; Get object's ID -> Y
+	; LDA Object_AttrFlags,Y	 ; Get this object's attribute flags
+	; AND #OAT_HITNOTKILL	 
+	; BNE PRG000_2_D922	 	 ; If OAT_HITNOTKILL is set, jump to PRG000_D922
 
-	; For all objects where bit 7 is not set in their attributes...
+	; ; For all objects where bit 7 is not set in their attributes...
 
-	LDA #OBJSTATE_KILLED
-	STA Objects_State,X	 ; Set object state to Killed
+	; LDA #OBJSTATE_KILLED
+	; STA Objects_State,X	 ; Set object state to Killed
 	
 	
-	LDA #-$38	
-	STA <Objects_YVel,X	 ; Set Y Velocity to -$38
+	; LDA #-$38	
+	; STA <Objects_YVel,X	 ; Set Y Velocity to -$38
 
-	; "Kick" sound
-	;LDA Sound_QPlayer
-	;ORA #SND_PLAYERKICK
-	;STA Sound_QPlayer
+	; ; "Kick" sound
+	; ;LDA Sound_QPlayer
+	; ;ORA #SND_PLAYERKICK
+	; ;STA Sound_QPlayer
 
-	; 100 points pop up
-	LDA #$05
-	JSR Score_PopUp
+	; ; 100 points pop up
+	; LDA #$05
+	; JSR Score_PopUp
 
 
-	JSR Level_ObjCalcXDiffs	 ; 'Y' is set to 0 if Player is to the right of object, 1 if to the left
+	; JSR Level_ObjCalcXDiffs	 ; 'Y' is set to 0 if Player is to the right of object, 1 if to the left
 
-	LDA PRG000_D834,Y
-	STA <Objects_XVel,X	 ; Set X velocity
+	; LDA PRG000_D834,Y
+	; STA <Objects_XVel,X	 ; Set X velocity
 
 
 PRG000_2_D920:
