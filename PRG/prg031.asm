@@ -124,9 +124,18 @@ afternegate:
 ; including the Frog Suit style (which is totally different)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 Orange_SwimV:
+	LDA Player_Current
+	BNE luigi_yess
+
 	LDA <Pad_Input_2
 	BPL PRG031_AD4C	 ; If Orange is NOT pressing 'A', jump to PRG031_AD4C
-
+	JMP after_luigi_yess
+	
+luigi_yess:
+	LDA <Controller1Press
+	BPL PRG031_AD4C
+	
+after_luigi_yess:
 	; Player swimming sound
 	LDA Sound_QPlayer
 	ORA #SND_PLAYERSWIM

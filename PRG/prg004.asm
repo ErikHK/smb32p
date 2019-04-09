@@ -3736,6 +3736,13 @@ ObjInit_SpikeCheep:
 
 ObjNorm_RedTroopa:
 
+	JSR OrangeObject_HitTest
+	BCC afterthis2
+	
+	;here orange and groundtroop collided, handle it!
+	JSR Enemy_Kill	 ; Kill enemy
+	
+afterthis2:
 	; Normal sized and giant red troopas...
 
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
