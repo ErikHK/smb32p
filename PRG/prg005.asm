@@ -1283,6 +1283,14 @@ Piranha_FacePlayerFlip:	.byte SPR_HFLIP, $00
 Piranha_VFlip:	.byte $00, SPR_VFLIP
 
 ObjNorm_Piranha:
+	JSR OrangeObject_HitTest
+	BCC afterthispiranha
+	
+	;here orange and groundtroop collided, handle it!
+	JSR Enemy_Kill	 ; Kill enemy
+	
+afterthispiranha:
+
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 
 	LDA <Objects_Var4,X

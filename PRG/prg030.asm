@@ -377,7 +377,7 @@ Video_CourseClear:
 	vaddr $2889
 	.byte $0E
 	;       C    O    U    R    S    E         C    L    E    A    R         !
-	;.byte $85, $8E, $8A, $82, $83, $84, $FC, $85, $8B, $84, $80, $82, $FC, $9B, $00
+	.byte $85, $8E, $8A, $82, $83, $84, $FC, $85, $8B, $84, $80, $82, $FC, $9B, $00
 
 Video_YouGotCard:
 	; vaddr $28E7

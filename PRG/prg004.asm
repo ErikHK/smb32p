@@ -2966,6 +2966,15 @@ ObjNorm_ParaGoomba:
 	JMP ParaGoomba_Draw	 ; Jump to ParaGoomba_Draw
 
 PRG004_AE9A:
+	JSR OrangeObject_HitTest
+	BCC afterthisparagoomba
+	
+	;here orange and groundtroop collided, handle it!
+	JSR Enemy_Kill	 ; Kill enemy
+	
+afterthisparagoomba:
+
+
 	LDY #$08	 ; Y = $08
 
 	LDA Objects_FlipBits,X
