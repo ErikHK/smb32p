@@ -4222,7 +4222,12 @@ PRG004_B405:
 	;set speed to 0
 	LDA #0
 	STA <Orange_XVel
-	DEC <Orange_X
+	CLC
+	DEC <Orange_X	;move orange cheep to the left
+	BCC dontsubtohi
+	DEC <Orange_XHi
+	
+dontsubtohi:
 	JMP noflip
 	
 	
@@ -4231,7 +4236,17 @@ movingleft:
 	;set speed to 0
 	LDA #0
 	STA <Orange_XVel
-	INC <Orange_X
+	CLC
+	LDA <Orange_X
+	ADC #01
+	STA <Orange_X
+	;INC <Orange_X  ;move orange cheep to the right
+	;INC <Orange_X  ;move orange cheep to the right
+	BCC dontaddtohi;if it carries over, also add to orange_xHi
+	
+	INC <Orange_XHi
+
+dontaddtohi:	
 	JMP noflip
 	
 	

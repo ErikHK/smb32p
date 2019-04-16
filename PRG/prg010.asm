@@ -2846,11 +2846,11 @@ PRG010_CEF4:
 WorldMap_UpdateAndDraw:
 	
 	; ;fill up with objects
-	; LDA #$0c
-	; STA $7d80
+	LDA #$0c
+	STA $7d80
 	
-	; LDA #$07
-	; STA $7d81
+	LDA #$07
+	STA $7d81
 
 	; LDA #$08
 	; STA $7d82
@@ -2884,11 +2884,11 @@ WorldMap_UpdateAndDraw:
 	
 	; ;;;;;LUIGI;;;;;;
 	; ;fill up with objects
-	; LDA #$0c
-	; STA $7da3
+	LDA #$0c
+	STA $7da3
 	
-	; LDA #$07
-	; STA $7da4
+	LDA #$07
+	STA $7da4
 
 	; LDA #$08
 	; STA $7da5

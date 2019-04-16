@@ -97,7 +97,8 @@ Video_Upd_Table: ; $803E
 	.word Video_DoStatusBar	; $02 - status bar (typical)
 	.word $A000		; $03 - ???
 	.word $A06F		; $04 - ???
-	.word Video_DoStatusBarHM; $05 - status bar appropriate for horizontal mirroring
+	;.word Video_DoStatusBarHM; $05 - status bar appropriate for horizontal mirroring
+	.word Video_DoPalUpd	; not really
 	.word Video_DoPalUpd	; $06 - Updates palettes per values in the $07BE+ Palette_* vars; used during fade in/out routines
 	.word Video_RoulBordAttr; $07 - Roulette sliders border and attribute settings
 	.word Bonus_InstBoxTop	; $08 - Top of Bonus Game instruction box
@@ -201,8 +202,8 @@ Video_DoStatusBar:
 	StatusBar $2B00
 
 	; Status bar used when Horizontal Mirroring in effect (Roulette game)
-Video_DoStatusBarHM:
-	StatusBar $2300
+;Video_DoStatusBarHM:
+;	StatusBar $2300
 
 Video_3CMStarTop:
 	vaddr $208F
@@ -2423,9 +2424,16 @@ PRG002_2_AA85:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $D836
 OrangeObject_HitTest:
+	JMP PRG002_2_AA85
+
 	TXA
 	CMP #4
 	BEQ PRG002_2_AA85	;RTS
+	
+	LDA Orange_ObjectID
+	CMP #$88
+	BNE PRG002_2_AA85
+	
 
 	LDA #$01	 ; Test only, do NOT perform "collide" routine
 	JMP PRG000_2_D83D	 ; Jump to PRG000_2_D83D
@@ -2884,14 +2892,15 @@ contaa:
 	; ;JSR Player_Die_Dying
 
 kill:
-	;LDA #5
-	;STA <Player_Suit
-	INC <Level_ExitToMap	; Level_ExitToMap = 1
-
-	LDA #$01
-	STA Map_ReturnStatus	 ; Map_ReturnStatus = 1 (Player died, level is not clear)
-	RTS
-	;JMP continue2
+	LDA #5
+	STA <Player_Suit
+	
+	;INC <Level_ExitToMap	; Level_ExitToMap = 1
+	;LDA #$01
+	;STA Map_ReturnStatus	 ; Map_ReturnStatus = 1 (Player died, level is not clear)
+	;RTS
+	
+	JMP continue2
 
 
 continue:
