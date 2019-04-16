@@ -2845,80 +2845,80 @@ PRG010_CEF4:
 
 WorldMap_UpdateAndDraw:
 	
-	;fill up with objects
-	LDA #$0c
-	STA $7d80
+	; ;fill up with objects
+	; LDA #$0c
+	; STA $7d80
 	
-	LDA #$07
-	STA $7d81
+	; LDA #$07
+	; STA $7d81
 
-	LDA #$08
-	STA $7d82
+	; LDA #$08
+	; STA $7d82
 	
-	LDA #$09
-	STA $7d83
+	; LDA #$09
+	; STA $7d83
 	
-	LDA #$06
-	STA $7d84
+	; LDA #$06
+	; STA $7d84
 	
-	LDA #$05
-	STA $7d85
+	; LDA #$05
+	; STA $7d85
 	
-	LDA #$04
-	STA $7d86
+	; LDA #$04
+	; STA $7d86
 	
-	LDA #$03
-	STA $7d87
+	; LDA #$03
+	; STA $7d87
 	
-	LDA #$02
-	STA $7d88
+	; LDA #$02
+	; STA $7d88
 	
-	LDA #$01
-	STA $7d89
+	; LDA #$01
+	; STA $7d89
 	
-	LDA #$0a
-	STA $7d8a
+	; LDA #$0a
+	; STA $7d8a
 	
-	LDA #$0b
-	STA $7d8b
+	; LDA #$0b
+	; STA $7d8b
 	
-	;;;;;LUIGI;;;;;;
-	;fill up with objects
-	LDA #$0c
-	STA $7da3
+	; ;;;;;LUIGI;;;;;;
+	; ;fill up with objects
+	; LDA #$0c
+	; STA $7da3
 	
-	LDA #$07
-	STA $7da4
+	; LDA #$07
+	; STA $7da4
 
-	LDA #$08
-	STA $7da5
+	; LDA #$08
+	; STA $7da5
 	
-	LDA #$09
-	STA $7da6
+	; LDA #$09
+	; STA $7da6
 	
-	LDA #$06
-	STA $7da7
+	; LDA #$06
+	; STA $7da7
 	
-	LDA #$05
-	STA $7da8
+	; LDA #$05
+	; STA $7da8
 	
-	LDA #$04
-	STA $7da9
+	; LDA #$04
+	; STA $7da9
 	
-	LDA #$03
-	STA $7daa
+	; LDA #$03
+	; STA $7daa
 	
-	LDA #$02
-	STA $7dab
+	; LDA #$02
+	; STA $7dab
 	
-	LDA #$01
-	STA $7dac
+	; LDA #$01
+	; STA $7dac
 	
-	LDA #$0a
-	STA $7dad
+	; LDA #$0a
+	; STA $7dad
 	
-	LDA #$0b
-	STA $7dae
+	; LDA #$0b
+	; STA $7dae
 	
 
 	LDY Player_Current 	; Y = Player_Current

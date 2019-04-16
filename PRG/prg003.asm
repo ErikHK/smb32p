@@ -1151,8 +1151,8 @@ PRG003_A5F8:
 	RTS		 ; Return
 
 	; Unused data I think?  Possibly was for the twirling shell
-PRG003_A5F9:
-	.byte $00, $40, $00, $00, $40, $40, $00, $40
+;PRG003_A5F9:
+;	.byte $00, $40, $00, $00, $40, $40, $00, $40
 
 TwirlShell_Draw:
 	JSR Object_SetHFlipByXVel ; Set horizontal flip by travel direction
@@ -1365,7 +1365,14 @@ ObjNorm_BobOmb:
 
 	LDA <Player_HaltGame
 	BNE PRG003_A6E8	 ; If gameplay halted, jump to PRG003_A6E8 (RTS)
-
+	
+	JSR OrangeObject_HitTest
+	BCC afterthisbobomb
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+afterthisbobomb:
 	JSR Object_SetHFlipByXVel ; Set horizontal flip by travel direction
 
 PRG003_A6DD:
@@ -2048,7 +2055,14 @@ PRG003_AA25:
 PRG003_AA3B:
 	JSR BoomBoom_Draw	 ; Draw Boom Boom
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls too far off-screen
-
+	
+	JSR OrangeObject_HitTest
+	BCC afterthisboomboom
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+afterthisboomboom:
 	JSR Object_CheckIfNormalState
 	BEQ PRG003_AA5D	 ; If Boom Boom is in normal state, jump to PRG003_AA5D
 
@@ -3945,6 +3959,7 @@ PRG003_B3D6:
 PRG003_B3E1:
 	JSR Object_ApplyXVel	 	; Apply X velocity
 	JSR Object_ApplyYVel_NoLimit	; Apply Y velocity
+		
 	JSR Player_HitEnemy		; Player interaction with enemy
 
 	LDA Objects_Timer,X
@@ -4582,6 +4597,13 @@ ObjNorm_Blooper:
 	JMP Object_ShakeAndDrawMirrored	 ; Otherwise, draw Blooper and don't come back!
 
 PRG003_B77B:
+	;JSR OrangeObject_HitTest
+	;BCC afterthisblooper
+	
+	;here orange and object collided, handle it!
+	;JSR Player_GetHurt
+	
+;afterthisblooper:
 	JSR Player_HitEnemy	 ; Do Player to Blooper hit detection!
 	JMP PRG003_B78B	 ; Jump to PRG003_B78B
 
@@ -6228,7 +6250,14 @@ ObjNorm_RotoDiscDual:
 ObjNorm_RotoDisc:
 	LDA <Player_HaltGame
 	BNE PRG003_BFAE	 ; If gameplay is halted, jump to PRG003_BFAE
-
+	
+	JSR OrangeObject_HitTest
+	BCC afterthisrotodisc
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+afterthisrotodisc:
 	; Var4 = 6
 	LDA #$06
 	STA <Objects_Var4,X

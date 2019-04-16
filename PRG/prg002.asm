@@ -1026,7 +1026,7 @@ PRG002_A542:
 	STA <Objects_Var4,X	 ; Var4 = timer2 / 2
 
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
-
+	
 	JSR Buster_DrawHoldingIceBrick	 ; Draw Buster with his ice brick if he has it
 
 	LDA <Objects_Var5,X
@@ -1860,7 +1860,14 @@ PRG002_A90E:
 
 PRG002_A916:
 	STA Objects_Frame,X	 ; Update Boo's frame
-
+	
+	JSR OrangeObject_HitTest
+	BCC afterthisboo
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+afterthisboo:
 	JSR Object_HitTestRespond	; Do collision test with Player and respond
 	JSR Fish_FixedYIfAppro	 	; Fix Boo Y for raster area
 
@@ -3663,6 +3670,15 @@ PRG002_B1CD:
 	STA Objects_Frame,X	 ; Set frame
 
 	JSR Object_DeleteOrDraw	 ; Delete if falls off-screen, otherwise draw
+	
+	JSR OrangeObject_HitTest
+	BCC afterthisnipper
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+	
+afterthisnipper:	
 	JSR Object_HitTestRespond	 ; Do collision test with Player and respond
 
 	LDA <Objects_Var4,X

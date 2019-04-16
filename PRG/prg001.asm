@@ -515,6 +515,13 @@ PRG001_A25A:
 	JSR Object_ApplyXVel
 
 PRG001_A263:
+	JSR OrangeObject_HitTest
+	BCC afterthisspinycheep
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+afterthisspinycheep:
 	JSR Player_HitEnemy	 ; Player hits enemy
 	JSR Object_DeleteOffScreen_N4	 ; Delete object if it falls off-screen
 
@@ -1576,8 +1583,15 @@ PRG001_A78E:
 	JSR Object_InteractWithWorld	 	; Move, detect, interact with blocks of world
 	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
 	JSR Object_DeleteOffScreen 		; Delete object if it falls off screen
+	
+	JSR OrangeObject_HitTest
+	BCC afterthispup1upmush
+	
+	;here orange and object collided, handle it!
+	JSR ObjHit_PUp1UpMush
+	
+afterthispup1upmush:	
 	JMP PowerUp_DoHitTest	 		; Do hit test and don't come back!
-
 
 ObjHit_PUp1UpMush:
 
@@ -1652,6 +1666,14 @@ PRG001_A7E0:
 PRG001_A7F1:
 	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
+	
+	JSR OrangeObject_HitTest
+	BCC afterthisstar
+	
+	;here orange and object collided, handle it!
+	JSR ObjHit_StarOrSuit
+	
+afterthisstar:
  	JMP PowerUp_DoHitTest	 ; Do hit test and don't come back!
 
 	; Different "frames" of the "Starman" power up include the super
@@ -1776,7 +1798,14 @@ PRG001_A881:
 	JSR Object_InteractWithWorld	 ; Move, detect, interact with blocks of world
 	JSR Object_ShakeAndDrawMirrored	 ; Draw mirrored sprite
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off screen
-
+	
+	JSR OrangeObject_HitTest
+	BCC afterthismush
+	
+	;here orange and object collided, handle it!
+	JSR ObjHit_PUpMush
+	
+afterthismush:
 PowerUp_DoHitTest:
 	; Cannot collect power up while it's "raising"
 	LDA Objects_Timer2,X
@@ -3149,7 +3178,7 @@ PRG001_AF02:
 	; Unused comparison and jump!  (Goes nowhere)
 	CMP #$08
 	BNE PRG001_AF0B
- PRG001_AF0B:
+PRG001_AF0B:
 
 	LDA Objects_SprVVis,X
 	CMP #$03
@@ -4985,9 +5014,9 @@ PRG001_B819:
 
 
 	; Hmm, unused space?
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
-	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
+	;.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
 	.byte $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF, $FF
@@ -5035,6 +5064,14 @@ PRG001_B8A1:
 PRG001_B8AB:
 	JSR Bowser_DoVar5Action	; Do Bowser's internal state action
 	JSR Bowser_HopAndBreatheFire	; Bowser hops and breathes fireballs
+	
+	JSR OrangeObject_HitTest
+	BCC afterthisbowser
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+		
+afterthisbowser:	
 	JSR Player_HitEnemy	 	; Do hit detection
 
 	LDA Objects_PlayerHitStat,X

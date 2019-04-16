@@ -2530,8 +2530,8 @@ PRG011_AE0B:
 	.word Map_Object_March		; Fire Bro
 	.word Map_Object_Stationary	; World 7 Plant
 	.word Map_Object_March		; Unknown marching glitch object
-	;.word Map_Object_March		; N-Spade
-	.word PRG011_ADF4			; N-Spade
+	.word Map_Object_March		; N-Spade
+	;.word PRG011_ADF4			; N-Spade
 	.word Map_Object_March		; White Toad House
 	.word Map_Object_March		; Coin Ship
 	.word Map_Object_Stationary	; Unknown white colorization of 15 (goes to World 7 level??)
@@ -2564,8 +2564,8 @@ Map_Object_March:
 	; Normal operation, objects just "marching" around...
 	LDA Map_Objects_IDs,X	; A = object's ID
 	CMP #MAPOBJ_NSPADE
-	BLT PRG011_AED1
-	;BLT Map_Object_MusicBoxCheck ; If object ID < MAPOBJ_NSPADE (includes hammer brother types and the world 7 plant), jump to Map_Object_MusicBoxCheck
+	;BLT PRG011_AED1
+	BLT Map_Object_MusicBoxCheck ; If object ID < MAPOBJ_NSPADE (includes hammer brother types and the world 7 plant), jump to Map_Object_MusicBoxCheck
 
 	CMP #MAPOBJ_BATTLESHIP
 	BLT PRG011_AE93	 	; If object ID < MAPOBJ_BATTLESHIP (includes bonus items), jump to PRG011_AE93 (they don't "sleep")
@@ -3661,8 +3661,8 @@ PRG011_B599:
 	.word MapObj_DrawAndEnter	; 06=Fire Bro
 	.word MapObj_DrawAndEnter	; 07=World 7 Plant
 	.word MapObj_DrawAndEnter	; 08=Unknown marching glitch object
-	;.word MapObj_DrawAndEnter	; 09=N-Spade
-	.word PRG011_ADF4			; 09=N-Spade
+	.word MapObj_DrawAndEnter	; 09=N-Spade
+	;.word PRG011_ADF4			; 09=N-Spade
 	.word MapObj_DrawAndEnter	; 0A=White Toad House
 	.word MapObj_DrawAndEnter	; 0B=Coin Ship
 	.word MapObj_DrawAndEnter	; 0C=Unknown white colorization of $0F (goes to World 7 level??)
@@ -3852,8 +3852,8 @@ PRG011_B68B:
 	CMP #MAPOBJ_AIRSHIP
 	BEQ PRG011_B6A1
 	CMP #MAPOBJ_NSPADE
-	;BLT PRG011_B69C
-	BLT PRG011_B6F5		;RTS
+	BLT PRG011_B69C
+	;BLT PRG011_B6F5		;RTS
 	CMP #MAPOBJ_CANOE
 	BLT PRG011_B6A1
 
@@ -3905,8 +3905,8 @@ PRG011_B6A1:
 
 	; If this is a N-Spade or White Toad house, jump to PRG011_B6E2
 	CMP #MAPOBJ_NSPADE
-	;BEQ PRG011_B6E2
-	BEQ PRG011_B6F5
+	BEQ PRG011_B6E2
+	;BEQ PRG011_B6F5
 	CMP #MAPOBJ_WHITETOADHOUSE
 	BNE PRG011_B6E5
 
