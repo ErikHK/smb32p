@@ -26,5 +26,5 @@
 	.byte OBJ_SPINY, $64, $18
 	.byte OBJ_VENUSFIRETRAP, $66, $07
 	.byte OBJ_SPINY, $6A, $0A
-	.byte OBJ_ORANGECHEEP, $7A, $0A	;funkar inte..
+	.byte OBJ_ORANGECHEEP, $7A, $0A
 	.byte $FF	; Terminator

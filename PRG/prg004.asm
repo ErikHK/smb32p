@@ -908,7 +908,14 @@ ObjNorm_BoomerangBro:
 
 	LDA <Player_HaltGame
 	BNE PRG004_A48F	 ; If gameplay halted, jump to PRG004_A48F (RTS)
-
+	
+	JSR OrangeObject_HitTest
+	BCC afterthisboomerangbro
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+afterthisboomerangbro:
 	JSR Object_Move	 ; Do standard movement
 	JSR Object_HandleBumpUnderneath	 ; Handle getting bumped underneath (again, technically)
 
@@ -1302,6 +1309,15 @@ ObjNorm_Thwomp:
 	BNE PRG004_A676	 ; If gameplay halted, jump to PRG004_A676 (RTS)
 
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
+	
+	JSR OrangeObject_HitTest
+	BCC afterthisthwomp
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+	
+afterthisthwomp:
 	JSR Player_HitEnemy	 	; Do Player to Thwomp collision
 
 	LDA <Objects_Var5,X	 ; Var5 is internal state
@@ -2718,6 +2734,13 @@ PRG004_AD59:
 	JSR Object_DeleteOffScreen	 ; Lakitu is leaving...
 
 PRG004_AD65:
+	JSR OrangeObject_HitTest
+	BCC afterthislakitu
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+afterthislakitu:
 	JSR Player_HitEnemy	 ; Do Player to Lakitu collision
 
 	JSR Level_ObjCalcXDiffs
@@ -2970,7 +2993,8 @@ PRG004_AE9A:
 	BCC afterthisparagoomba
 	
 	;here orange and groundtroop collided, handle it!
-	JSR Enemy_Kill	 ; Kill enemy
+	;JSR Enemy_Kill	 ; Kill enemy
+	JSR Player_GetHurt
 	
 afterthisparagoomba:
 
@@ -3409,6 +3433,13 @@ ObjNorm_JumpingCheepCheep:
 
 	INC <Objects_YVel,X	 ; YVel++
 
+	JSR OrangeObject_HitTest
+	BCC afterthisjumpingcheepcheep
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+afterthisjumpingcheepcheep:	
 	JSR Player_HitEnemy	 ; Player to Cheep Cheep collision
 
 PRG004_B0BA:
@@ -3521,6 +3552,13 @@ PRG004_B141:
 	JSR Object_ApplyXVel	 ; Apply Y velocity
 
 PRG004_B14A:
+	JSR OrangeObject_HitTest
+	BCC afterthisspikecheep
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+
+afterthisspikecheep:	
 	JSR Player_HitEnemy	 ; Player to Spike Cheep collision check
 
 PRG004_B14D:
@@ -3537,6 +3575,14 @@ ObjNorm_BulletBill:
 	BNE PRG004_B1C2	 ; If gameplay is halted, jump to PRG004_B1C2
 
 	JSR Object_DeleteOffScreen	; Delete object if it falls off-screen
+	
+	JSR OrangeObject_HitTest
+	BCC afterthisbulletbill
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+afterthisbulletbill:
 	JSR Player_HitEnemy	 	; Player to Bullet Bill collision
 	JSR Object_ApplyXVel	 	; Apply X velocity
 
@@ -3749,7 +3795,8 @@ ObjNorm_RedTroopa:
 	BCC afterthis2
 	
 	;here orange and groundtroop collided, handle it!
-	JSR Enemy_Kill	 ; Kill enemy
+	;JSR Enemy_Kill	 ; Kill enemy
+	JSR Player_GetHurt
 	
 afterthis2:
 	; Normal sized and giant red troopas...
@@ -3993,7 +4040,8 @@ PRG004_B36E:
 	BCC afterthis
 	
 	;here orange and groundtroop collided, handle it!
-	JSR Enemy_Kill	 ; Kill enemy
+	;JSR Enemy_Kill	 ; Kill enemy
+	JSR Player_GetHurt
 	
 afterthis:
 	LDA Objects_FlipBits,X
@@ -5518,7 +5566,14 @@ ObjNorm_ChainChomp:
 
 	LDA <Player_HaltGame
 	BNE PRG004_BAC8	 ; If gameplay is halted, jump to PRG004_BAC8 (RTS)
-
+	
+	JSR OrangeObject_HitTest
+	BCC afterthischainchomp
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+afterthischainchomp:
 	JSR Player_HitEnemy	 ; Do Player to Chain Chomp collision detection
 	JSR Object_DeleteOffScreen_N4	 ; Detect against world
 	JSR Object_FlipByXVel	 ; Flip based on travel direction

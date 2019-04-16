@@ -4986,14 +4986,3 @@ Map_NoAnimUpdate:
 ; Rest of ROM bank was empty
 
 
-
-PAUSE_Sprites:
-	.byte $58, $F1, $03, $60	; P
-	.byte $58, $F5, $03, $70	; A
-	.byte $58, $F9, $03, $80	; U
-	.byte $58, $FD, $03, $90	; S
-	.byte $58, $FF, $03, $A0	; E
-PAUSE_Sprites_End
-
-
-

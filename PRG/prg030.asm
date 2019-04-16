@@ -350,6 +350,17 @@ EndLevelCard_PalData:
 	vaddr $3F0D
 	.byte VU_REPEAT | $03, $0F
 	.byte $00	; Terminator
+	
+	
+
+PAUSE_Sprites:
+	.byte $58, $F1, $03, $60	; P
+	.byte $58, $F5, $03, $70	; A
+	.byte $58, $F9, $03, $80	; U
+	.byte $58, $FD, $03, $90	; S
+	.byte $58, $FF, $03, $A0	; E
+PAUSE_Sprites_End
+
 
 Video_YouGotCardH:
 	; vaddr $22C7
@@ -2873,14 +2884,14 @@ contaa:
 	; ;JSR Player_Die_Dying
 
 kill:
-	LDA #5
-	STA <Player_Suit
-	;INC <Level_ExitToMap	; Level_ExitToMap = 1
+	;LDA #5
+	;STA <Player_Suit
+	INC <Level_ExitToMap	; Level_ExitToMap = 1
 
-	;LDA #$01
-	;STA Map_ReturnStatus	 ; Map_ReturnStatus = 1 (Player died, level is not clear)
-	;RTS
-	JMP continue2
+	LDA #$01
+	STA Map_ReturnStatus	 ; Map_ReturnStatus = 1 (Player died, level is not clear)
+	RTS
+	;JMP continue2
 
 
 continue:

@@ -2084,6 +2084,17 @@ PRG001_A9D5:
 	RTS		 ; Return
 
 ObjNorm_FireFlower:
+	JSR OrangeObject_HitTest
+	BCC afterthisfireflower
+	
+	;here orange and groundtroop collided, handle it!
+	;JSR Enemy_Kill	 ; Kill enemy
+	;JMP PowerUp_DoHitTest	 ; Do hit test and don't come back!
+	JMP ObjHit_FireFlower
+	
+afterthisfireflower:
+
+
 	LDA PUp_StarManFlash
 	BPL PRG001_A9E4	 ; If there's no star man flash going on, jump to PRG001_A9E4
 
@@ -2498,6 +2509,17 @@ PRG001_ABD1:
 	.byte $0A, -$0A, $08
 
 ObjNorm_SuperLeaf:
+	JSR OrangeObject_HitTest
+	BCC afterthissuperleaf
+	
+	;here orange and groundtroop collided, handle it!
+	;JSR Enemy_Kill	 ; Kill enemy
+	;JMP PowerUp_DoHitTest	 ; Do hit test and don't come back!
+	JMP ObjHit_SuperLeaf
+	
+afterthissuperleaf:
+
+
 	LDA Objects_Timer,X
 	BEQ PRG001_ABEC	 ; If timer expired, jump to PRG001_ABEC
 
@@ -3193,6 +3215,14 @@ PRG001_AF55:
 
 	JSR Koopaling_DetectWorld	; Detect world and do floor vibration, if appropriate
 	JSR Koopaling_DieByFire		; If hit by enough fireballs, battle ends
+	
+	JSR OrangeObject_HitTest
+	BCC afterthiskoopaling
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+afterthiskoopaling:	
 	JSR Object_HitTestRespond	; Respond to Player collision
 	JSR Object_CalcCoarseXDiff	; Calculate "coarse" X difference value
 

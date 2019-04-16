@@ -490,6 +490,14 @@ PRG005_A259:
 	JMP PRG005_A2E1	 ; Otherwise, jump to PRG005_A2E1
 
 PRG005_A260:
+	JSR OrangeObject_HitTest
+	BCC afterthispodoboo
+	
+	;hurt player!!
+	JSR Player_GetHurt
+	
+afterthispodoboo:
+
 	JSR Player_HitEnemy	 ; Do Player to Podoboo collision
 
 	LDA #$00	; A = $00 (no flip)
@@ -708,7 +716,15 @@ ObjNorm_BigCannonBall:
 
 	LDA <Player_HaltGame
 	BNE ObjInit_BigCannonBall	; If gameplay halted, jump to ObjInit_BigCannonBall (RTS)
+	
+	;check betty collision
+	JSR OrangeObject_HitTest
+	BCC afterthisbigcannonball
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
 
+afterthisbigcannonball:
 	JSR Object_ApplyXVel	 ; Apply X velocity
 	JMP Player_HitEnemy	 ; Do Player to Big Cannon Ball collision and don't come back!
 
@@ -1286,8 +1302,9 @@ ObjNorm_Piranha:
 	JSR OrangeObject_HitTest
 	BCC afterthispiranha
 	
-	;here orange and groundtroop collided, handle it!
-	JSR Enemy_Kill	 ; Kill enemy
+	;here orange and piranha collided, handle it!
+	;JSR Enemy_Kill	 ; Kill enemy
+	JSR Player_GetHurt
 	
 afterthispiranha:
 
@@ -2669,7 +2686,14 @@ PRG005_AD1E:
 
 	LDA Objects_Var7,X
 	BEQ PRG005_AD29	 ; If Var7 = 0 (initial internal state), jump to PRG005_AD29
-
+	
+	JSR OrangeObject_HitTest
+	BCC afterthissun
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+afterthissun:
 	JSR Player_HitEnemy	 ; Do Player to Sun collision
 
 PRG005_AD29
@@ -5010,24 +5034,25 @@ PRG005_B873:
 	BNE PRG005_B8BE	 	; Jump (technically always) to PRG005_B8BE (mark self as spawned so it never re-triggers)
 
 PRG005_B89C:
-	CMP #OBJ_BONUSCONTROLLER
-	BNE PRG005_B8B3	 	; If object ID <> OBJ_BONUSCONTROLLER, jump to PRG005_B8B3
+	 CMP #OBJ_BONUSCONTROLLER
+	 BNE PRG005_B8B3	 	; If object ID <> OBJ_BONUSCONTROLLER, jump to PRG005_B8B3
 
-	LDA Level_Objects+1,Y	 ; Get object row
-	PHA		 ; Save it
+	; LDA Level_Objects+1,Y	 ; Get object row
+	; PHA		 ; Save it
 
-	; Set the bonus type by whether it is on an odd/even row (Even = 1; White Toad House, Odd = 2; UNKNOWN MAPOBJ_UNK0C thing!!)
-	AND #$01	  ; Check if on odd/even row
-	TAX		  ; -> 'X'
-	INX		  ; X++
-	STX Map_BonusType ; -> Map_BonusType
+	; ; Set the bonus type by whether it is on an odd/even row (Even = 1; White Toad House, Odd = 2; UNKNOWN MAPOBJ_UNK0C thing!!)
+	; AND #$01	  ; Check if on odd/even row
+	; TAX		  ; -> 'X'
+	 INX		  ; X++
+	; STX Map_BonusType ; -> Map_BonusType
 
-	; Set the bonus value by the actual row it is on
-	; NOTE: Thus White Toad House will always be an even number of coins
-	PLA		 ; Restore row
-	AND #$7f	 ; Trim bit 7
-	STA Map_BonusCoinsReqd ; -> Map_BonusCoinsReqd
-	BPL PRG005_B8BE	 ; Jump (technically always) to PRG005_B8BE (mark self as spawned so it never re-triggers)
+	; ; Set the bonus value by the actual row it is on
+	; ; NOTE: Thus White Toad House will always be an even number of coins
+	; PLA		 ; Restore row
+	; AND #$7f	 ; Trim bit 7
+	; STA Map_BonusCoinsReqd ; -> Map_BonusCoinsReqd
+	; BPL PRG005_B8BE	 ; Jump (technically always) to PRG005_B8BE (mark self as spawned so it never re-triggers)
+	JMP PRG005_B8BE
 
 PRG005_B8B3:
 	CMP #OBJ_AUTOSCROLL
