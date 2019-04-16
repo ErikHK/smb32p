@@ -2377,11 +2377,20 @@ PRG000_2_DD3C:
 Orange_StandOnPlatform:
 	; Set Orange to object's Y - 31
 	LDA <Objects_Y,X	 
-	;SUB #31
 	SUB #16
+	;SUB #16
+	;CLC
+	;SEC
+	;SBC #12
+	;BCS dontaddtohitoo
+	
+	;here add to hi!!
+	;DEC <Orange_YHi
+	
+dontaddtohitoo:
 	STA <Orange_Y
 	LDA <Objects_YHi,X
-	;SBC #$00
+	SBC #$00
 	STA <Orange_YHi
 
 	; Flag Orange as NOT mid-air
@@ -2424,7 +2433,7 @@ PRG002_2_AA85:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; $D836
 OrangeObject_HitTest:
-	JMP PRG002_2_AA85
+	;JMP PRG002_2_AA85		;disable!!
 
 	TXA
 	CMP #4
