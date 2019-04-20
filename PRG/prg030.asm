@@ -2500,7 +2500,8 @@ PRG000_2_D862:
 
 	;LDA Player_BoundBox+1,Y  ;$08 när liten
 	;LDA #$04
-	LDA #$10
+	;LDA #$10
+	LDA #$07
 	STA <Temp_Var4		;oranges right edge bounding box offset
 
 	;LDA Player_BoundBox+3,Y  ;$0D när liten

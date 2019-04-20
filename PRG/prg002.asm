@@ -3930,7 +3930,7 @@ ToadMsg_Standard:
 	.byte $FE, $DE, $DD, $FE, $8C, $DE, $CE, $CB, $FE, $81, $D0, $8C, $E9, $FE, $FE
 
 	;
-	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
+	;;;.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
 
 	;
 	.byte $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE, $FE
@@ -4421,7 +4421,14 @@ ObjNorm_DryBones:
 	BCS DryBones_Draw	 ; If Dry Bones is Dying or gameplay halted, jump to DryBones_Draw
 
 	; Dry Bones is alive and gameplay not halted...
-
+	
+	JSR OrangeObject_HitTest
+	BCC afterthisdrybones
+	
+	;here orange and object collided, handle it!
+	JSR Player_GetHurt
+	
+afterthisdrybones:
 	JSR Enemy_CollideWithWorld	 ; Collide with world
 	JSR Object_DeleteOffScreen	 ; Delete object if it falls off-screen
 	JSR DryBones_Draw		 ; Draw Dry Bones
@@ -5398,6 +5405,13 @@ EndLevelCard_CardBackLower:
 EndLevelCard_CardEnd
 
 ObjNorm_EndLevelCard:
+	JSR OrangeObject_HitTest
+	BCC afterthisendlevel
+	
+	;here orange and object collided, handle it!
+	JSR ObjHit_EndLevelCard
+		
+afterthisendlevel:
 	LDA <Objects_DetStat,X	 ; Mis-used as tracking for the current internal state
 	JSR DynJump
 
